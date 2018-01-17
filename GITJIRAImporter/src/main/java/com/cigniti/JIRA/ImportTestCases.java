@@ -8,7 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Toolkit;
@@ -79,6 +82,7 @@ public class ImportTestCases extends JFrame {
 	public static JList lstJiraFields;
 	public static JList lstWorkSheets;
 	public static JList lstExcelColumns;
+	public static JButton btnValidate;
 
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	/**
@@ -334,15 +338,10 @@ public class ImportTestCases extends JFrame {
 		panelMapping.add(scrollPane_2);
 		
 		lstJiraFields = new JList();
-		lstJiraFields.addContainerListener(new ContainerAdapter() {
-			@Override
-			public void componentAdded(ContainerEvent arg0) {
-				ITCWS.fnSortListModel(arg0);
-			}
-		});
 		scrollPane_2.setViewportView(lstJiraFields);
 		lstJiraFields.setBorder(new EtchedBorder(EtchedBorder.LOWERED, Color.GRAY, null));
 		lstJiraFields.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		
 		JScrollPane scrollPane_3 = new JScrollPane();
 		scrollPane_3.setBounds(236, 100, 119, 117);
@@ -441,7 +440,7 @@ public class ImportTestCases extends JFrame {
 		btnNext_1.setBounds(384, 347, 89, 23);
 		panelMapping.add(btnNext_1);
 		
-		JButton btnValidate = new JButton("Validate");
+		btnValidate = new JButton("Validate");
 		btnValidate.setEnabled(false);
 		btnValidate.setBounds(285, 253, 97, 25);
 		panelMapping.add(btnValidate);
@@ -544,5 +543,7 @@ public class ImportTestCases extends JFrame {
 		JLabel lblSuccessMessage = new JLabel("Success Message");
 		lblSuccessMessage.setBounds(27, 270, 133, 14);
 		panelFinal.add(lblSuccessMessage);
+		
+		
 	}
 }

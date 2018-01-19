@@ -60,6 +60,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
+import javax.swing.border.LineBorder;
 
 public class ImportTestCases extends JFrame {
 
@@ -339,7 +340,7 @@ public class ImportTestCases extends JFrame {
 		
 		lstJiraFields = new JList();
 		scrollPane_2.setViewportView(lstJiraFields);
-		lstJiraFields.setBorder(new EtchedBorder(EtchedBorder.LOWERED, Color.GRAY, null));
+		lstJiraFields.setBorder(new LineBorder(Color.GRAY));
 		lstJiraFields.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		
@@ -349,7 +350,7 @@ public class ImportTestCases extends JFrame {
 		
 		lstExcelColumns = new JList();
 		scrollPane_3.setViewportView(lstExcelColumns);
-		lstExcelColumns.setBorder(new EtchedBorder(EtchedBorder.LOWERED, Color.GRAY, null));
+		lstExcelColumns.setBorder(new LineBorder(Color.GRAY));
 		lstExcelColumns.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		JScrollPane scrollPane = new JScrollPane();

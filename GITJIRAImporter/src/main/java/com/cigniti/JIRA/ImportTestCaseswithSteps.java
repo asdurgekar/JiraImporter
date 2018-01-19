@@ -51,6 +51,8 @@ public class ImportTestCaseswithSteps {
 	public static DefaultListModel JiralistModel;
 	@SuppressWarnings("rawtypes")
 	public static DefaultListModel ExcellistModel;
+	@SuppressWarnings("rawtypes")
+	public static DefaultListModel jDataModel;
 	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
 
@@ -337,7 +339,9 @@ public class ImportTestCaseswithSteps {
 			System.out.println("Jira field values are loaded");
 			
 			
-			
+			//DefaultListModel jDataModel = (DefaultListModel) ImportTestCases.lstJiraFields.getModel();
+			//jDataModel.addListDataListener(new MyListDataListener()); 
+			JiralistModel.addListDataListener(new MyListDataListener());
 		}
 		catch(Exception e)
 		{
@@ -426,6 +430,7 @@ public class ImportTestCaseswithSteps {
 						{
 						case "UserName":
 							ImportTestCases.txtUserName.setText(strLine.split("::")[1]);
+							ImportTestCases.txtPassword.requestFocusInWindow();
 							break;
 						default:
 							break;

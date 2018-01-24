@@ -448,7 +448,7 @@ public class ImportTestCases extends JFrame {
 				
 				String message = ITCWS.fnValidateExcelFormat();
 				if(message.equals("Success"))
-					lblValidationmessage.setForeground(Color.GREEN);
+					lblValidationmessage.setForeground(new Color(0, 128, 0));
 				else
 					lblValidationmessage.setForeground(Color.RED);
 				lblValidationmessage.setText(message);
@@ -460,6 +460,7 @@ public class ImportTestCases extends JFrame {
 		panelMapping.add(btnValidate);
 		
 		lblValidationmessage = new JLabel("");
+		lblValidationmessage.setForeground(new Color(0, 0, 0));
 		lblValidationmessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblValidationmessage.setBounds(173, 303, 359, 16);
 		panelMapping.add(lblValidationmessage);

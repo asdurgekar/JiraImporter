@@ -84,6 +84,7 @@ public class ImportTestCases extends JFrame {
 	public static JList lstWorkSheets;
 	public static JList lstExcelColumns;
 	public static JButton btnValidate;
+	public static JLabel lblValidationmessage;
 
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	/**
@@ -442,11 +443,24 @@ public class ImportTestCases extends JFrame {
 		panelMapping.add(btnNext_1);
 		
 		btnValidate = new JButton("Validate");
+		btnValidate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				String message = ITCWS.fnValidateExcelFormat();
+				if(message.equals("Success"))
+					lblValidationmessage.setForeground(Color.GREEN);
+				else
+					lblValidationmessage.setForeground(Color.RED);
+				lblValidationmessage.setText(message);
+				
+			}
+		});
 		btnValidate.setEnabled(false);
 		btnValidate.setBounds(285, 253, 97, 25);
 		panelMapping.add(btnValidate);
 		
-		JLabel lblValidationmessage = new JLabel("");
+		lblValidationmessage = new JLabel("");
+		lblValidationmessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblValidationmessage.setBounds(173, 303, 359, 16);
 		panelMapping.add(lblValidationmessage);
 		

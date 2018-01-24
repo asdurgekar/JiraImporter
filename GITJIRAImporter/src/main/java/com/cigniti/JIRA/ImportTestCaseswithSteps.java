@@ -303,6 +303,23 @@ public class ImportTestCaseswithSteps {
 			fnLoadJiraFields();
 			fnLoadExcelColumns();
 			
+			//clear validation message
+			ImportTestCases.lblValidationmessage.setText("");
+			
+			//clear mapping table
+			//remove from JTable
+			DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+			int intTableRows = model.getRowCount();
+			
+			if(intTableRows > 0)
+			{
+				for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+				{
+					model.removeRow(0);
+				}
+			}
+			
+			
 			
 		}
 		catch(Exception e)
@@ -449,17 +466,77 @@ public class ImportTestCaseswithSteps {
 	}
 
 
-	public void fnValidateExcelFormat() {
+	public String fnValidateExcelFormat() {
 		
 		try
 		{
+			String returnMessage = "Success";
+			String strRowString = "";
+			int TotalTestCaseCount = 0;
+			//get total row count
+			int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
+			
 			//get total count of test cases
+			for(int intRowCounter = 2;intRowCounter <=rowCount; intRowCounter++)
+			{
+				strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
+				if(strRowString != null)
+				{
+					TotalTestCaseCount++;
+				}
+			
+			}
+			Globalvars.TotalTestCaseCount = TotalTestCaseCount;
 			
 			
-			//verify blank values for 
+			String strTestStep = "";
+			String strTestData = "";
+			String strExpectedResult = "";
+			for(int intRowCounter = 2;intRowCounter <=rowCount; intRowCounter++)
+			{
+				strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Step"));
+				strTestData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Data"));
+				strExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Result"));
+				
+				//verify blank values for Test Step
+				if(strTestStep == null)
+				{
+					returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
+					return returnMessage;
+				}
+				else if(strTestStep.trim().isEmpty())
+				{
+					returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
+					return returnMessage;
+				}
 			
+				//verify blank values for Test Data
+				if(strTestData == null)
+				{
+					returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
+					return returnMessage;
+				}
+				else if(strTestData.trim().isEmpty())
+				{
+					returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
+					return returnMessage;
+				}
 			
+				//verify blank values for Expected Result
+				if(strExpectedResult == null)
+				{
+					returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
+					return returnMessage;
+				}
+				else if(strExpectedResult.trim().isEmpty())
+				{
+					returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
+					return returnMessage;
+				}
 			
+			}
+			
+			return returnMessage;
 			
 			
 				
@@ -468,6 +545,7 @@ public class ImportTestCaseswithSteps {
 		{
 			e.printStackTrace();
 		}
+		return null;
 		
 	}
 
@@ -535,9 +613,15 @@ public class ImportTestCaseswithSteps {
 				//remove values from JLists
 				JiralistModel.remove(ImportTestCases.lstJiraFields.getSelectedIndex());
 				ExcellistModel.remove(ImportTestCases.lstExcelColumns.getSelectedIndex());				
+				
+				//update Global Hashmap
+				JiraExcelMap.put(ImportTestCases.lstJiraFields.getSelectedValue().toString(), ImportTestCases.lstExcelColumns.getSelectedValue().toString());
+				
 				//clear values from JLists
 				ImportTestCases.lstJiraFields.setListData(JiralistModel.toArray());
 				ImportTestCases.lstExcelColumns.setListData(ExcellistModel.toArray());
+				
+				
 				
 			}
 				

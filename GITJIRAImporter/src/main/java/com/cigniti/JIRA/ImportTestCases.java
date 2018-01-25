@@ -61,13 +61,14 @@ import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
 import javax.swing.border.LineBorder;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class ImportTestCases extends JFrame {
 
 	private JPanel contentPane;
 	public static JTextField txtExcelPath;
 	public static JTable tblMapping;
-	private JTable table_1;
 	public static JPasswordField txtPassword;
 	public static JTextField txtUserName;
 	public static JLabel lblAuthmessage;
@@ -85,8 +86,15 @@ public class ImportTestCases extends JFrame {
 	public static JList lstExcelColumns;
 	public static JButton btnValidate;
 	public static JLabel lblValidationmessage;
-
+	public static JLabel lblCheckmark;
+	public static JLabel lblProjectNameValue;
+	public static JLabel lblExcelPathValue;
+	public static JLabel lblSheetNameValue;
+	public static JTable tblMapConfirm;
+	public static JLabel lblTestCasesCount;
+	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
+	
 	/**
 	 * Launch the application.
 	 */
@@ -412,8 +420,8 @@ public class ImportTestCases extends JFrame {
 		btnRemove.setBounds(380, 194, 74, 23);
 		panelMapping.add(btnRemove);
 		
-		JButton btnCancel_1 = new JButton("Cancel");
-		btnCancel_1.addActionListener(new ActionListener() {
+		JButton btnMapCancel = new JButton("Cancel");
+		btnMapCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				JFrame frame = new JFrame("...");
@@ -425,22 +433,28 @@ public class ImportTestCases extends JFrame {
 		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			}
 		});
-		btnCancel_1.setBounds(173, 347, 89, 23);
-		panelMapping.add(btnCancel_1);
+		btnMapCancel.setBounds(173, 347, 89, 23);
+		panelMapping.add(btnMapCancel);
 		
-		JButton btnBack_1 = new JButton("Back");
-		btnBack_1.addActionListener(new ActionListener() {
+		JButton btnMapBack = new JButton("Back");
+		btnMapBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ITCWS.fnLaunchLoadSecondPanel();
 			}
 		});
-		btnBack_1.setBounds(282, 347, 89, 23);
-		panelMapping.add(btnBack_1);
+		btnMapBack.setBounds(282, 347, 89, 23);
+		panelMapping.add(btnMapBack);
 		
-		JButton btnNext_1 = new JButton("Next");
-		btnNext_1.setEnabled(false);
-		btnNext_1.setBounds(384, 347, 89, 23);
-		panelMapping.add(btnNext_1);
+		JButton btnMapNext = new JButton("Next");
+		btnMapNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				ITCWS.fnLaunchConfirmationPanel();
+			}
+		});
+		btnMapNext.setEnabled(false);
+		btnMapNext.setBounds(384, 347, 89, 23);
+		panelMapping.add(btnMapNext);
 		
 		btnValidate = new JButton("Validate");
 		btnValidate.addActionListener(new ActionListener() {
@@ -448,10 +462,17 @@ public class ImportTestCases extends JFrame {
 				
 				String message = ITCWS.fnValidateExcelFormat();
 				if(message.equals("Success"))
-					lblValidationmessage.setForeground(new Color(0, 128, 0));
+				{
+					lblCheckmark.setVisible(true);
+					lblValidationmessage.setText("");
+				}
 				else
+				{
 					lblValidationmessage.setForeground(Color.RED);
-				lblValidationmessage.setText(message);
+					lblValidationmessage.setText(message);
+					lblCheckmark.setVisible(false);
+				}
+				
 				
 			}
 		});
@@ -465,67 +486,118 @@ public class ImportTestCases extends JFrame {
 		lblValidationmessage.setBounds(173, 303, 359, 16);
 		panelMapping.add(lblValidationmessage);
 		
+		lblCheckmark = new JLabel("");
+		lblCheckmark.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				btnMapNext.setEnabled(true);
+			}
+		});
+		lblCheckmark.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/CheckMark.png")));
+		lblCheckmark.setBounds(411, 253, 31, 34);
+		lblCheckmark.setVisible(false);
+		panelMapping.add(lblCheckmark);
+		
 		panelConfirm = new JPanel();
 		contentPane.add(panelConfirm, "name_1090774873869945");
 		panelConfirm.setLayout(null);
 		
 		JButton btnRun = new JButton("Run");
+		btnRun.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				ITCWS.fnLaunchRunPanel();
+			}
+		});
 		btnRun.setBounds(400, 347, 89, 23);
 		panelConfirm.add(btnRun);
 		
 		JLabel lblConfirmation = new JLabel("Confirmation");
-		lblConfirmation.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblConfirmation.setBounds(293, 46, 89, 14);
+		lblConfirmation.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblConfirmation.setBounds(293, 24, 89, 14);
 		panelConfirm.add(lblConfirmation);
 		
 		JLabel lblPleaseConfirmThe = new JLabel("Please confirm the below options and click on Run button");
-		lblPleaseConfirmThe.setBounds(146, 84, 415, 14);
+		lblPleaseConfirmThe.setBounds(146, 51, 415, 14);
 		panelConfirm.add(lblPleaseConfirmThe);
 		
 		JButton btnBack_2 = new JButton("Back");
+		btnBack_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				ITCWS.fnLaunchMappingPanel();
+			}
+		});
 		btnBack_2.setBounds(293, 347, 89, 23);
 		panelConfirm.add(btnBack_2);
 		
 		JButton btnCancel_2 = new JButton("Cancel");
+		btnCancel_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				JFrame frame = new JFrame("...");
+		        int result = JOptionPane.showConfirmDialog(frame,"Are you sure you want to exit the application?",
+		            "Exit Application",JOptionPane.YES_NO_OPTION);
+		        if (result == JOptionPane.YES_OPTION)
+		            dispose();
+		        else
+		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			}
+		});
 		btnCancel_2.setBounds(183, 347, 89, 23);
 		panelConfirm.add(btnCancel_2);
 		
 		JLabel lblProjectName_1 = new JLabel("Project Name");
-		lblProjectName_1.setBounds(183, 124, 89, 14);
+		lblProjectName_1.setBounds(183, 80, 89, 14);
 		panelConfirm.add(lblProjectName_1);
 		
 		JLabel lblExcelPath_1 = new JLabel("Excel Path");
-		lblExcelPath_1.setBounds(183, 159, 71, 14);
+		lblExcelPath_1.setBounds(183, 107, 71, 14);
 		panelConfirm.add(lblExcelPath_1);
 		
 		JLabel lblMappingList_1 = new JLabel("Mapping List");
 		lblMappingList_1.setBounds(183, 198, 89, 14);
 		panelConfirm.add(lblMappingList_1);
 		
-		table_1 = new JTable();
-		table_1.setBorder(UIManager.getBorder("ComboBox.border"));
-		table_1.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null},
-				{null, null},
-				{null, null},
-				{null, null},
-				{null, null},
-			},
-			new String[] {
-				"Jira Field", "Excel Column"
-			}
-		));
-		table_1.setBounds(306, 198, 153, 126);
-		panelConfirm.add(table_1);
-		
-		JLabel lblProjectNameValue = new JLabel("Project Name Value");
-		lblProjectNameValue.setBounds(306, 124, 133, 14);
+		lblProjectNameValue = new JLabel("Project Name Value");
+		lblProjectNameValue.setBounds(306, 80, 224, 14);
 		panelConfirm.add(lblProjectNameValue);
 		
-		JLabel lblExcelPathValue = new JLabel("Excel Path Value");
-		lblExcelPathValue.setBounds(306, 159, 98, 14);
+		lblExcelPathValue = new JLabel("Excel Path Value");
+		lblExcelPathValue.setBounds(306, 107, 336, 14);
 		panelConfirm.add(lblExcelPathValue);
+		
+		JLabel lblSheetName = new JLabel("Sheet Name");
+		lblSheetName.setBounds(183, 134, 71, 16);
+		panelConfirm.add(lblSheetName);
+		
+		lblSheetNameValue = new JLabel("Sheet Name Value");
+		lblSheetNameValue.setBounds(306, 134, 106, 16);
+		panelConfirm.add(lblSheetNameValue);
+		
+		JScrollPane scrollPane_4 = new JScrollPane();
+		scrollPane_4.setBounds(306, 198, 206, 128);
+		panelConfirm.add(scrollPane_4);
+		
+		tblMapConfirm = new JTable();
+		tblMapConfirm.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Jira Fields", "Excel Columns"
+			}
+		));
+		scrollPane_4.setViewportView(tblMapConfirm);
+		tblMapConfirm.setFillsViewportHeight(true);
+		tblMapConfirm.setBorder(new MatteBorder(1, 0, 0, 0, (Color) new Color(0, 0, 0)));
+		
+		JLabel lblNoOfTest = new JLabel("No. of Test Cases");
+		lblNoOfTest.setBounds(183, 163, 106, 16);
+		panelConfirm.add(lblNoOfTest);
+		
+		lblTestCasesCount = new JLabel("No. of TestValue");
+		lblTestCasesCount.setBounds(306, 163, 56, 16);
+		panelConfirm.add(lblTestCasesCount);
 		
 		panelFinal = new JPanel();
 		contentPane.add(panelFinal, "name_1090779593891243");

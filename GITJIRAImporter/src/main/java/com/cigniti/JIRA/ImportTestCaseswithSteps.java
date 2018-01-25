@@ -53,6 +53,8 @@ public class ImportTestCaseswithSteps {
 	public static DefaultListModel ExcellistModel;
 	@SuppressWarnings("rawtypes")
 	public static DefaultListModel jDataModel;
+	public String OldExcelPath;
+	public String OldSheetName;
 	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
 
@@ -300,27 +302,34 @@ public class ImportTestCaseswithSteps {
 			ImportTestCases.panelConfirm.setVisible(false);
 			ImportTestCases.panelFinal.setVisible(false);
 			
-			fnLoadJiraFields();
-			fnLoadExcelColumns();
 			
-			//clear validation message
-			ImportTestCases.lblValidationmessage.setText("");
-			
-			//clear mapping table
-			//remove from JTable
-			DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
-			int intTableRows = model.getRowCount();
-			
-			if(intTableRows > 0)
+			if(!Globalvars.ExcelSheetPath.equals(OldExcelPath) || !Globalvars.ExcelWorkSheetName.equals(OldSheetName))
 			{
-				for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+				fnLoadJiraFields();
+				fnLoadExcelColumns();
+				
+				//clear validation message and checkmark
+				ImportTestCases.lblValidationmessage.setText("");
+				ImportTestCases.lblCheckmark.setVisible(false);
+				
+				//clear mapping table
+				//remove from JTable
+				DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+				int intTableRows = model.getRowCount();
+				
+				if(intTableRows > 0)
 				{
-					model.removeRow(0);
+					for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+					{
+						model.removeRow(0);
+					}
 				}
+				//update old excel and sheet names
+				OldExcelPath = Globalvars.ExcelSheetPath;
+				OldSheetName = Globalvars.ExcelWorkSheetName;
+				
 			}
-			
-			
-			
+				
 		}
 		catch(Exception e)
 		{
@@ -492,7 +501,7 @@ public class ImportTestCaseswithSteps {
 			String strTestStep = "";
 			String strTestData = "";
 			String strExpectedResult = "";
-			for(int intRowCounter = 2;intRowCounter <=rowCount; intRowCounter++)
+			for(int intRowCounter = 1;intRowCounter <= rowCount; intRowCounter++)
 			{
 				strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Step"));
 				strTestData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Data"));
@@ -671,6 +680,61 @@ public class ImportTestCaseswithSteps {
 //			JiralistModel.addElement(item);		
 //		}
 //		ImportTestCases.lstJiraFields.setListData(JiralistModel.toArray());
+	}
+
+
+	public void fnLaunchConfirmationPanel() {
+		try
+		{
+			//Changes in UI
+			//Panel visibility
+			ImportTestCases.panelLogin.setVisible(false);
+			ImportTestCases.panelSecond.setVisible(false);
+			ImportTestCases.panelMapping.setVisible(false);
+			ImportTestCases.panelConfirm.setVisible(true);
+			ImportTestCases.panelFinal.setVisible(false);
+			
+			//Load values
+			ImportTestCases.lblProjectNameValue.setText(ImportTestCases.comBoxProjName.getSelectedItem().toString());
+			ImportTestCases.lblExcelPathValue.setText(Globalvars.ExcelSheetPath);
+			ImportTestCases.lblSheetNameValue.setText(Globalvars.ExcelWorkSheetName);
+			ImportTestCases.lblTestCasesCount.setText(String.valueOf(Globalvars.TotalTestCaseCount));
+			//load values in confirmation mapping table
+			DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapConfirm.getModel();
+		
+			for(String MapKey : JiraExcelMap.keySet())
+			{
+				model.addRow(new Object[]{MapKey, JiraExcelMap.get(MapKey)});
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	
+	}
+
+
+	public void fnLaunchRunPanel() {
+		
+		try
+		{
+			//Changes in UI
+			//Panel visibility
+			ImportTestCases.panelLogin.setVisible(false);
+			ImportTestCases.panelSecond.setVisible(false);
+			ImportTestCases.panelMapping.setVisible(false);
+			ImportTestCases.panelConfirm.setVisible(false);
+			ImportTestCases.panelFinal.setVisible(true);
+			
+			//Load values
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
 	}
 
 }

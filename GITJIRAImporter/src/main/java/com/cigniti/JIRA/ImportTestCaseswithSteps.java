@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,6 +60,7 @@ public class ImportTestCaseswithSteps {
 	public String OldExcelPath;
 	public String OldSheetName;
 	private SwingWorker<Void, String> bgWorker;
+	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
 
@@ -765,19 +767,28 @@ public class ImportTestCaseswithSteps {
 				@Override
 				protected Void doInBackground() throws Exception {
 					// TODO Auto-generated method stub
-					int i=0;
-					setProgress(i);
-					if(isCancelled())
+					int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
+					for (int counter = 1; counter <= rowCount; counter++) 
 					{
 						
+						String Message = fnImportExcelRowData(counter);
+						publish(Message);
+						setProgress(counter);
+						
 					}
+					
 					return null;
 				}
 				
 				@Override
 				protected void process(List<String> chunks) {
 					// TODO Auto-generated method stub
-					super.process(chunks);
+					//super.process(chunks);
+					for(String line:chunks)
+					{
+						
+					}
+						
 				}
 				
 				@Override
@@ -810,6 +821,41 @@ public class ImportTestCaseswithSteps {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+
+
+	protected String fnImportExcelRowData(Integer counter) throws URISyntaxException {
+		
+		String retMessage = "";
+		try {
+			String ApplicationLabel, testSummary, testDescription, testStepDescription, testStepData, testStepExpectedResult;
+			String testId = "";
+			
+			
+			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Application Label");	
+			testSummary = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Test Name");		
+			testDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Test Description");
+			
+			testStepDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Test Step");
+			testStepData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Test Data");
+			testStepExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Expected Result");
+
+			if(testSummary != null)
+			{
+				testId = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel);
+				retMessage = "Created Test Case : '" + testSummary + "'\n";
+			}
+			
+			createTestWithTestSteps.createTestStepinJira(testStepDescription, testStepData, testStepExpectedResult, testId);
+			retMessage += "Adding Steps for the test case";
+			testSummary = testDescription = testStepDescription = testStepData = testStepExpectedResult = null;
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return retMessage;
 		
 	}
 

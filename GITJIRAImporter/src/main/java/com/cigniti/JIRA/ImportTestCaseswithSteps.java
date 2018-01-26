@@ -2,6 +2,8 @@ package com.cigniti.JIRA;
 
 import java.awt.Color;
 import java.awt.event.ContainerEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,6 +25,7 @@ import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -55,6 +58,7 @@ public class ImportTestCaseswithSteps {
 	public static DefaultListModel jDataModel;
 	public String OldExcelPath;
 	public String OldSheetName;
+	private SwingWorker<Void, String> bgWorker;
 	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
 
@@ -486,7 +490,7 @@ public class ImportTestCaseswithSteps {
 			int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
 			
 			//get total count of test cases
-			for(int intRowCounter = 2;intRowCounter <=rowCount; intRowCounter++)
+			for(int intRowCounter = 1;intRowCounter <=rowCount; intRowCounter++)
 			{
 				strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
 				if(strRowString != null)
@@ -699,9 +703,19 @@ public class ImportTestCaseswithSteps {
 			ImportTestCases.lblExcelPathValue.setText(Globalvars.ExcelSheetPath);
 			ImportTestCases.lblSheetNameValue.setText(Globalvars.ExcelWorkSheetName);
 			ImportTestCases.lblTestCasesCount.setText(String.valueOf(Globalvars.TotalTestCaseCount));
-			//load values in confirmation mapping table
+			
+			//clear table if any existing rows
 			DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapConfirm.getModel();
-		
+			int intTableRows = model.getRowCount();
+			
+			if(intTableRows > 0)
+			{
+				for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+				{
+					model.removeRow(0);
+				}
+			}
+			//load values in confirmation mapping table
 			for(String MapKey : JiraExcelMap.keySet())
 			{
 				model.addRow(new Object[]{MapKey, JiraExcelMap.get(MapKey)});
@@ -728,13 +742,87 @@ public class ImportTestCaseswithSteps {
 			ImportTestCases.panelFinal.setVisible(true);
 			
 			//Load values
+			ImportTestCases.lblTotaltestcasesvalue.setText(String.valueOf(Globalvars.TotalTestCaseCount));
 			
+			//Start run operation
+			fnPerformImportOperation();
+
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 		
+	}
+
+
+	private void fnPerformImportOperation() {
+		
+		
+		try {
+			bgWorker = new SwingWorker<Void, String>(){
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					// TODO Auto-generated method stub
+					int i=0;
+					setProgress(i);
+					if(isCancelled())
+					{
+						
+					}
+					return null;
+				}
+				
+				@Override
+				protected void process(List<String> chunks) {
+					// TODO Auto-generated method stub
+					super.process(chunks);
+				}
+				
+				@Override
+				protected void done() {
+					// TODO Auto-generated method stub
+					//super.done();
+					//after task complete
+					if(isCancelled())
+					{
+						
+					}
+				}
+				
+			};
+			bgWorker.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+
+					switch(evt.getPropertyName())
+					{
+						case "progress":
+							ImportTestCases.prgbarImport.setValue((Integer) evt.getNewValue());
+					}
+					
+				}
+			});
+			bgWorker.execute();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+
+	public void fnCancelImport() {
+
+		try {
+			
+			bgWorker.cancel(true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

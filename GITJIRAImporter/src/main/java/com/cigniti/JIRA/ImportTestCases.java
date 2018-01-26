@@ -63,6 +63,7 @@ import java.awt.event.ContainerEvent;
 import javax.swing.border.LineBorder;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import javax.swing.JProgressBar;
 
 public class ImportTestCases extends JFrame {
 
@@ -92,6 +93,9 @@ public class ImportTestCases extends JFrame {
 	public static JLabel lblSheetNameValue;
 	public static JTable tblMapConfirm;
 	public static JLabel lblTestCasesCount;
+	public static JLabel lblTotaltestcasesvalue;
+	public static JLabel lblTotaltestcasesuploadedvalue;
+	public static JProgressBar prgbarImport;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	
@@ -620,17 +624,21 @@ public class ImportTestCases extends JFrame {
 		lblTotalNumberOf_1.setBounds(27, 117, 209, 14);
 		panelFinal.add(lblTotalNumberOf_1);
 		
-		JLabel lblTotaltestcasesvalue = new JLabel("TotalTestCasesValue");
+		lblTotaltestcasesvalue = new JLabel("TotalTestCasesValue");
 		lblTotaltestcasesvalue.setBounds(27, 74, 107, 14);
 		panelFinal.add(lblTotaltestcasesvalue);
 		
-		JLabel lblTotaltestcasesuploadedvalue = new JLabel("TotalTestCasesUploadedValue");
+		lblTotaltestcasesuploadedvalue = new JLabel("0");
 		lblTotaltestcasesuploadedvalue.setBounds(27, 163, 145, 14);
 		panelFinal.add(lblTotaltestcasesuploadedvalue);
 		
 		JLabel lblSuccessMessage = new JLabel("Success Message");
 		lblSuccessMessage.setBounds(27, 270, 133, 14);
 		panelFinal.add(lblSuccessMessage);
+		
+		prgbarImport = new JProgressBar();
+		prgbarImport.setBounds(101, 371, 389, 31);
+		panelFinal.add(prgbarImport);
 		
 		
 	}

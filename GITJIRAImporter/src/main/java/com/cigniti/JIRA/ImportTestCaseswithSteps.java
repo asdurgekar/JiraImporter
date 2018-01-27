@@ -57,8 +57,10 @@ public class ImportTestCaseswithSteps {
 	public static DefaultListModel ExcellistModel;
 	@SuppressWarnings("rawtypes")
 	public static DefaultListModel jDataModel;
+	public String OldProjectName;
 	public String OldExcelPath;
 	public String OldSheetName;
+	public static String testId;
 	private SwingWorker<Void, String> bgWorker;
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
@@ -253,17 +255,19 @@ public class ImportTestCaseswithSteps {
 			ImportTestCases.panelConfirm.setVisible(false);
 			ImportTestCases.panelFinal.setVisible(false);
 			
-			ProjectMap = new HashMap<String, String>();
-			List<String> ProjectList = new ArrayList<String>();
-			for (int arrCounter = 0; arrCounter < JSONProjectList.length(); arrCounter++) 
+			if(OldProjectName == null)
 			{
-			    JSONObject Project = JSONProjectList.getJSONObject(arrCounter);
-			    ProjectList.add(Project.get("name").toString());
-			    ProjectMap.put(Project.get("name").toString(),Project.get("id").toString());
+				ProjectMap = new HashMap<String, String>();
+				List<String> ProjectList = new ArrayList<String>();
+				for (int arrCounter = 0; arrCounter < JSONProjectList.length(); arrCounter++) 
+				{
+				    JSONObject Project = JSONProjectList.getJSONObject(arrCounter);
+				    ProjectList.add(Project.get("name").toString());
+				    ProjectMap.put(Project.get("name").toString(),Project.get("id").toString());
+				}
+				ImportTestCases.comBoxProjName.setModel(new DefaultComboBoxModel(ProjectList.toArray()));
+				System.out.println("Project values are loaded onto the application");
 			}
-			ImportTestCases.comBoxProjName.setModel(new DefaultComboBoxModel(ProjectList.toArray()));
-			System.out.println("Project values are loaded onto the application");
-			
 			
 		}
 		catch(Exception e)
@@ -333,6 +337,7 @@ public class ImportTestCaseswithSteps {
 				//update old excel and sheet names
 				OldExcelPath = Globalvars.ExcelSheetPath;
 				OldSheetName = Globalvars.ExcelWorkSheetName;
+				OldProjectName = ImportTestCases.comBoxProjName.getSelectedItem().toString();
 				
 			}
 				
@@ -702,6 +707,8 @@ public class ImportTestCaseswithSteps {
 			
 			//Load values
 			ImportTestCases.lblProjectNameValue.setText(ImportTestCases.comBoxProjName.getSelectedItem().toString());
+			
+			//Load values
 			ImportTestCases.lblExcelPathValue.setText(Globalvars.ExcelSheetPath);
 			ImportTestCases.lblSheetNameValue.setText(Globalvars.ExcelWorkSheetName);
 			ImportTestCases.lblTestCasesCount.setText(String.valueOf(Globalvars.TotalTestCaseCount));
@@ -745,6 +752,11 @@ public class ImportTestCaseswithSteps {
 			
 			//Load values
 			ImportTestCases.lblTotaltestcasesvalue.setText(String.valueOf(Globalvars.TotalTestCaseCount));
+			
+			ImportTestCases.btnCancelImport.setEnabled(true);
+			ImportTestCases.btnRunBack.setEnabled(false);
+			ImportTestCases.btnClose.setEnabled(false);
+			
 			
 			//Start run operation
 			fnPerformImportOperation();
@@ -796,6 +808,10 @@ public class ImportTestCaseswithSteps {
 					// TODO Auto-generated method stub
 					//super.done();
 					//after task complete
+					ImportTestCases.btnCancelImport.setEnabled(false);
+					ImportTestCases.btnRunBack.setEnabled(true);
+					ImportTestCases.btnClose.setEnabled(true);
+					
 					if(isCancelled())
 					{
 						
@@ -830,7 +846,7 @@ public class ImportTestCaseswithSteps {
 		String retMessage = "";
 		try {
 			String ApplicationLabel, testSummary, testDescription, testStepDescription, testStepData, testStepExpectedResult;
-			String testId = "";
+			//String testId = "";
 			
 			
 			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Application Label");	

@@ -96,6 +96,9 @@ public class ImportTestCases extends JFrame {
 	public static JLabel lblTotaltestcasesvalue;
 	public static JLabel lblTotaltestcasesuploadedvalue;
 	public static JProgressBar prgbarImport;
+	public static JButton btnCancelImport;
+	public static JButton btnRunBack;
+	public static JButton btnClose;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	
@@ -608,7 +611,7 @@ public class ImportTestCases extends JFrame {
 		panelFinal.setLayout(null);
 		
 		JTextPane txtpnTest = new JTextPane();
-		txtpnTest.setBounds(269, 74, 411, 285);
+		txtpnTest.setBounds(269, 74, 411, 181);
 		panelFinal.add(txtpnTest);
 		
 		JLabel lblConsoleOutput = new JLabel("Console Output");
@@ -633,12 +636,45 @@ public class ImportTestCases extends JFrame {
 		panelFinal.add(lblTotaltestcasesuploadedvalue);
 		
 		JLabel lblSuccessMessage = new JLabel("Success Message");
-		lblSuccessMessage.setBounds(27, 270, 133, 14);
+		lblSuccessMessage.setBounds(27, 230, 133, 14);
 		panelFinal.add(lblSuccessMessage);
 		
 		prgbarImport = new JProgressBar();
-		prgbarImport.setBounds(101, 371, 389, 31);
+		prgbarImport.setBounds(269, 268, 411, 31);
 		panelFinal.add(prgbarImport);
+		
+		btnCancelImport = new JButton("Cancel Import");
+		btnCancelImport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				JFrame frame = new JFrame("...");
+		        int result = JOptionPane.showConfirmDialog(frame,"If you cancel, import process might be incomplete and might lead to erroneous data in Jira.\n Are you sure you want to continue?",
+		            "Cancelling Test Case Import",JOptionPane.YES_NO_OPTION);
+		        if (result == JOptionPane.YES_OPTION)
+		        {
+		            ITCWS.fnCancelImport();
+		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		        }
+		        else
+		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			}
+		});
+		btnCancelImport.setBounds(269, 356, 145, 25);
+		panelFinal.add(btnCancelImport);
+		
+		btnRunBack = new JButton("Back");
+		btnRunBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				ITCWS.fnLaunchConfirmationPanel();
+			}
+		});
+		btnRunBack.setBounds(124, 356, 97, 25);
+		panelFinal.add(btnRunBack);
+		
+		btnClose = new JButton("Close");
+		btnClose.setBounds(470, 356, 97, 25);
+		panelFinal.add(btnClose);
 		
 		
 	}

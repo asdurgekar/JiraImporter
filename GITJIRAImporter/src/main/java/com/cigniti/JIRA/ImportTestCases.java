@@ -64,6 +64,7 @@ import javax.swing.border.LineBorder;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 
 public class ImportTestCases extends JFrame {
 
@@ -99,6 +100,8 @@ public class ImportTestCases extends JFrame {
 	public static JButton btnCancelImport;
 	public static JButton btnRunBack;
 	public static JButton btnClose;
+	public static JTextArea txtAreaConsole;
+	public static JLabel lblSuccessMessage;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	
@@ -610,10 +613,6 @@ public class ImportTestCases extends JFrame {
 		contentPane.add(panelFinal, "name_1090779593891243");
 		panelFinal.setLayout(null);
 		
-		JTextPane txtpnTest = new JTextPane();
-		txtpnTest.setBounds(269, 74, 411, 181);
-		panelFinal.add(txtpnTest);
-		
 		JLabel lblConsoleOutput = new JLabel("Console Output");
 		lblConsoleOutput.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblConsoleOutput.setBounds(269, 36, 100, 14);
@@ -635,8 +634,11 @@ public class ImportTestCases extends JFrame {
 		lblTotaltestcasesuploadedvalue.setBounds(27, 163, 145, 14);
 		panelFinal.add(lblTotaltestcasesuploadedvalue);
 		
-		JLabel lblSuccessMessage = new JLabel("Success Message");
-		lblSuccessMessage.setBounds(27, 230, 133, 14);
+		lblSuccessMessage = new JLabel("Success Message");
+		lblSuccessMessage.setVerticalAlignment(SwingConstants.TOP);
+		lblSuccessMessage.setForeground(Color.BLACK);
+		lblSuccessMessage.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblSuccessMessage.setBounds(27, 230, 209, 49);
 		panelFinal.add(lblSuccessMessage);
 		
 		prgbarImport = new JProgressBar();
@@ -673,8 +675,23 @@ public class ImportTestCases extends JFrame {
 		panelFinal.add(btnRunBack);
 		
 		btnClose = new JButton("Close");
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				dispose();
+			}
+		});
 		btnClose.setBounds(470, 356, 97, 25);
 		panelFinal.add(btnClose);
+		
+		JScrollPane scrollPane_5 = new JScrollPane();
+		scrollPane_5.setBounds(269, 76, 411, 177);
+		panelFinal.add(scrollPane_5);
+		
+		txtAreaConsole = new JTextArea();
+		scrollPane_5.setViewportView(txtAreaConsole);
+		txtAreaConsole.setEditable(false);
+		txtAreaConsole.setBackground(SystemColor.controlHighlight);
 		
 		
 	}

@@ -26,6 +26,7 @@ import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JTextPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -62,6 +63,7 @@ public class ImportTestCaseswithSteps {
 	public String OldSheetName;
 	public static String testId;
 	private SwingWorker<Void, String> bgWorker;
+	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
@@ -338,6 +340,9 @@ public class ImportTestCaseswithSteps {
 				OldExcelPath = Globalvars.ExcelSheetPath;
 				OldSheetName = Globalvars.ExcelWorkSheetName;
 				OldProjectName = ImportTestCases.comBoxProjName.getSelectedItem().toString();
+				
+				//get the project id
+				CreateTestWithTestSteps.projectId = ImportTestCases.comBoxProjName.getSelectedItem().toString();
 				
 			}
 				
@@ -750,8 +755,14 @@ public class ImportTestCaseswithSteps {
 			ImportTestCases.panelConfirm.setVisible(false);
 			ImportTestCases.panelFinal.setVisible(true);
 			
+			//reset values
+			Globalvars.TotalTestCaseUploaded = 0;
+			ImportTestCases.txtAreaConsole.setText("");
+			
 			//Load values
 			ImportTestCases.lblTotaltestcasesvalue.setText(String.valueOf(Globalvars.TotalTestCaseCount));
+			ImportTestCases.lblTotaltestcasesuploadedvalue.setText(String.valueOf(Globalvars.TotalTestCaseUploaded));
+			ImportTestCases.prgbarImport.setValue(0);
 			
 			ImportTestCases.btnCancelImport.setEnabled(true);
 			ImportTestCases.btnRunBack.setEnabled(false);
@@ -760,6 +771,7 @@ public class ImportTestCaseswithSteps {
 			
 			//Start run operation
 			fnPerformImportOperation();
+			
 
 		}
 		catch(Exception e)
@@ -781,12 +793,17 @@ public class ImportTestCaseswithSteps {
 					// TODO Auto-generated method stub
 					int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
 					for (int counter = 1; counter <= rowCount; counter++) 
-					{
-						
-						String Message = fnImportExcelRowData(counter);
+					{						
+						String Message = fnImportExcelRowData(rowCount, counter);
+						//cancel if failure
+						if(createTestWithTestSteps.RespMessage.split(":")[0].toLowerCase().contains("failure"))
+						{
+							bgWorker.cancel(true);
+							break;
+						}
 						publish(Message);
-						setProgress(counter);
-						
+						setProgress(Globalvars.TotalTestCaseUploaded * (100/Globalvars.TotalTestCaseCount));
+					
 					}
 					
 					return null;
@@ -798,8 +815,19 @@ public class ImportTestCaseswithSteps {
 					//super.process(chunks);
 					for(String line:chunks)
 					{
+						String ConsoleText = ImportTestCases.txtAreaConsole.getText();
+						if(ConsoleText.isEmpty())
+						{
+							ImportTestCases.txtAreaConsole.setText(line);
+						}
+						else
+						{
+							ImportTestCases.txtAreaConsole.setText(ConsoleText + "\n" + line);
+						}
 						
 					}
+					ImportTestCases.lblTotaltestcasesuploadedvalue.setText(String.valueOf(Globalvars.TotalTestCaseUploaded));
+					ImportTestCases.txtAreaConsole.setCaretPosition(ImportTestCases.txtAreaConsole.getDocument().getLength());
 						
 				}
 				
@@ -812,10 +840,15 @@ public class ImportTestCaseswithSteps {
 					ImportTestCases.btnRunBack.setEnabled(true);
 					ImportTestCases.btnClose.setEnabled(true);
 					
-					if(isCancelled())
+					if(isCancelled() && createTestWithTestSteps.RespMessage.split(":")[0].toLowerCase().contains("failure"))
 					{
-						
+						ImportTestCases.lblSuccessMessage.setForeground(Color.RED);
 					}
+					else
+					{
+						ImportTestCases.lblSuccessMessage.setForeground(new Color(0, 128, 0));
+					}
+					ImportTestCases.lblSuccessMessage.setText(createTestWithTestSteps.RespMessage.split(":")[1]);
 				}
 				
 			};
@@ -824,6 +857,7 @@ public class ImportTestCaseswithSteps {
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 
+					//System.out.println(evt);
 					switch(evt.getPropertyName())
 					{
 						case "progress":
@@ -841,7 +875,7 @@ public class ImportTestCaseswithSteps {
 	}
 
 
-	protected String fnImportExcelRowData(Integer counter) throws URISyntaxException {
+	protected String fnImportExcelRowData(Integer TotalRowCount, Integer counter) throws Exception {
 		
 		String retMessage = "";
 		try {
@@ -858,16 +892,42 @@ public class ImportTestCaseswithSteps {
 			testStepExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Expected Result");
 
 			if(testSummary != null)
-			{
+			{				
 				testId = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel);
+				//check if there is failure
+				if(createTestWithTestSteps.RespMessage.split(":")[0].toLowerCase().contains("failure"))
+				{
+					return null;
+				}
 				retMessage = "Created Test Case : '" + testSummary + "'\n";
 			}
+			//get test case completion count
+			else
+			{
+				if(counter == TotalRowCount)
+				{
+					Globalvars.TotalTestCaseUploaded++;
+				}
+				else
+				{
+					ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, "Application Label");
+					if(ApplicationLabel != null)
+						Globalvars.TotalTestCaseUploaded++;
+				}
+				
+			}
+
 			
 			createTestWithTestSteps.createTestStepinJira(testStepDescription, testStepData, testStepExpectedResult, testId);
+			//check if there is failure
+			if(createTestWithTestSteps.RespMessage.split(":")[0].toLowerCase().contains("failure"))
+			{
+				return null;
+			}
 			retMessage += "Adding Steps for the test case";
 			testSummary = testDescription = testStepDescription = testStepData = testStepExpectedResult = null;
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

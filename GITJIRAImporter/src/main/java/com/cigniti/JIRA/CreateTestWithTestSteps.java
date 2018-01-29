@@ -87,7 +87,7 @@ public class CreateTestWithTestSteps {
 
 	public static String userName = Globalvars.JIRA_userName;
 	public static String password = Globalvars.JIRA_password;
-	private static String projectId = Globalvars.JIRA_projectId;
+	public static String projectId = Globalvars.JIRA_projectId;
 	private static String issueTypeId = Globalvars.JIRA_issueTypeId;
 	
 	private static final String createTestUri = API_CREATE_TEST.replace("{SERVER}", jiraBaseURL);
@@ -97,6 +97,8 @@ public class CreateTestWithTestSteps {
 			.build();
 	static Header header = createAuthorizationHeader();
 	// JwtGenerator jwtGenerator = client.getJwtGenerator();
+	public String RespMessage = Globalvars.JIRA_projectId;
+	
 
 	public static void main(String[] args) throws JSONException, URISyntaxException, ParseException, IOException {
 
@@ -139,7 +141,7 @@ public class CreateTestWithTestSteps {
 
 	@SuppressWarnings("resource")
 	public void createTestStepinJira(String testStepDescription,
-			String testStepData, String testStepExpectedResult, String testId) throws URISyntaxException {
+			String testStepData, String testStepExpectedResult, String testId) throws URISyntaxException, ParseException, IOException {
 		
 		testStepDescription = getTextFromHTML(testStepDescription);
 		testStepData = getTextFromHTML(testStepData);
@@ -149,6 +151,7 @@ public class CreateTestWithTestSteps {
 		System.out.println("Test Step Data " + testStepData);
 		System.out.println("Test Step Expected Value" + testStepExpectedResult);
 		
+		HttpEntity entity = null;
 		/** Create test Steps ***/
 
 		/**
@@ -189,7 +192,7 @@ public class CreateTestWithTestSteps {
 		int statusCode = getHTTPResponseCode(responseTestStep);
 
 		if (statusCode >= 200 && statusCode < 300) {
-			HttpEntity entity = responseTestStep.getEntity();
+			entity = responseTestStep.getEntity();
 			String string = null;
 			try {
 				string = EntityUtils.toString(entity);
@@ -206,6 +209,7 @@ public class CreateTestWithTestSteps {
 				System.out.println("__________________________________________________________________________________________");
 				System.out.println("Test Step Values : " + testStepDescription + ":" + testStepData +":" + testStepExpectedResult);
 				System.out.println("__________________________________________________________________________________________");
+				RespMessage = "Failure:" + EntityUtils.toString(entity);
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
@@ -231,7 +235,10 @@ public class CreateTestWithTestSteps {
 		} else {
 			try {
 				String string = null;
+				
 				string = EntityUtils.toString(entity);
+				JSONObject JSONEntity = new JSONObject(string);
+				RespMessage = "Failure:" + JSONEntity.getJSONObject("errors").toString();
 				new JSONObject(string);
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 

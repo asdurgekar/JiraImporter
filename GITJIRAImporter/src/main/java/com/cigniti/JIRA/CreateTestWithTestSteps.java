@@ -97,7 +97,7 @@ public class CreateTestWithTestSteps {
 			.build();
 	static Header header = createAuthorizationHeader();
 	// JwtGenerator jwtGenerator = client.getJwtGenerator();
-	public String RespMessage = Globalvars.JIRA_projectId;
+	public String RespMessage = "Success~All Test Cases are imported successfully";
 	
 
 	public static void main(String[] args) throws JSONException, URISyntaxException, ParseException, IOException {
@@ -209,7 +209,7 @@ public class CreateTestWithTestSteps {
 				System.out.println("__________________________________________________________________________________________");
 				System.out.println("Test Step Values : " + testStepDescription + ":" + testStepData +":" + testStepExpectedResult);
 				System.out.println("__________________________________________________________________________________________");
-				RespMessage = "Failure:" + EntityUtils.toString(entity);
+				RespMessage = "Failure~" + EntityUtils.toString(entity);
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
@@ -232,13 +232,14 @@ public class CreateTestWithTestSteps {
 		HttpEntity entity = response.getEntity();
 		if (statusCode >= 200 && statusCode < 300) {
 			testId = getTestCaseId(entity);
+			System.out.println("Created Test Case in JIRA " + testDescription );
+
 		} else {
 			try {
 				String string = null;
 				
 				string = EntityUtils.toString(entity);
-				JSONObject JSONEntity = new JSONObject(string);
-				RespMessage = "Failure:" + JSONEntity.getJSONObject("errors").toString();
+				RespMessage = "Failure~" + string;
 				new JSONObject(string);
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 
@@ -246,7 +247,6 @@ public class CreateTestWithTestSteps {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Created Test Case in JIRA " + testDescription );
 		return testId;
 	}
 

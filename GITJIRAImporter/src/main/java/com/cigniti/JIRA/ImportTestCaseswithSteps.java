@@ -342,7 +342,7 @@ public class ImportTestCaseswithSteps {
 				OldProjectName = ImportTestCases.comBoxProjName.getSelectedItem().toString();
 				
 				//get the project id
-				CreateTestWithTestSteps.projectId = ImportTestCases.comBoxProjName.getSelectedItem().toString();
+				CreateTestWithTestSteps.projectId = ProjectMap.get(ImportTestCases.comBoxProjName.getSelectedItem().toString());
 				
 			}
 				
@@ -758,6 +758,7 @@ public class ImportTestCaseswithSteps {
 			//reset values
 			Globalvars.TotalTestCaseUploaded = 0;
 			ImportTestCases.txtAreaConsole.setText("");
+			ImportTestCases.lblSuccessMessage.setText("");
 			
 			//Load values
 			ImportTestCases.lblTotaltestcasesvalue.setText(String.valueOf(Globalvars.TotalTestCaseCount));
@@ -793,18 +794,26 @@ public class ImportTestCaseswithSteps {
 					// TODO Auto-generated method stub
 					int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
 					for (int counter = 1; counter <= rowCount; counter++) 
-					{						
-						String Message = fnImportExcelRowData(rowCount, counter);
-						//cancel if failure
-						if(createTestWithTestSteps.RespMessage.split(":")[0].toLowerCase().contains("failure"))
+					{	
+						if(isCancelled())
 						{
-							bgWorker.cancel(true);
 							break;
 						}
+						String Message = fnImportExcelRowData(rowCount, counter);
 						publish(Message);
+						//exit for if failure
+						if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+						{
+							break;
+						}
+						
 						setProgress(Globalvars.TotalTestCaseUploaded * (100/Globalvars.TotalTestCaseCount));
 					
 					}
+					//cancel on failure
+					if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+						bgWorker.cancel(true);
+					
 					
 					return null;
 				}
@@ -828,6 +837,7 @@ public class ImportTestCaseswithSteps {
 					}
 					ImportTestCases.lblTotaltestcasesuploadedvalue.setText(String.valueOf(Globalvars.TotalTestCaseUploaded));
 					ImportTestCases.txtAreaConsole.setCaretPosition(ImportTestCases.txtAreaConsole.getDocument().getLength());
+					
 						
 				}
 				
@@ -840,15 +850,22 @@ public class ImportTestCaseswithSteps {
 					ImportTestCases.btnRunBack.setEnabled(true);
 					ImportTestCases.btnClose.setEnabled(true);
 					
-					if(isCancelled() && createTestWithTestSteps.RespMessage.split(":")[0].toLowerCase().contains("failure"))
+					if(isCancelled() && createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 					{
+						ImportTestCases.lblSuccessMessage.setText("Failed to import all the test cases");
+						ImportTestCases.lblSuccessMessage.setForeground(Color.RED);
+					}
+					else if(isCancelled())
+					{
+						ImportTestCases.lblSuccessMessage.setText("Test Case import has been interuppted");
 						ImportTestCases.lblSuccessMessage.setForeground(Color.RED);
 					}
 					else
 					{
 						ImportTestCases.lblSuccessMessage.setForeground(new Color(0, 128, 0));
+						ImportTestCases.lblSuccessMessage.setText(createTestWithTestSteps.RespMessage.split("~")[1]);
 					}
-					ImportTestCases.lblSuccessMessage.setText(createTestWithTestSteps.RespMessage.split(":")[1]);
+					
 				}
 				
 			};
@@ -895,9 +912,10 @@ public class ImportTestCaseswithSteps {
 			{				
 				testId = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel);
 				//check if there is failure
-				if(createTestWithTestSteps.RespMessage.split(":")[0].toLowerCase().contains("failure"))
+				if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 				{
-					return null;
+					retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
+					return retMessage;
 				}
 				retMessage = "Created Test Case : '" + testSummary + "'\n";
 			}
@@ -920,9 +938,10 @@ public class ImportTestCaseswithSteps {
 			
 			createTestWithTestSteps.createTestStepinJira(testStepDescription, testStepData, testStepExpectedResult, testId);
 			//check if there is failure
-			if(createTestWithTestSteps.RespMessage.split(":")[0].toLowerCase().contains("failure"))
+			if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 			{
-				return null;
+				retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
+				return retMessage;
 			}
 			retMessage += "Adding Steps for the test case";
 			testSummary = testDescription = testStepDescription = testStepData = testStepExpectedResult = null;

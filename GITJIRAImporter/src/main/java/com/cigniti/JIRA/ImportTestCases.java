@@ -613,36 +613,37 @@ public class ImportTestCases extends JFrame {
 		contentPane.add(panelFinal, "name_1090779593891243");
 		panelFinal.setLayout(null);
 		
-		JLabel lblConsoleOutput = new JLabel("Console Output");
-		lblConsoleOutput.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblConsoleOutput.setBounds(269, 36, 100, 14);
-		panelFinal.add(lblConsoleOutput);
-		
 		JLabel lblTotalNumberOf = new JLabel("Total Number of Test Cases to be Uploaded");
-		lblTotalNumberOf.setBounds(27, 36, 209, 14);
+		lblTotalNumberOf.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblTotalNumberOf.setBounds(27, 23, 295, 14);
 		panelFinal.add(lblTotalNumberOf);
 		
-		JLabel lblTotalNumberOf_1 = new JLabel("Total Number of Test Cases Uploaded");
-		lblTotalNumberOf_1.setBounds(27, 117, 209, 14);
+		JLabel lblTotalNumberOf_1 = new JLabel("Number of Test Cases Uploaded");
+		lblTotalNumberOf_1.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblTotalNumberOf_1.setBounds(27, 50, 253, 14);
 		panelFinal.add(lblTotalNumberOf_1);
 		
-		lblTotaltestcasesvalue = new JLabel("TotalTestCasesValue");
-		lblTotaltestcasesvalue.setBounds(27, 74, 107, 14);
+		lblTotaltestcasesvalue = new JLabel("0");
+		lblTotaltestcasesvalue.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblTotaltestcasesvalue.setBounds(353, 23, 61, 14);
 		panelFinal.add(lblTotaltestcasesvalue);
 		
 		lblTotaltestcasesuploadedvalue = new JLabel("0");
-		lblTotaltestcasesuploadedvalue.setBounds(27, 163, 145, 14);
+		lblTotaltestcasesuploadedvalue.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblTotaltestcasesuploadedvalue.setBounds(353, 50, 97, 14);
 		panelFinal.add(lblTotaltestcasesuploadedvalue);
 		
-		lblSuccessMessage = new JLabel("Success Message");
+		lblSuccessMessage = new JLabel("");
+		lblSuccessMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSuccessMessage.setVerticalAlignment(SwingConstants.TOP);
 		lblSuccessMessage.setForeground(Color.BLACK);
 		lblSuccessMessage.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblSuccessMessage.setBounds(27, 230, 209, 49);
+		lblSuccessMessage.setBounds(148, 310, 389, 16);
 		panelFinal.add(lblSuccessMessage);
 		
 		prgbarImport = new JProgressBar();
-		prgbarImport.setBounds(269, 268, 411, 31);
+		prgbarImport.setForeground(new Color(0, 128, 0));
+		prgbarImport.setBounds(138, 277, 411, 31);
 		panelFinal.add(prgbarImport);
 		
 		btnCancelImport = new JButton("Cancel Import");
@@ -685,7 +686,7 @@ public class ImportTestCases extends JFrame {
 		panelFinal.add(btnClose);
 		
 		JScrollPane scrollPane_5 = new JScrollPane();
-		scrollPane_5.setBounds(269, 76, 411, 177);
+		scrollPane_5.setBounds(138, 89, 409, 175);
 		panelFinal.add(scrollPane_5);
 		
 		txtAreaConsole = new JTextArea();

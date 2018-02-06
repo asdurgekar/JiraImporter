@@ -12,6 +12,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,18 +35,26 @@ import javax.swing.table.TableModel;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.cigniti.util.Globalvars;
+import com.thed.zephyr.cloud.rest.client.JwtGenerator;
 
 public class ImportTestCaseswithSteps {
 	
@@ -148,7 +158,7 @@ public class ImportTestCaseswithSteps {
 	}
 	
 	
-	public void fn_LoginToJira() throws IOException {
+	public void fn_LoginToJira() {
 
 		try
 		{
@@ -157,6 +167,7 @@ public class ImportTestCaseswithSteps {
 			CreateTestWithTestSteps.password = new String(ImportTestCases.txtPassword.getPassword());
 			
 			int AuthResponse = fn_PerformAuthentication();
+			int KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys();
 			
 			if(AuthResponse != 200)
 			{
@@ -186,6 +197,8 @@ public class ImportTestCaseswithSteps {
 		
 	}
 
+
+	
 
 	private void fnStorePreferences(String propName, String propValue) {
 		

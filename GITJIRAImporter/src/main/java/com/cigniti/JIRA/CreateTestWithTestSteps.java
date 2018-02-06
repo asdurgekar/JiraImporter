@@ -28,6 +28,7 @@ Build id: 20160613-1800
 package com.cigniti.JIRA;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -45,7 +46,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -65,13 +68,17 @@ import com.cigniti.util.ReadAttachmentsMapping;
 import com.thed.zephyr.cloud.rest.ZFJCloudRestClient;
 import com.thed.zephyr.cloud.rest.client.JwtGenerator;
 
+
+
+
 @SuppressWarnings("deprecation")
 public class CreateTestWithTestSteps {
 
 	private static String API_CREATE_TEST = "{SERVER}/rest/api/2/issue";
 	private static String API_CREATE_TEST_STEP = "{SERVER}/public/rest/api/1.0/teststep/";
 	private static Long versionId = -1l;
-
+	private static String API_CYCLES = "{SERVER}/public/rest/api/1.0/cycles/search?versionId=" + versionId + "&projectId=10357";
+	
 	/** Declare JIRA,Zephyr URL,access and secret Keys */
 	// Jira Cloud URL for the instance
 	public static String jiraBaseURL = "https://rentacenter.atlassian.net";
@@ -80,6 +87,7 @@ public class CreateTestWithTestSteps {
 	private static String zephyrBaseUrl = "https://prod-api.zephyr4jiracloud.com/connect";
 	// zephyr accessKey , we can get from Addons >> zapi section
 	public static String accessKey = "N2RjOTAxZWUtYTc2Mi0zMzkzLWEwYmYtZWIxNjM2ZmM3MjAxIGFrYXJzaC5kdXJnZWthciBVU0VSX0RFRkFVTFRfTkFNRQ";
+	
 	// zephyr secretKey , we can get from Addons >> zapi section
 	public static String secretKey = "xEWGV8W7J1eiu2glXJS_ChSUntc-hIS_f_39i5w_B3M";
 
@@ -92,12 +100,13 @@ public class CreateTestWithTestSteps {
 	
 	private static final String createTestUri = API_CREATE_TEST.replace("{SERVER}", jiraBaseURL);
 	private static final String createTestStepUri = API_CREATE_TEST_STEP.replace("{SERVER}", zephyrBaseUrl);
-
+	private static final String getCyclesUri = API_CYCLES.replace("{SERVER}", zephyrBaseUrl);
+	
 	static ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
 			.build();
 	static Header header = createAuthorizationHeader();
 	// JwtGenerator jwtGenerator = client.getJwtGenerator();
-	public String RespMessage = "Success~All Test Cases are imported successfully";
+	public static String RespMessage = "Success~All Test Cases are imported successfully";
 	
 
 	public static void main(String[] args) throws JSONException, URISyntaxException, ParseException, IOException {
@@ -209,7 +218,7 @@ public class CreateTestWithTestSteps {
 				System.out.println("__________________________________________________________________________________________");
 				System.out.println("Test Step Values : " + testStepDescription + ":" + testStepData +":" + testStepExpectedResult);
 				System.out.println("__________________________________________________________________________________________");
-				RespMessage = "Failure~" + EntityUtils.toString(entity);
+				RespMessage = "Failure~" + EntityUtils.toString(responseTestStep.getEntity());
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
@@ -601,6 +610,63 @@ public class CreateTestWithTestSteps {
 
 	}
 	
-	
+	public static int fn_ValidateKeys() throws Exception {
+
+		HttpEntity entity = null;
+		String finalURL = getCyclesUri;
+		URI uri = new URI(finalURL);
+		int expirationInSec = 360;
+		ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
+				.build();
+		JwtGenerator jwtGenerator = client.getJwtGenerator();
+		String jwt = jwtGenerator.generateJWT("GET", uri, expirationInSec);
+
+		HttpResponse responseConfig = null;
+		HttpGet ConfigReq = new HttpGet(uri);
+		//ConfigReq.addHeader("Content-Type", "application/json");
+		ConfigReq.setHeader("Authorization", jwt);
+		ConfigReq.setHeader("zapiAccessKey", accessKey);
+		JSONObject testStepJsonObj = createTestStepJSON("Login successfulP", "NAP", "Eter the URLP");
+		//ConfigReq.setEntity(new StringEntity(testStepJsonObj.toString()));
+		
+		try {
+			HttpClient restClient = new DefaultHttpClient();
+			responseConfig = restClient.execute(ConfigReq);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		int statusCode = getHTTPResponseCode(responseConfig);
+
+		if (statusCode >= 200 && statusCode < 300) {
+			entity = responseConfig.getEntity();
+			String string = null;
+			try {
+				string = EntityUtils.toString(entity);
+				JSONObject testStepObj = new JSONObject(string);
+				testStepObj.getString("id");
+			} catch (ParseException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		} else {
+			try {
+				System.out.println("Failure~" + EntityUtils.toString(responseConfig.getEntity()));
+				RespMessage = "Failure~" + EntityUtils.toString(responseConfig.getEntity());
+				throw new ClientProtocolException("Unexpected response status: " + statusCode);
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("General Configuration details retrieved");
+
+		
+		return 0;
+	}
+
+
 	
 }

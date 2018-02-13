@@ -64,7 +64,7 @@ import com.thed.zephyr.cloud.rest.ZFJCloudRestClient;
 import com.thed.zephyr.cloud.rest.client.JwtGenerator;
 
 @SuppressWarnings("deprecation")
-public class DeleteTestCycles {
+public class CheckTestCycles {
 
 	private static String API_CREATE_TEST = "{SERVER}/rest/api/2/issue";
 	private static String API_CREATE_TEST_STEP = "{SERVER}/public/rest/api/1.0/teststep/";
@@ -105,7 +105,7 @@ public class DeleteTestCycles {
 		
 		
 		
-		DeleteTestCycles createTestWithTestSteps = new DeleteTestCycles();
+		CheckTestCycles createTestWithTestSteps = new CheckTestCycles();
 		createTestWithTestSteps.createAuthorizationHeader();
 		createTestWithTestSteps.getCycleInformation();
 		

@@ -77,7 +77,7 @@ public class CreateTestWithTestSteps {
 	private static String API_CREATE_TEST = "{SERVER}/rest/api/2/issue";
 	private static String API_CREATE_TEST_STEP = "{SERVER}/public/rest/api/1.0/teststep/";
 	private static Long versionId = -1l;
-	private static String API_CYCLES = "{SERVER}/public/rest/api/1.0/cycles/search?versionId=" + versionId + "&projectId=10357";
+	private static String API_VALIDKEY = "{SERVER}/public/rest/api/1.0/teststep/-1?projectId=";
 	
 	/** Declare JIRA,Zephyr URL,access and secret Keys */
 	// Jira Cloud URL for the instance
@@ -86,11 +86,12 @@ public class CreateTestWithTestSteps {
 	// Cloud Installation
 	private static String zephyrBaseUrl = "https://prod-api.zephyr4jiracloud.com/connect";
 	// zephyr accessKey , we can get from Addons >> zapi section
-	public static String accessKey = "N2RjOTAxZWUtYTc2Mi0zMzkzLWEwYmYtZWIxNjM2ZmM3MjAxIGFrYXJzaC5kdXJnZWthciBVU0VSX0RFRkFVTFRfTkFNRQ";
-	
+	//public static String accessKey = "N2RjOTAxZWUtYTc2Mi0zMzkzLWEwYmYtZWIxNjM2ZmM3MjAxIGFrYXJzaC5kdXJnZWthciBVU0VSX0RFRkFVTFRfTkFNRQ";
+	public static String accessKey = "";
 	// zephyr secretKey , we can get from Addons >> zapi section
-	public static String secretKey = "xEWGV8W7J1eiu2glXJS_ChSUntc-hIS_f_39i5w_B3M";
-
+	//public static String secretKey = "xEWGV8W7J1eiu2glXJS_ChSUntc-hIS_f_39i5w_B3M";
+	public static String secretKey = "";
+	
 	/** Declare parameter values here */
 
 	public static String userName = Globalvars.JIRA_userName;
@@ -100,7 +101,7 @@ public class CreateTestWithTestSteps {
 	
 	private static final String createTestUri = API_CREATE_TEST.replace("{SERVER}", jiraBaseURL);
 	private static final String createTestStepUri = API_CREATE_TEST_STEP.replace("{SERVER}", zephyrBaseUrl);
-	private static final String getCyclesUri = API_CYCLES.replace("{SERVER}", zephyrBaseUrl);
+	private static final String validateKeyUri = API_VALIDKEY.replace("{SERVER}", zephyrBaseUrl);
 	
 	static ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
 			.build();
@@ -610,61 +611,69 @@ public class CreateTestWithTestSteps {
 
 	}
 	
-	public static int fn_ValidateKeys() throws Exception {
-
-		HttpEntity entity = null;
-		String finalURL = getCyclesUri;
-		URI uri = new URI(finalURL);
-		int expirationInSec = 360;
-		ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
-				.build();
-		JwtGenerator jwtGenerator = client.getJwtGenerator();
-		String jwt = jwtGenerator.generateJWT("GET", uri, expirationInSec);
-
-		HttpResponse responseConfig = null;
-		HttpGet ConfigReq = new HttpGet(uri);
-		//ConfigReq.addHeader("Content-Type", "application/json");
-		ConfigReq.setHeader("Authorization", jwt);
-		ConfigReq.setHeader("zapiAccessKey", accessKey);
-		JSONObject testStepJsonObj = createTestStepJSON("Login successfulP", "NAP", "Eter the URLP");
-		//ConfigReq.setEntity(new StringEntity(testStepJsonObj.toString()));
+	public static String fn_ValidateKeys(JSONArray JSONProjectList) throws Exception {
+		String ResponseMessage = "Success";
 		
-		try {
-			HttpClient restClient = new DefaultHttpClient();
-			responseConfig = restClient.execute(ConfigReq);
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		int statusCode = getHTTPResponseCode(responseConfig);
+		try
+		{
 
-		if (statusCode >= 200 && statusCode < 300) {
-			entity = responseConfig.getEntity();
-			String string = null;
+			HttpEntity entity = null;
+			String finalURL = validateKeyUri + JSONProjectList.getJSONObject(0).get("id").toString();
+			URI uri = new URI(finalURL);
+			int expirationInSec = 360;
+			ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
+					.build();
+			JwtGenerator jwtGenerator = client.getJwtGenerator();
+			String jwt = jwtGenerator.generateJWT("POST", uri, expirationInSec);
+	
+			HttpResponse responseConfig = null;
+			HttpPost ConfigReq = new HttpPost(uri);
+			ConfigReq.setHeader("Authorization", jwt);
+			ConfigReq.setHeader("zapiAccessKey", accessKey);
+			
 			try {
-				string = EntityUtils.toString(entity);
-				JSONObject testStepObj = new JSONObject(string);
-				testStepObj.getString("id");
-			} catch (ParseException e) {
+				HttpClient restClient = new DefaultHttpClient();
+				responseConfig = restClient.execute(ConfigReq);
+			} catch (ClientProtocolException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
-		} else {
-			try {
-				System.out.println("Failure~" + EntityUtils.toString(responseConfig.getEntity()));
-				RespMessage = "Failure~" + EntityUtils.toString(responseConfig.getEntity());
-				throw new ClientProtocolException("Unexpected response status: " + statusCode);
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+			int statusCode = getHTTPResponseCode(responseConfig);
+	
+			if (statusCode == 400) {
+				entity = responseConfig.getEntity();
+				String string = null;
+				try {
+					string = EntityUtils.toString(entity);
+					JSONObject testStepObj = new JSONObject(string);
+					if(!testStepObj.get("errorCode").equals(123))
+					{
+						ResponseMessage = "Unauthorized API Access Key and Secrect Key";
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	
+			} else {
+				try {
+					System.out.println("Failure~" + EntityUtils.toString(responseConfig.getEntity()));
+					ResponseMessage = "Unauthorized API Access Key and Secrect Key";
+					throw new ClientProtocolException("Unexpected response status: " + statusCode);
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+				}
 			}
+			System.out.println("API Keys validation complete");
+			
 		}
-		System.out.println("General Configuration details retrieved");
-
-		
-		return 0;
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return ResponseMessage;
 	}
 
 

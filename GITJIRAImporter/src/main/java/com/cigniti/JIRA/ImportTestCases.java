@@ -102,10 +102,10 @@ public class ImportTestCases extends JFrame {
 	public static JButton btnClose;
 	public static JTextArea txtAreaConsole;
 	public static JLabel lblSuccessMessage;
+	public static JPasswordField txtAccesskey;
+	public static JPasswordField txtSecretKey;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
-	private JPasswordField txtAccesskey;
-	private JPasswordField txtSecretKey;
 	
 	/**
 	 * Launch the application.

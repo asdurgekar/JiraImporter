@@ -165,14 +165,21 @@ public class ImportTestCaseswithSteps {
 			String strAuthenticationMessage = "";
 			CreateTestWithTestSteps.userName = ImportTestCases.txtUserName.getText();
 			CreateTestWithTestSteps.password = new String(ImportTestCases.txtPassword.getPassword());
+			CreateTestWithTestSteps.accessKey = new String(ImportTestCases.txtAccesskey.getPassword());
+			CreateTestWithTestSteps.secretKey = new String(ImportTestCases.txtSecretKey.getPassword());
 			
 			int AuthResponse = fn_PerformAuthentication();
-			int KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys();
+			String KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);
 			
 			if(AuthResponse != 200)
 			{
 				System.out.println("JSON Response: " + AuthResponse + "Login Failure");
 				strAuthenticationMessage = "Unable to Login. Please enter valid credentials";				
+			}
+			else if(!KeyResponse.equals("Success"))
+			{
+				System.out.println(KeyResponse);
+				strAuthenticationMessage = KeyResponse;				
 			}
 			else
 			{

@@ -84,7 +84,7 @@ public class CreateTestWithTestSteps {
 	public static String jiraBaseURL = "https://rentacenter.atlassian.net";
 	// Replace zephyr baseurl <ZAPI_Cloud_URL> shared with the user for ZAPI
 	// Cloud Installation
-	private static String zephyrBaseUrl = "https://prod-api.zephyr4jiracloud.com/connect";
+	public static String zephyrBaseUrl = "https://prod-api.zephyr4jiracloud.com/connect";
 	// zephyr accessKey , we can get from Addons >> zapi section
 	//public static String accessKey = "N2RjOTAxZWUtYTc2Mi0zMzkzLWEwYmYtZWIxNjM2ZmM3MjAxIGFrYXJzaC5kdXJnZWthciBVU0VSX0RFRkFVTFRfTkFNRQ";
 	public static String accessKey = "";
@@ -181,6 +181,7 @@ public class CreateTestWithTestSteps {
 		String finalURL = createTestStepUri + testId + "?projectId=" + projectId;
 		URI uri = new URI(finalURL);
 		int expirationInSec = 360;
+		
 		JwtGenerator jwtGenerator = client.getJwtGenerator();
 		String jwt = jwtGenerator.generateJWT("POST", uri, expirationInSec);
 

@@ -102,7 +102,7 @@ public class ImportTestCases extends JFrame {
 	public static JButton btnClose;
 	public static JTextArea txtAreaConsole;
 	public static JLabel lblSuccessMessage;
-	public static JPasswordField txtAccesskey;
+	public static JPasswordField txtAccessKey;
 	public static JPasswordField txtSecretKey;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
@@ -216,9 +216,9 @@ public class ImportTestCases extends JFrame {
 		chckbxRememberMe.setBounds(304, 297, 116, 23);
 		panelLogin.add(chckbxRememberMe);
 		
-		txtAccesskey = new JPasswordField();
-		txtAccesskey.setBounds(269, 217, 219, 20);
-		panelLogin.add(txtAccesskey);
+		txtAccessKey = new JPasswordField();
+		txtAccessKey.setBounds(269, 217, 219, 20);
+		panelLogin.add(txtAccessKey);
 		
 		txtSecretKey = new JPasswordField();
 		txtSecretKey.setBounds(269, 268, 219, 20);

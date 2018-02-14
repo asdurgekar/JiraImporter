@@ -54,6 +54,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.cigniti.util.Globalvars;
+import com.thed.zephyr.cloud.rest.ZFJCloudRestClient;
 import com.thed.zephyr.cloud.rest.client.JwtGenerator;
 
 public class ImportTestCaseswithSteps {
@@ -165,7 +166,7 @@ public class ImportTestCaseswithSteps {
 			String strAuthenticationMessage = "";
 			CreateTestWithTestSteps.userName = ImportTestCases.txtUserName.getText();
 			CreateTestWithTestSteps.password = new String(ImportTestCases.txtPassword.getPassword());
-			CreateTestWithTestSteps.accessKey = new String(ImportTestCases.txtAccesskey.getPassword());
+			CreateTestWithTestSteps.accessKey = new String(ImportTestCases.txtAccessKey.getPassword());
 			CreateTestWithTestSteps.secretKey = new String(ImportTestCases.txtSecretKey.getPassword());
 			
 			int AuthResponse = fn_PerformAuthentication();
@@ -187,7 +188,9 @@ public class ImportTestCaseswithSteps {
 				strAuthenticationMessage = "";
 				if(ImportTestCases.chckbxRememberMe.isSelected())
 					fnStorePreferences("UserName",ImportTestCases.txtUserName.getText());
-				
+					fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
+					fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
+				fnUpdateClientToken();
 				fnLaunchLoadSecondPanel();
 				
 			}
@@ -206,6 +209,20 @@ public class ImportTestCaseswithSteps {
 
 
 	
+
+	private void fnUpdateClientToken() {
+
+		try
+		{
+			CreateTestWithTestSteps.client = ZFJCloudRestClient.restBuilder(CreateTestWithTestSteps.zephyrBaseUrl, 
+					CreateTestWithTestSteps.accessKey, CreateTestWithTestSteps.secretKey, CreateTestWithTestSteps.userName).build();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 
 	private void fnStorePreferences(String propName, String propValue) {
 		
@@ -247,7 +264,10 @@ public class ImportTestCaseswithSteps {
             if(!lines.isEmpty())
             {
             	for(String textline : lines)
+            	{
             		out.write(textline);
+            		out.newLine();
+            	}
             }
                  
             out.flush();
@@ -492,11 +512,18 @@ public class ImportTestCaseswithSteps {
 						{
 						case "UserName":
 							ImportTestCases.txtUserName.setText(strLine.split("::")[1]);
-							ImportTestCases.txtPassword.requestFocusInWindow();
+							break;
+						case "AccessKey":
+							ImportTestCases.txtAccessKey.setText(strLine.split("::")[1]);
+							break;
+						case "SecretKey":
+							ImportTestCases.txtSecretKey.setText(strLine.split("::")[1]);
 							break;
 						default:
 							break;
 						}
+						ImportTestCases.txtPassword.requestFocusInWindow();
+						
 					}
 				}
 				fstream.close();

@@ -416,9 +416,15 @@ public class ImportTestCaseswithSteps {
 			JiralistModel = new DefaultListModel();
 			for(String listItem : JiraExcelMap.keySet())
 				JiralistModel.addElement(listItem);
+			
+			//Sort list model
+			JiralistModel = fnSortListModel(JiralistModel);
+			
 			//ImportTestCases.lstJiraFields.setListData(JiraExcelMap.keySet().toArray());
 			ImportTestCases.lstJiraFields.setListData(JiralistModel.toArray());
+			
 			System.out.println("Jira field values are loaded");
+			
 			
 			
 			//DefaultListModel jDataModel = (DefaultListModel) ImportTestCases.lstJiraFields.getModel();
@@ -448,6 +454,9 @@ public class ImportTestCaseswithSteps {
 					if(cellData.trim() != "")
 						ExcellistModel.addElement(cellData);
 			}
+			
+			//Sort list model
+			ExcellistModel = fnSortListModel(ExcellistModel);
 			
 			ImportTestCases.lstExcelColumns.setListData(ExcellistModel.toArray());
 			System.out.println("Excel Header values are loaded");
@@ -689,9 +698,14 @@ public class ImportTestCaseswithSteps {
 				//update Global Hashmap
 				JiraExcelMap.put(ImportTestCases.lstJiraFields.getSelectedValue().toString(), ImportTestCases.lstExcelColumns.getSelectedValue().toString());
 				
-				//clear values from JLists
+				//Sort list model
+				JiralistModel = fnSortListModel(JiralistModel);
+				ExcellistModel = fnSortListModel(ExcellistModel);
+				
+				//update values to JLists
 				ImportTestCases.lstJiraFields.setListData(JiralistModel.toArray());
 				ImportTestCases.lstExcelColumns.setListData(ExcellistModel.toArray());
+				
 				
 				
 				
@@ -715,6 +729,11 @@ public class ImportTestCaseswithSteps {
 				//add values to JLists
 				JiralistModel.addElement(ImportTestCases.tblMapping.getValueAt(ImportTestCases.tblMapping.getSelectedRow(), 0).toString());
 				ExcellistModel.addElement(ImportTestCases.tblMapping.getValueAt(ImportTestCases.tblMapping.getSelectedRow(), 1));
+				
+				//Sort list model
+				JiralistModel = fnSortListModel(JiralistModel);
+				ExcellistModel = fnSortListModel(ExcellistModel);
+				
 				//clear values from JTable
 				ImportTestCases.lstJiraFields.setListData(JiralistModel.toArray());
 				ImportTestCases.lstExcelColumns.setListData(ExcellistModel.toArray());
@@ -732,17 +751,19 @@ public class ImportTestCaseswithSteps {
 	}
 
 
-	@SuppressWarnings("unchecked")
-	public void fnSortListModel(ContainerEvent arg0) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public DefaultListModel fnSortListModel(DefaultListModel model) {
 
-//		Object[] ArrList = JiralistModel.toArray();
-//		Arrays.sort(ArrList);
-//		JiralistModel.clear();
-//		for(Object item: ArrList)
-//		{
-//			JiralistModel.addElement(item);		
-//		}
-//		ImportTestCases.lstJiraFields.setListData(JiralistModel.toArray());
+		List<String> list = new ArrayList<>();
+	    for (int i = 0; i < model.size(); i++) {
+	        list.add((String)model.get(i));
+	    }
+	    Collections.sort(list);
+	    model.removeAllElements();
+	    for (String s : list) {
+	        model.addElement(s);
+	    }
+	    return model;
 	}
 
 

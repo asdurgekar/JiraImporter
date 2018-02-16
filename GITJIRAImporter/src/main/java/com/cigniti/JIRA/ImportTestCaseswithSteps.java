@@ -1039,7 +1039,7 @@ public class ImportTestCaseswithSteps {
 
 		
 		try {
-			//System.setProperty("javax.net.ssl.trustStore", Globalvars.strCertPath);
+			System.setProperty("javax.net.ssl.trustStore", Globalvars.strCertPath);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

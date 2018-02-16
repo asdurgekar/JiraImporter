@@ -130,6 +130,7 @@ public class ImportTestCases extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
+				ITCWS.fnSetCertPath();
 				ITCWS.fnLoadPreferences();
 			}
 			

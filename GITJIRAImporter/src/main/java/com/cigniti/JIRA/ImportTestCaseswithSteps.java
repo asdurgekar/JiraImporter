@@ -1034,4 +1034,11 @@ public class ImportTestCaseswithSteps {
 		}
 	}
 
+
+	public void fnSetCertPath() {
+
+		//System.setProperty("javax.net.ssl.trustStore", Globalvars.strCertPath);
+		
+	}
+
 }

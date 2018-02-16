@@ -45,9 +45,9 @@ public class Globalvars {
 	public static int TotalTestCaseUploaded = 0;
 	
 	public static String strPreferencesPath = System.getenv("APPDATA") + "\\JiraImporter\\Preferences.config";
+	public static String strCertPath = System.getProperty("user.dir").replace("\\", "/")+ "/resources/certs/cacerts";
 	
-
-	
+		
 	public static void initCustomVars(){
 		//fileExt="."+EnvironmentVariables.getUserVariable("TestCaseExtension");
 		//currentEnvironment=EnvironmentVariables.getUserVariable("ExecutionEnvironment");

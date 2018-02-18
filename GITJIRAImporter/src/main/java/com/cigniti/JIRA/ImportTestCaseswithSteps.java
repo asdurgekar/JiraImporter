@@ -57,7 +57,7 @@ import com.cigniti.util.Globalvars;
 import com.thed.zephyr.cloud.rest.ZFJCloudRestClient;
 import com.thed.zephyr.cloud.rest.client.JwtGenerator;
 
-public class ImportTestCaseswithSteps {
+public class ImportTestCaseswithSteps{
 	
 	
 	public static JSONArray JSONProjectList;
@@ -75,6 +75,9 @@ public class ImportTestCaseswithSteps {
 	public static String testId;
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
+	public static String appName = "Jira Test Case Importer";
+	public static String versionNumber = "0.1";
+	public static String pageName;
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
@@ -159,8 +162,9 @@ public class ImportTestCaseswithSteps {
 	}
 	
 	
-	public void fn_LoginToJira() {
+	public boolean fn_LoginToJira() {
 
+		boolean blnLoginSuccess = false;
 		try
 		{
 			String strAuthenticationMessage = "";
@@ -192,18 +196,18 @@ public class ImportTestCaseswithSteps {
 					fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
 				fnUpdateClientToken();
 				fnLaunchLoadSecondPanel();
+				blnLoginSuccess = true;
 				
 			}
 			ImportTestCases.lblAuthmessage.setText(strAuthenticationMessage);
+		
 			
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
-		
-	
-	
+		return blnLoginSuccess;
 		
 	}
 
@@ -1035,10 +1039,11 @@ public class ImportTestCaseswithSteps {
 	}
 
 
-	public void fnSetCertPath() {
+	public void fnInitialization() {
 
 		
 		try {
+			//set Cert path
 			System.setProperty("javax.net.ssl.trustStore", Globalvars.strCertPath);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

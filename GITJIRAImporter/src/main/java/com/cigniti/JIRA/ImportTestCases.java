@@ -116,6 +116,7 @@ public class ImportTestCases extends JFrame {
 				try {
 					ImportTestCases frame = new ImportTestCases();
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -127,10 +128,11 @@ public class ImportTestCases extends JFrame {
 	 * Create the frame.
 	 */
 	public ImportTestCases() {
+		setResizable(false);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
-				ITCWS.fnSetCertPath();
+				ITCWS.fnInitialization();
 				ITCWS.fnLoadPreferences();
 			}
 			
@@ -162,39 +164,50 @@ public class ImportTestCases extends JFrame {
 		contentPane.setLayout(new CardLayout(0, 0));
 		
 		panelLogin = new JPanel();
+		panelLogin.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				ITCWS.pageName = "Login";
+				setTitle(ITCWS.appName + " v" + ITCWS.versionNumber + " - " + ITCWS.pageName);
+			}
+		});
 		contentPane.add(panelLogin, "name_1090758453858820");
-		panelLogin.setLayout(null);
 		
 		JButton btnLogin = new JButton("Login");
+		btnLogin.setBounds(289, 337, 157, 23);
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				try {
-					getRootPane().setDefaultButton(null);			
-					ITCWS.fn_LoginToJira();
+					if(ITCWS.fn_LoginToJira())
+					{
+						getRootPane().setDefaultButton(null);
+					}
+					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		});
-		btnLogin.setBounds(289, 337, 157, 23);
+		panelLogin.setLayout(null);
 		panelLogin.add(btnLogin);
 		getRootPane().setDefaultButton(btnLogin);
 		
 		JLabel lblUserName = new JLabel("User Name");
-		lblUserName.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblUserName.setBounds(173, 124, 67, 14);
+		lblUserName.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblUserName);
 		
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblPassword.setBounds(173, 173, 67, 14);
+		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblPassword);
 		
-		JLabel lblWelcomeMessage = new JLabel("Welcome Message");
-		lblWelcomeMessage.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblWelcomeMessage = new JLabel("");
 		lblWelcomeMessage.setBounds(269, 64, 151, 14);
+		lblWelcomeMessage.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblWelcomeMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		panelLogin.add(lblWelcomeMessage);
 		
 		txtPassword = new JPasswordField();
@@ -207,10 +220,10 @@ public class ImportTestCases extends JFrame {
 		txtUserName.setColumns(10);
 		
 		lblAuthmessage = new JLabel("");
+		lblAuthmessage.setBounds(242, 374, 269, 14);
 		lblAuthmessage.setForeground(Color.RED);
 		lblAuthmessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAuthmessage.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblAuthmessage.setBounds(242, 374, 269, 14);
 		panelLogin.add(lblAuthmessage);
 		
 		chckbxRememberMe = new JCheckBox("Remember Me");
@@ -226,16 +239,29 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(txtSecretKey);
 		
 		JLabel lblAccessKey = new JLabel("Access Key");
-		lblAccessKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblAccessKey.setBounds(173, 219, 67, 14);
+		lblAccessKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblAccessKey);
 		
 		JLabel lblSecretKey = new JLabel("Secret Key");
-		lblSecretKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblSecretKey.setBounds(173, 272, 67, 14);
+		lblSecretKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblSecretKey);
 		
+		JLabel lblBackgroundLabel = new JLabel("");
+		
+		lblBackgroundLabel.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/JiraBackground3.png")));
+		lblBackgroundLabel.setBounds(0, 0, 728, 427);
+		panelLogin.add(lblBackgroundLabel);
+		
 		panelSecond = new JPanel();
+		panelSecond.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				ITCWS.pageName = "Project & Sheet";
+				setTitle(ITCWS.appName + " v" + ITCWS.versionNumber + " - " + ITCWS.pageName);
+			}
+		});
 		contentPane.add(panelSecond, "name_1090766844706967");
 		panelSecond.setLayout(null);
 		
@@ -371,6 +397,13 @@ public class ImportTestCases extends JFrame {
 		
 		
 		panelMapping = new JPanel();
+		panelMapping.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				ITCWS.pageName = "Mapping";
+				setTitle(ITCWS.appName + " v" + ITCWS.versionNumber + " - " + ITCWS.pageName);
+			}
+		});
 		contentPane.add(panelMapping, "name_1090770973820144");
 		panelMapping.setLayout(null);
 		
@@ -530,6 +563,13 @@ public class ImportTestCases extends JFrame {
 		panelMapping.add(lblCheckmark);
 		
 		panelConfirm = new JPanel();
+		panelConfirm.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				ITCWS.pageName = "Confirmation";
+				setTitle(ITCWS.appName + " v" + ITCWS.versionNumber + " - " + ITCWS.pageName);
+			}
+		});
 		contentPane.add(panelConfirm, "name_1090774873869945");
 		panelConfirm.setLayout(null);
 		
@@ -631,6 +671,13 @@ public class ImportTestCases extends JFrame {
 		panelConfirm.add(lblTestCasesCount);
 		
 		panelFinal = new JPanel();
+		panelFinal.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				ITCWS.pageName = "Run";
+				setTitle(ITCWS.appName + " v" + ITCWS.versionNumber + " - " + ITCWS.pageName);
+			}
+		});
 		contentPane.add(panelFinal, "name_1090779593891243");
 		panelFinal.setLayout(null);
 		

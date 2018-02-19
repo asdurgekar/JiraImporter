@@ -248,12 +248,6 @@ public class ImportTestCases extends JFrame {
 		lblSecretKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblSecretKey);
 		
-		JLabel lblBackgroundLabel = new JLabel("");
-		
-		lblBackgroundLabel.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/JiraBackground3.png")));
-		lblBackgroundLabel.setBounds(0, 0, 728, 427);
-		panelLogin.add(lblBackgroundLabel);
-		
 		panelSecond = new JPanel();
 		panelSecond.addComponentListener(new ComponentAdapter() {
 			@Override

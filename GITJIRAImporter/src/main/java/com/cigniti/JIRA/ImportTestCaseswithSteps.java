@@ -76,7 +76,7 @@ public class ImportTestCaseswithSteps{
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public static String appName = "Jira Test Case Importer";
-	public static String versionNumber = "0.1";
+	public static String versionNumber = "1.0";
 	public static String pageName;
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	

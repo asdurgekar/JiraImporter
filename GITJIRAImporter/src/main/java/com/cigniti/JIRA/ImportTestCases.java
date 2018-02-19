@@ -215,7 +215,7 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(txtPassword);
 		
 		txtUserName = new JTextField();
-		txtUserName.setBounds(268, 121, 217, 20);
+		txtUserName.setBounds(271, 120, 217, 20);
 		panelLogin.add(txtUserName);
 		txtUserName.setColumns(10);
 		
@@ -226,8 +226,8 @@ public class ImportTestCases extends JFrame {
 		lblAuthmessage.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		panelLogin.add(lblAuthmessage);
 		
-		chckbxRememberMe = new JCheckBox("Remember Me");
-		chckbxRememberMe.setBounds(304, 297, 116, 23);
+		chckbxRememberMe = new JCheckBox("");
+		chckbxRememberMe.setBounds(304, 297, 25, 23);
 		panelLogin.add(chckbxRememberMe);
 		
 		txtAccessKey = new JPasswordField();
@@ -247,6 +247,17 @@ public class ImportTestCases extends JFrame {
 		lblSecretKey.setBounds(173, 272, 67, 14);
 		lblSecretKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblSecretKey);
+		
+		JLabel lblRememberMe = new JLabel("Remember Me");
+		lblRememberMe.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblRememberMe.setBounds(337, 297, 109, 23);
+		panelLogin.add(lblRememberMe);
+		
+		JLabel lblBackground = new JLabel("");
+		lblBackground.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/JiraBackground.jpg")));
+		lblBackground.setBounds(0, 0, 728, 427);
+		panelLogin.add(lblBackground);
+		
 		
 		panelSecond = new JPanel();
 		panelSecond.addComponentListener(new ComponentAdapter() {
@@ -381,13 +392,18 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		scrollPane_1.setViewportView(lstWorkSheets);
-		lstWorkSheets.setBorder(UIManager.getBorder("TextField.border"));
+		lstWorkSheets.setBorder(UIManager.getBorder("Button.border"));
 		
 		
 		JLabel lblWorksheets = new JLabel("Worksheets");
 		lblWorksheets.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblWorksheets.setBounds(136, 235, 82, 16);
 		panelSecond.add(lblWorksheets);
+		
+		JLabel lblBackgroundSec = new JLabel("");
+		lblBackgroundSec.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/JiraBackground.jpg")));
+		lblBackgroundSec.setBounds(0, 0, 728, 427);
+		panelSecond.add(lblBackgroundSec);
 		
 		
 		panelMapping = new JPanel();
@@ -407,7 +423,7 @@ public class ImportTestCases extends JFrame {
 		
 		lstJiraFields = new JList();
 		scrollPane_2.setViewportView(lstJiraFields);
-		lstJiraFields.setBorder(new LineBorder(Color.GRAY));
+		lstJiraFields.setBorder(null);
 		lstJiraFields.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		
@@ -417,7 +433,7 @@ public class ImportTestCases extends JFrame {
 		
 		lstExcelColumns = new JList();
 		scrollPane_3.setViewportView(lstExcelColumns);
-		lstExcelColumns.setBorder(new LineBorder(Color.GRAY));
+		lstExcelColumns.setBorder(null);
 		lstExcelColumns.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -445,17 +461,17 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblJiraFields = new JLabel("Jira Fields");
 		lblJiraFields.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblJiraFields.setBounds(90, 60, 86, 14);
+		lblJiraFields.setBounds(96, 73, 86, 14);
 		panelMapping.add(lblJiraFields);
 		
 		JLabel lblExcelColumn = new JLabel("Excel Column");
 		lblExcelColumn.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblExcelColumn.setBounds(249, 60, 86, 14);
+		lblExcelColumn.setBounds(252, 73, 86, 14);
 		panelMapping.add(lblExcelColumn);
 		
 		JLabel lblMappingList = new JLabel("Mapping List");
 		lblMappingList.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblMappingList.setBounds(524, 60, 86, 14);
+		lblMappingList.setBounds(529, 68, 86, 14);
 		panelMapping.add(lblMappingList);
 		
 		JButton btnAdd = new JButton(">>");
@@ -555,6 +571,11 @@ public class ImportTestCases extends JFrame {
 		lblCheckmark.setBounds(411, 253, 31, 34);
 		lblCheckmark.setVisible(false);
 		panelMapping.add(lblCheckmark);
+		
+		JLabel lblBackgroundMap = new JLabel("");
+		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/JiraBackground.jpg")));
+		lblBackgroundMap.setBounds(0, 0, 728, 427);
+		panelMapping.add(lblBackgroundMap);
 		
 		panelConfirm = new JPanel();
 		panelConfirm.addComponentListener(new ComponentAdapter() {
@@ -664,6 +685,11 @@ public class ImportTestCases extends JFrame {
 		lblTestCasesCount.setBounds(306, 163, 56, 16);
 		panelConfirm.add(lblTestCasesCount);
 		
+		JLabel lblBackgroundCon = new JLabel("");
+		lblBackgroundCon.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/JiraBackground.jpg")));
+		lblBackgroundCon.setBounds(0, 0, 728, 427);
+		panelConfirm.add(lblBackgroundCon);
+		
 		panelFinal = new JPanel();
 		panelFinal.addComponentListener(new ComponentAdapter() {
 			@Override
@@ -677,22 +703,22 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblTotalNumberOf = new JLabel("Total Number of Test Cases to be Uploaded");
 		lblTotalNumberOf.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotalNumberOf.setBounds(27, 23, 295, 14);
+		lblTotalNumberOf.setBounds(136, 50, 295, 14);
 		panelFinal.add(lblTotalNumberOf);
 		
 		JLabel lblTotalNumberOf_1 = new JLabel("Number of Test Cases Uploaded");
 		lblTotalNumberOf_1.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotalNumberOf_1.setBounds(27, 50, 253, 14);
+		lblTotalNumberOf_1.setBounds(136, 80, 253, 14);
 		panelFinal.add(lblTotalNumberOf_1);
 		
 		lblTotaltestcasesvalue = new JLabel("0");
 		lblTotaltestcasesvalue.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotaltestcasesvalue.setBounds(353, 23, 61, 14);
+		lblTotaltestcasesvalue.setBounds(502, 50, 61, 14);
 		panelFinal.add(lblTotaltestcasesvalue);
 		
 		lblTotaltestcasesuploadedvalue = new JLabel("0");
 		lblTotaltestcasesuploadedvalue.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotaltestcasesuploadedvalue.setBounds(353, 50, 97, 14);
+		lblTotaltestcasesuploadedvalue.setBounds(502, 80, 97, 14);
 		panelFinal.add(lblTotaltestcasesuploadedvalue);
 		
 		lblSuccessMessage = new JLabel("");
@@ -705,7 +731,7 @@ public class ImportTestCases extends JFrame {
 		
 		prgbarImport = new JProgressBar();
 		prgbarImport.setForeground(new Color(0, 128, 0));
-		prgbarImport.setBounds(138, 277, 411, 31);
+		prgbarImport.setBounds(136, 295, 411, 31);
 		panelFinal.add(prgbarImport);
 		
 		btnCancelImport = new JButton("Cancel Import");
@@ -748,11 +774,17 @@ public class ImportTestCases extends JFrame {
 		panelFinal.add(btnClose);
 		
 		JScrollPane scrollPane_5 = new JScrollPane();
-		scrollPane_5.setBounds(138, 89, 409, 175);
+		scrollPane_5.setBounds(138, 107, 409, 175);
 		panelFinal.add(scrollPane_5);
 		
+		JLabel lblBackgroundRun = new JLabel("");
+		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/JiraBackground.jpg")));
+		lblBackgroundRun.setBounds(0, 0, 728, 427);
+		panelFinal.add(lblBackgroundRun);
+		
 		txtAreaConsole = new JTextArea();
-		scrollPane_5.setViewportView(txtAreaConsole);
+		txtAreaConsole.setBounds(138, 91, 407, 173);
+		panelFinal.add(txtAreaConsole);
 		txtAreaConsole.setEditable(false);
 		txtAreaConsole.setBackground(SystemColor.controlHighlight);
 		

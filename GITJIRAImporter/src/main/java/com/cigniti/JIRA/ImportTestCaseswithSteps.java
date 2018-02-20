@@ -1052,4 +1052,29 @@ public class ImportTestCaseswithSteps{
 		
 	}
 
+
+	public void fnStoreExcelandMapping() {
+		
+		
+		
+		
+		//Store Excel path & sheet name in preferences
+		fnStorePreferences("ExcelPath",Globalvars.ExcelSheetPath);
+		fnStorePreferences("ExcelSheet",Globalvars.ExcelWorkSheetName);
+		
+		DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+		int intTableRows = model.getRowCount();
+		
+		if(intTableRows > 0)
+		{
+			for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+			{
+				fnStorePreferences(model.getValueAt(intRowCounter, 0).toString(),model.getValueAt(intRowCounter, 1).toString());
+				
+			}
+		}
+		
+		
+	}
+
 }

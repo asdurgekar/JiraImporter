@@ -726,7 +726,7 @@ public class ImportTestCases extends JFrame {
 		lblSuccessMessage.setVerticalAlignment(SwingConstants.TOP);
 		lblSuccessMessage.setForeground(Color.BLACK);
 		lblSuccessMessage.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblSuccessMessage.setBounds(148, 310, 389, 16);
+		lblSuccessMessage.setBounds(146, 352, 389, 16);
 		panelFinal.add(lblSuccessMessage);
 		
 		prgbarImport = new JProgressBar();
@@ -750,7 +750,7 @@ public class ImportTestCases extends JFrame {
 		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			}
 		});
-		btnCancelImport.setBounds(269, 356, 145, 25);
+		btnCancelImport.setBounds(269, 379, 145, 25);
 		panelFinal.add(btnCancelImport);
 		
 		btnRunBack = new JButton("Back");
@@ -760,7 +760,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnLaunchConfirmationPanel();
 			}
 		});
-		btnRunBack.setBounds(124, 356, 97, 25);
+		btnRunBack.setBounds(125, 379, 97, 25);
 		panelFinal.add(btnRunBack);
 		
 		btnClose = new JButton("Close");
@@ -770,7 +770,7 @@ public class ImportTestCases extends JFrame {
 				dispose();
 			}
 		});
-		btnClose.setBounds(470, 356, 97, 25);
+		btnClose.setBounds(471, 379, 97, 25);
 		panelFinal.add(btnClose);
 		
 		JScrollPane scrollPane_5 = new JScrollPane();

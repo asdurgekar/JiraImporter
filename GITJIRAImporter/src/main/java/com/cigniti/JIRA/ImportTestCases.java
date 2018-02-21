@@ -731,7 +731,7 @@ public class ImportTestCases extends JFrame {
 		
 		prgbarImport = new JProgressBar();
 		prgbarImport.setForeground(new Color(0, 128, 0));
-		prgbarImport.setBounds(136, 314, 411, 31);
+		prgbarImport.setBounds(136, 314, 405, 31);
 		panelFinal.add(prgbarImport);
 		
 		btnCancelImport = new JButton("Cancel Import");
@@ -770,23 +770,22 @@ public class ImportTestCases extends JFrame {
 				dispose();
 			}
 		});
-		btnClose.setBounds(471, 379, 97, 25);
+		btnClose.setBounds(459, 379, 97, 25);
 		panelFinal.add(btnClose);
 		
 		JScrollPane scrollPane_5 = new JScrollPane();
-		scrollPane_5.setBounds(136, 124, 409, 175);
+		scrollPane_5.setBounds(136, 124, 407, 173);
 		panelFinal.add(scrollPane_5);
+		
+		txtAreaConsole = new JTextArea();
+		scrollPane_5.setViewportView(txtAreaConsole);
+		txtAreaConsole.setEditable(false);
+		txtAreaConsole.setBackground(SystemColor.control);
 		
 		JLabel lblBackgroundRun = new JLabel("");
 		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/JiraBackground.jpg")));
 		lblBackgroundRun.setBounds(0, 0, 728, 434);
 		panelFinal.add(lblBackgroundRun);
-		
-		txtAreaConsole = new JTextArea();
-		txtAreaConsole.setBounds(136, 124, 407, 173);
-		panelFinal.add(txtAreaConsole);
-		txtAreaConsole.setEditable(false);
-		txtAreaConsole.setBackground(SystemColor.controlHighlight);
 		
 		
 	}

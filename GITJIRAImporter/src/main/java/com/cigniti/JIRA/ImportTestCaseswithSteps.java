@@ -361,8 +361,18 @@ public class ImportTestCaseswithSteps{
 			
 			if(!Globalvars.ExcelSheetPath.equals(OldExcelPath) || !Globalvars.ExcelWorkSheetName.equals(OldSheetName))
 			{
-				fnLoadJiraFields();
-				fnLoadExcelColumns();
+				
+				//check if Mapping is in preferences
+				if(fnLoadPreferencesMapping(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName))
+				{
+					fnLoadFilteredExcelColumns();
+				}
+				//if not preferences does not contain mapping
+				else
+				{	
+					fnLoadJiraFields();
+					fnLoadExcelColumns();
+				}
 				
 				//clear validation message and checkmark
 				ImportTestCases.lblValidationmessage.setText("");
@@ -399,6 +409,15 @@ public class ImportTestCaseswithSteps{
 			
 	}
 
+
+
+	private boolean fnLoadPreferencesMapping(String excelSheetPath, String excelWorkSheetName) {
+
+
+		
+		//JiraExcelMap
+		return false;
+	}
 
 
 	@SuppressWarnings({ "unused", "unchecked","rawtypes" })
@@ -454,6 +473,58 @@ public class ImportTestCaseswithSteps{
 			for(int intColCounter = 0;intColCounter < intColumnCount;intColCounter++)
 			{
 				cellData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, 0, intColCounter);
+				if(cellData != null)
+					if(cellData.trim() != "")
+						ExcellistModel.addElement(cellData);
+			}
+			
+			//Sort list model
+			ExcellistModel = fnSortListModel(ExcellistModel);
+			
+			ImportTestCases.lstExcelColumns.setListData(ExcellistModel.toArray());
+			System.out.println("Excel Header values are loaded");
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void fnLoadFilteredExcelColumns() {
+
+		try
+		{
+			Globalvars.ExcelWorkSheetName = ImportTestCases.lstWorkSheets.getSelectedValue().toString();
+			
+			ExcellistModel = new DefaultListModel();
+			String cellData = "";
+			int intColumnCount = ExcelFunctions.fn_GetColumnCount(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, 0);
+			for(int intColCounter = 0;intColCounter < intColumnCount;intColCounter++)
+			{
+				cellData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, 0, intColCounter);
+				//check if these are preloaded to Mapping
+				DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+				int intTableRows = model.getRowCount();
+				
+				if(intTableRows > 0)
+				{
+					for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+					{
+						fnStorePreferences(model.getValueAt(intRowCounter, 0).toString(),model.getValueAt(intRowCounter, 1).toString());
+						
+					}
+				}
+				
+				
+				
+				
+				
+				if(true)
+				{
+					continue;
+				}
 				if(cellData != null)
 					if(cellData.trim() != "")
 						ExcellistModel.addElement(cellData);
@@ -1075,6 +1146,47 @@ public class ImportTestCaseswithSteps{
 		}
 		
 		
+	}
+	
+	
+public void fnLoadMappingPreferences() {
+		
+		try
+		{
+			//Check if Preferences location and file exist
+			File jfile = new File(Globalvars.strPreferencesPath);
+			if(jfile.exists()) 
+			{ 
+				//Check if user name property already exists, update new user name
+				// Open the file
+				FileInputStream fstream = new FileInputStream(Globalvars.strPreferencesPath);
+				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+				String strLine;
+				while ((strLine = br.readLine()) != null)   
+				{ 
+					if(strLine.contains("::"))
+					{
+						//check if it is the same excel
+						if(strLine.split("::")[0].equals("ExcelSheetPath"))
+						{
+							if(strLine.split("::")[1].trim().equals(Globalvars.ExcelSheetPath))
+							{
+								
+							}
+						}
+						
+						
+					}
+				}
+				fstream.close();
+	            br.close();
+			}
+				
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 }

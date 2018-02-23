@@ -267,10 +267,13 @@ public class ImportTestCaseswithSteps{
 				Boolean propFlag = false;
 				while ((strLine = br.readLine()) != null)   
 				{
-				  if(strLine.contains(propName)) 
+				  if(strLine.contains("::")) 
 				  {
-					  strLine = propName + "::" + propValue;
-					  propFlag = true;
+					  if(strLine.split("::")[0].contains(propName))
+					  {
+						  strLine = propName + "::" + propValue;
+						  propFlag = true;
+					  }
 				  }
 				  lines.add(strLine);	
 				}
@@ -390,24 +393,25 @@ public class ImportTestCaseswithSteps{
 				{	
 					fnLoadJiraFields();
 					fnLoadExcelColumns();
+					
+					//clear mapping table
+					//remove from JTable
+					DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+					int intTableRows = model.getRowCount();
+					
+					if(intTableRows > 0)
+					{
+						for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+						{
+							model.removeRow(0);
+						}
+					}
 				}
 				
 				//clear validation message and checkmark
 				ImportTestCases.lblValidationmessage.setText("");
 				ImportTestCases.lblCheckmark.setVisible(false);
 				
-				//clear mapping table
-				//remove from JTable
-				DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
-				int intTableRows = model.getRowCount();
-				
-				if(intTableRows > 0)
-				{
-					for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
-					{
-						model.removeRow(0);
-					}
-				}
 				//update old excel and sheet names
 				OldExcelPath = Globalvars.ExcelSheetPath;
 				OldSheetName = Globalvars.ExcelWorkSheetName;
@@ -439,6 +443,7 @@ public class ImportTestCaseswithSteps{
 			JiraExcelMap.put("Step", "");
 			JiraExcelMap.put("Data", "");
 			JiraExcelMap.put("Result", "");
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -510,7 +515,7 @@ public class ImportTestCaseswithSteps{
 						DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
 						for(String JiraField : JiraExcelMap.keySet())
 						{
-							model.addRow(new Object[]{JiraField, Preferences.get(JiraField)});
+							model.addRow(new Object[]{JiraField, Preferences.get(JiraField).toString()});
 						}
 						blnPrefMapLoad = true;
 					}
@@ -606,7 +611,7 @@ public class ImportTestCaseswithSteps{
 				}
 			}
 			//load filtered excel columns
-			ExcellistModel = new DefaultListModel();
+			//ExcellistModel = new DefaultListModel();
 			String cellData = "";
 			int intColumnCount = ExcelFunctions.fn_GetColumnCount(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, 0);
 			for(int intColCounter = 0;intColCounter < intColumnCount;intColCounter++)
@@ -1218,23 +1223,25 @@ public class ImportTestCaseswithSteps{
 
 	public void fnStoreExcelandMapping() {
 		
-		
-		
-		
-		//Store Excel path & sheet name in preferences
-		fnStorePreferences("ExcelPath",Globalvars.ExcelSheetPath);
-		fnStorePreferences("ExcelSheet",Globalvars.ExcelWorkSheetName);
-		
-		DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
-		int intTableRows = model.getRowCount();
-		
-		if(intTableRows > 0)
-		{
-			for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+		try {
+			
+			//Store Excel path & sheet name in preferences
+			fnStorePreferences("ExcelPath",Globalvars.ExcelSheetPath);
+			fnStorePreferences("ExcelSheet",Globalvars.ExcelWorkSheetName);
+			
+			DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+			int intTableRows = model.getRowCount();
+			
+			if(intTableRows > 0)
 			{
-				fnStorePreferences(model.getValueAt(intRowCounter, 0).toString(),model.getValueAt(intRowCounter, 1).toString());
-				
+				for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+				{
+					fnStorePreferences(model.getValueAt(intRowCounter, 0).toString(),model.getValueAt(intRowCounter, 1).toString());
+				}
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		

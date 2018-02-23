@@ -522,7 +522,7 @@ public class ImportTestCases extends JFrame {
 		JButton btnMapNext = new JButton("Next");
 		btnMapNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//ITCWS.fnStoreExcelandMapping();
+				ITCWS.fnStoreExcelandMapping();
 				ITCWS.fnLaunchConfirmationPanel();
 			}
 		});

@@ -190,6 +190,7 @@ public class ImportTestCaseswithSteps{
 			{
 				System.out.println("JSON Response: " + AuthResponse + "Login Success");
 				strAuthenticationMessage = "";
+				fnCreateConfigFile();
 				if(ImportTestCases.chckbxRememberMe.isSelected())
 					fnStorePreferences("UserName",ImportTestCases.txtUserName.getText());
 					fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
@@ -214,6 +215,27 @@ public class ImportTestCaseswithSteps{
 
 	
 
+	private void fnCreateConfigFile() {
+
+		try
+		{
+			//Check if Preferences location and file exist
+			File jfile = new File(Globalvars.strPreferencesPath);
+			if(!jfile.exists()) 
+			{ 
+				//If not, create the folder and file
+				jfile.getParentFile().mkdirs();
+				jfile.createNewFile();
+				
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+
 	private void fnUpdateClientToken() {
 
 		try
@@ -235,50 +257,46 @@ public class ImportTestCaseswithSteps{
 			List<String> lines = new ArrayList<String>();
 			//Check if Preferences location and file exist
 			File jfile = new File(Globalvars.strPreferencesPath);
-			if(!jfile.exists()) 
+			if(jfile.exists()) 
 			{ 
-				//If not, create the folder and file
-				jfile.getParentFile().mkdirs();
-				jfile.createNewFile();
-				
-			}
-			
-			//Check if user name property already exists, update new user name
-			// Open the file
-			FileInputStream fstream = new FileInputStream(Globalvars.strPreferencesPath);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-			String strLine;
-			Boolean propFlag = false;
-			while ((strLine = br.readLine()) != null)   
-			{
-			  if(strLine.contains(propName)) 
-			  {
-				  strLine = propName + "::" + propValue;
-				  propFlag = true;
-			  }
-			  lines.add(strLine);	
-			}
-			if(!propFlag)
-				lines.add(propName + "::" + propValue);
-			fstream.close();
-            br.close();
+				//Check if user name property already exists, update new user name
+				// Open the file
+				FileInputStream fstream = new FileInputStream(Globalvars.strPreferencesPath);
+				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+				String strLine;
+				Boolean propFlag = false;
+				while ((strLine = br.readLine()) != null)   
+				{
+				  if(strLine.contains(propName)) 
+				  {
+					  strLine = propName + "::" + propValue;
+					  propFlag = true;
+				  }
+				  lines.add(strLine);	
+				}
+				if(!propFlag)
+					lines.add(propName + "::" + propValue);
+				fstream.close();
+	            br.close();
 
-            FileWriter fwrite = new FileWriter(Globalvars.strPreferencesPath);
-            BufferedWriter out = new BufferedWriter(fwrite);
-            if(!lines.isEmpty())
-            {
-            	for(String textline : lines)
-            	{
-            		out.write(textline);
-            		out.newLine();
-            	}
-            }
-                 
-            out.flush();
-            out.close();
+	            FileWriter fwrite = new FileWriter(Globalvars.strPreferencesPath);
+	            BufferedWriter out = new BufferedWriter(fwrite);
+	            if(!lines.isEmpty())
+	            {
+	            	for(String textline : lines)
+	            	{
+	            		out.write(textline);
+	            		out.newLine();
+	            	}
+	            }
+	                 
+	            out.flush();
+	            out.close();
+				
+	            System.out.println("Preferences are stored in the system");
 			
-            System.out.println("Preferences are stored in the system");
-			
+			}
+						
 		}
 		catch(Exception e)
 		{
@@ -361,9 +379,9 @@ public class ImportTestCaseswithSteps{
 			
 			if(!Globalvars.ExcelSheetPath.equals(OldExcelPath) || !Globalvars.ExcelWorkSheetName.equals(OldSheetName))
 			{
-				
+				fnCreateJiraFields();
 				//check if Mapping is in preferences
-				if(fnLoadPreferencesMapping(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName))
+				if(fnLoadPreferencesMapping())
 				{
 					fnLoadFilteredExcelColumns();
 				}
@@ -411,12 +429,100 @@ public class ImportTestCaseswithSteps{
 
 
 
-	private boolean fnLoadPreferencesMapping(String excelSheetPath, String excelWorkSheetName) {
-
+	private void fnCreateJiraFields() {
+		
+		try {
+			//Load Jira columns in HashMap
+			JiraExcelMap.put("Summary", "");
+			JiraExcelMap.put("Labels", "");
+			JiraExcelMap.put("Description", "");
+			JiraExcelMap.put("Step", "");
+			JiraExcelMap.put("Data", "");
+			JiraExcelMap.put("Result", "");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		
-		//JiraExcelMap
-		return false;
+	}
+
+
+	private boolean fnLoadPreferencesMapping() {
+
+		Boolean blnPrefMapLoad = false;
+		
+		try
+		{
+			HashMap<String, String> Preferences = new HashMap<String, String>();
+			//Get preferences onto Hash Map
+			File jfile = new File(Globalvars.strPreferencesPath);
+			if(jfile.exists()) 
+			{ 
+				//Check if user name property already exists, update new user name
+				// Open the file
+				FileInputStream fstream = new FileInputStream(Globalvars.strPreferencesPath);
+				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+				String strLine;
+				while ((strLine = br.readLine()) != null)   
+				{ 
+					if(strLine.contains("::"))
+					{
+						Preferences.put(strLine.split("::")[0],strLine.split("::")[1]);
+					}
+				}
+				fstream.close();
+	            br.close();
+			}
+			
+			if(Preferences.containsKey("ExcelPath") && Preferences.containsKey("ExcelSheet"))
+			{
+				if(Preferences.get("ExcelPath").equals(Globalvars.ExcelSheetPath) && Preferences.get("ExcelSheet").contains(Globalvars.ExcelWorkSheetName))
+				{
+					//verify if Jira fields and Jira field values exists in preferences file 
+					Boolean blnAllJiraFields = true;
+					Boolean blnAllJiraFieldValues = true;
+					for(String JiraField : JiraExcelMap.keySet())
+					{
+						if(Preferences.containsKey(JiraField))
+						{
+							if(Preferences.get(JiraField) != null)
+							{
+								if(Preferences.get(JiraField).trim() == "")
+								{
+									blnAllJiraFieldValues = false;
+								}
+							}
+							else
+							{
+								blnAllJiraFieldValues = false;
+							}
+							
+						}
+						else
+						{
+							blnAllJiraFields = false;
+						}
+					}
+					if(blnAllJiraFields && blnAllJiraFieldValues)
+					{
+						//Load mapping values to Mapping table
+						DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+						for(String JiraField : JiraExcelMap.keySet())
+						{
+							model.addRow(new Object[]{JiraField, Preferences.get(JiraField)});
+						}
+						blnPrefMapLoad = true;
+					}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return blnPrefMapLoad;
 	}
 
 
@@ -425,17 +531,6 @@ public class ImportTestCaseswithSteps{
 
 		try
 		{
-			
-			
-			//Load Jira columns in HashMap
-			JiraExcelMap.put("Summary", "");
-			JiraExcelMap.put("Labels", "");
-			JiraExcelMap.put("Description", "");
-			JiraExcelMap.put("Step", "");
-			JiraExcelMap.put("Data", "");
-			JiraExcelMap.put("Result", "");
-
-
 			JiralistModel = new DefaultListModel();
 			for(String listItem : JiraExcelMap.keySet())
 				JiralistModel.addElement(listItem);
@@ -498,30 +593,27 @@ public class ImportTestCaseswithSteps{
 		{
 			Globalvars.ExcelWorkSheetName = ImportTestCases.lstWorkSheets.getSelectedValue().toString();
 			
+			//get Mapped Excel columns in list
+			List<String> MappedColumns = new ArrayList<String>();
+			DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+			int intTableRows = model.getRowCount();
+			
+			if(intTableRows > 0)
+			{
+				for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
+				{
+					MappedColumns.add(model.getValueAt(intRowCounter, 1).toString());
+				}
+			}
+			//load filtered excel columns
 			ExcellistModel = new DefaultListModel();
 			String cellData = "";
 			int intColumnCount = ExcelFunctions.fn_GetColumnCount(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, 0);
 			for(int intColCounter = 0;intColCounter < intColumnCount;intColCounter++)
 			{
 				cellData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, 0, intColCounter);
-				//check if these are preloaded to Mapping
-				DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
-				int intTableRows = model.getRowCount();
 				
-				if(intTableRows > 0)
-				{
-					for(int intRowCounter = 0; intRowCounter < intTableRows; intRowCounter++)
-					{
-						fnStorePreferences(model.getValueAt(intRowCounter, 0).toString(),model.getValueAt(intRowCounter, 1).toString());
-						
-					}
-				}
-				
-				
-				
-				
-				
-				if(true)
+				if(MappedColumns.contains(cellData))
 				{
 					continue;
 				}

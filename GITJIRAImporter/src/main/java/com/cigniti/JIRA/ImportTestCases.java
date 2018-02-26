@@ -153,7 +153,7 @@ public class ImportTestCases extends JFrame {
 		    }
 		});
 		setBackground(Color.WHITE);
-		setTitle("Jira Test Case Importer v0.1 - Login");
+		setTitle(ITCWS.appName + " v" + ITCWS.versionNumber + " - " + ITCWS.pageName);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ImportTestCases.class.getResource("/images/JiraIcon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 744, 472);

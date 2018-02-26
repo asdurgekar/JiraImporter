@@ -542,6 +542,7 @@ public class ImportTestCases extends JFrame {
 				}
 				else
 				{
+					lblValidationmessage.setVisible(true);
 					lblValidationmessage.setForeground(Color.RED);
 					lblValidationmessage.setText(message);
 					lblCheckmark.setVisible(false);

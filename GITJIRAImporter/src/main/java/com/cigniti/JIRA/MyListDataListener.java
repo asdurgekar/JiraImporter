@@ -19,9 +19,13 @@ public class MyListDataListener implements ListDataListener {
 		@SuppressWarnings("rawtypes")
 		DefaultListModel model = (DefaultListModel) arg0.getSource();
 	    if(model.getSize() == 0)
-			ImportTestCases.btnValidate.setEnabled(true);
+			ImportTestCases.btnValidate.setEnabled(true);	    	
 		else
+		{
 			ImportTestCases.btnValidate.setEnabled(false);
+	    	ImportTestCases.lblCheckmark.setVisible(false);
+	    	ImportTestCases.lblValidationmessage.setVisible(false);
+		}
 	}
 
 	@Override
@@ -32,7 +36,11 @@ public class MyListDataListener implements ListDataListener {
 		if(model.getSize() == 0)
 			ImportTestCases.btnValidate.setEnabled(true);
 		else
+		{
 			ImportTestCases.btnValidate.setEnabled(false);
+			ImportTestCases.lblCheckmark.setVisible(false);
+			ImportTestCases.lblValidationmessage.setVisible(false);
+		}
 		
 	}
 

@@ -379,6 +379,8 @@ public class ImportTestCaseswithSteps{
 			ImportTestCases.panelConfirm.setVisible(false);
 			ImportTestCases.panelFinal.setVisible(false);
 			
+			//Update Sheet Name
+			Globalvars.ExcelWorkSheetName = ImportTestCases.lstWorkSheets.getSelectedValue().toString();
 			
 			if(!Globalvars.ExcelSheetPath.equals(OldExcelPath) || !Globalvars.ExcelWorkSheetName.equals(OldSheetName))
 			{
@@ -386,6 +388,7 @@ public class ImportTestCaseswithSteps{
 				//check if Mapping is in preferences
 				if(fnLoadPreferencesMapping())
 				{
+					//fnInitializeJiraFields();
 					fnLoadFilteredExcelColumns();
 				}
 				//if not preferences does not contain mapping
@@ -433,6 +436,26 @@ public class ImportTestCaseswithSteps{
 
 
 
+	private void fnInitializeJiraFields() {
+		
+		try
+		{
+			JiralistModel = new DefaultListModel();
+			
+			//enable Validate button if no elements exist in list
+			if(JiralistModel.size() == 0)
+				ImportTestCases.btnValidate.setEnabled(true);
+						
+			JiralistModel.addListDataListener(new MyListDataListener());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void fnCreateJiraFields() {
 		
 		try {
@@ -443,6 +466,16 @@ public class ImportTestCaseswithSteps{
 			JiraExcelMap.put("Step", "");
 			JiraExcelMap.put("Data", "");
 			JiraExcelMap.put("Result", "");
+			
+			JiralistModel = new DefaultListModel();
+			
+			//enable Validate button if no elements exist in list
+			if(JiralistModel.size() == 0)
+				ImportTestCases.btnValidate.setEnabled(true);
+			
+			ImportTestCases.lstJiraFields.setListData(JiralistModel.toArray());
+									
+			JiralistModel.addListDataListener(new MyListDataListener());
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -513,11 +546,18 @@ public class ImportTestCaseswithSteps{
 					{
 						//Load mapping values to Mapping table
 						DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+						//clear values before load
+						model.setRowCount(0);
 						for(String JiraField : JiraExcelMap.keySet())
 						{
+							//update mapping table
 							model.addRow(new Object[]{JiraField, Preferences.get(JiraField).toString()});
+							//Load Jira columns in HashMap
+							JiraExcelMap.put(JiraField, Preferences.get(JiraField).toString());
+							
 						}
 						blnPrefMapLoad = true;
+						
 					}
 				}
 			}
@@ -536,7 +576,7 @@ public class ImportTestCaseswithSteps{
 
 		try
 		{
-			JiralistModel = new DefaultListModel();
+			//JiralistModel = new DefaultListModel();
 			for(String listItem : JiraExcelMap.keySet())
 				JiralistModel.addElement(listItem);
 			
@@ -552,7 +592,7 @@ public class ImportTestCaseswithSteps{
 			
 			//DefaultListModel jDataModel = (DefaultListModel) ImportTestCases.lstJiraFields.getModel();
 			//jDataModel.addListDataListener(new MyListDataListener()); 
-			JiralistModel.addListDataListener(new MyListDataListener());
+			//JiralistModel.addListDataListener(new MyListDataListener());
 		}
 		catch(Exception e)
 		{
@@ -565,7 +605,7 @@ public class ImportTestCaseswithSteps{
 
 		try
 		{
-			Globalvars.ExcelWorkSheetName = ImportTestCases.lstWorkSheets.getSelectedValue().toString();
+			
 			
 			ExcellistModel = new DefaultListModel();
 			String cellData = "";
@@ -596,6 +636,13 @@ public class ImportTestCaseswithSteps{
 
 		try
 		{
+			//initialize Jira & Excel list columns
+			JiralistModel = new DefaultListModel();
+			ExcellistModel = new DefaultListModel();
+			
+			//listener to enable Jira Fields list
+			JiralistModel.addListDataListener(new MyListDataListener());
+						
 			Globalvars.ExcelWorkSheetName = ImportTestCases.lstWorkSheets.getSelectedValue().toString();
 			
 			//get Mapped Excel columns in list
@@ -729,19 +776,6 @@ public class ImportTestCaseswithSteps{
 			//get total row count
 			int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
 			
-			//get total count of test cases
-			for(int intRowCounter = 1;intRowCounter <=rowCount; intRowCounter++)
-			{
-				strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
-				if(strRowString != null)
-				{
-					TotalTestCaseCount++;
-				}
-			
-			}
-			Globalvars.TotalTestCaseCount = TotalTestCaseCount;
-			
-			
 			String strTestStep = "";
 			String strTestData = "";
 			String strExpectedResult = "";
@@ -788,6 +822,18 @@ public class ImportTestCaseswithSteps{
 				}
 			
 			}
+			//get total count of test cases
+			for(int intRowCounter = 1;intRowCounter <=rowCount; intRowCounter++)
+			{
+				strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
+				if(strRowString != null)
+				{
+					TotalTestCaseCount++;
+				}
+			
+			}
+			Globalvars.TotalTestCaseCount = TotalTestCaseCount;
+			
 			
 			return returnMessage;
 			

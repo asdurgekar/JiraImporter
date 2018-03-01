@@ -220,7 +220,7 @@ public class ImportTestCases extends JFrame {
 		txtUserName.setColumns(10);
 		
 		lblAuthmessage = new JLabel("");
-		lblAuthmessage.setBounds(242, 374, 269, 14);
+		lblAuthmessage.setBounds(189, 374, 380, 14);
 		lblAuthmessage.setForeground(Color.RED);
 		lblAuthmessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAuthmessage.setFont(new Font("Tahoma", Font.PLAIN, 11));

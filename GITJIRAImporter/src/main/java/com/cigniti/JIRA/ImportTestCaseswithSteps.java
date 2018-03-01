@@ -34,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -176,7 +177,11 @@ public class ImportTestCaseswithSteps{
 			int AuthResponse = fn_PerformAuthentication();
 			String KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);
 			
-			if(AuthResponse != 200)
+			if(AuthResponse == 0)
+			{
+				strAuthenticationMessage = "Unable to connect on LAN. Please make sure you are connected on Wifi";
+			}
+			else if(AuthResponse != 200)
 			{
 				System.out.println("JSON Response: " + AuthResponse + "Login Failure");
 				strAuthenticationMessage = "Unable to Login. Please enter valid credentials";				
@@ -242,6 +247,7 @@ public class ImportTestCaseswithSteps{
 		{
 			CreateTestWithTestSteps.client = ZFJCloudRestClient.restBuilder(CreateTestWithTestSteps.zephyrBaseUrl, 
 					CreateTestWithTestSteps.accessKey, CreateTestWithTestSteps.secretKey, CreateTestWithTestSteps.userName).build();
+			CreateTestWithTestSteps.header = CreateTestWithTestSteps.createAuthorizationHeader();
 		}
 		catch(Exception e)
 		{
@@ -690,7 +696,7 @@ public class ImportTestCaseswithSteps{
 
 	private int fn_PerformAuthentication() throws IOException {
 
-		
+		int returnCode = 0;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet(CreateTestWithTestSteps.jiraBaseURL+"/rest/api/2/project");
 		httpget.setHeader("Content-Type", "application/json");
@@ -706,16 +712,17 @@ public class ImportTestCaseswithSteps{
 				String result = EntityUtils.toString(response.getEntity());
 				JSONProjectList = new JSONArray(result);
 				System.out.println(JSONProjectList.toString());
+				returnCode = response.getStatusLine().getStatusCode();
 			}
         }
         catch(Exception e)
         {
-        	e.printStackTrace();
+        	e.printStackTrace();        	
 		} finally {
 			httpclient.close();
 		} 
 		
-		return response.getStatusLine().getStatusCode();
+		return returnCode;
 		
 	}
 	

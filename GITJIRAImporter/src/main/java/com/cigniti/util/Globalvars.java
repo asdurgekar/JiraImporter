@@ -34,9 +34,9 @@ public class Globalvars {
 	public static String DownloadPath = "C:\\temp\\almDownloads\\attachments.csv";
 	
 	
-	public static String JIRA_userName = "akarsh.durgekar@rentacenter.com";
-	public static String JIRA_password = "Cign1234";
-	public static String JIRA_projectId = "10357";
+	public static String JIRA_userName = "";
+	public static String JIRA_password = "";
+	public static String JIRA_projectId = "";
 	public static String JIRA_issueTypeId = "10300";
 	
 	public static String ExcelSheetPath = "";

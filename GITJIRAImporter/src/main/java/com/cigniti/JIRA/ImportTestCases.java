@@ -254,7 +254,7 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(lblRememberMe);
 		
 		JLabel lblBackground = new JLabel("");
-		lblBackground.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/JiraBackground.jpg")));
+		lblBackground.setIcon(null);
 		lblBackground.setBounds(0, 0, 728, 434);
 		panelLogin.add(lblBackground);
 		

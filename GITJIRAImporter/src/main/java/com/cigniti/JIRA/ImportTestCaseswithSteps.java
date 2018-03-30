@@ -1,7 +1,6 @@
 package com.cigniti.JIRA;
 
 import java.awt.Color;
-import java.awt.event.ContainerEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
@@ -10,11 +9,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -44,6 +48,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -73,11 +79,12 @@ public class ImportTestCaseswithSteps{
 	public String OldProjectName;
 	public String OldExcelPath;
 	public String OldSheetName;
+	public Boolean startCount;
 	public static String testId;
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
-	public String versionNumber = "1.2";
+	public String versionNumber = "1.3";
 	public String pageName = "Login";
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
@@ -694,10 +701,35 @@ public class ImportTestCaseswithSteps{
 	}
 
 
-	private int fn_PerformAuthentication() throws IOException {
+	private int fn_PerformAuthentication() throws IOException, KeyManagementException, NoSuchAlgorithmException {
 
+		
+		//handle certificate
+		// Create a trust manager that does not validate certificate chains
+					TrustManager[] trustAllCerts = new TrustManager[] { 
+						    new X509TrustManager() {     
+						        public java.security.cert.X509Certificate[] getAcceptedIssuers() { 
+						            return new X509Certificate[0];
+						        } 
+						        public void checkClientTrusted( 
+						            java.security.cert.X509Certificate[] certs, String authType) {
+						            } 
+						        public void checkServerTrusted( 
+						            java.security.cert.X509Certificate[] certs, String authType) {
+						        }
+						    } 
+						}; 
+
+					// Install the all-trusting trust manager
+					SSLContext sslcontext = SSLContexts.custom().useSSL().build();
+			        sslcontext.init(null, trustAllCerts, new SecureRandom());
+			        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslcontext,
+			                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+			        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(factory).build();
+		
+		//login
 		int returnCode = 0;
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		//CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet(CreateTestWithTestSteps.jiraBaseURL+"/rest/api/2/project");
 		httpget.setHeader("Content-Type", "application/json");
 		httpget.setHeader(CreateTestWithTestSteps.createAuthorizationHeader());
@@ -1086,6 +1118,7 @@ public class ImportTestCaseswithSteps{
 				protected Void doInBackground() throws Exception {
 					// TODO Auto-generated method stub
 					int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
+					startCount = false;
 					for (int counter = 1; counter <= rowCount; counter++) 
 					{	
 						if(isCancelled())
@@ -1093,15 +1126,18 @@ public class ImportTestCaseswithSteps{
 							break;
 						}
 						String Message = fnImportExcelRowData(rowCount, counter);
+						
 						publish(Message);
 						//exit for if failure
 						if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 						{
 							break;
 						}
+						if(Globalvars.TotalTestCaseUploaded == Globalvars.TotalTestCaseCount)
+							setProgress(100);
+						else
+							setProgress(Globalvars.TotalTestCaseUploaded * (100/Globalvars.TotalTestCaseCount));
 						
-						setProgress(Globalvars.TotalTestCaseUploaded * (100/Globalvars.TotalTestCaseCount));
-					
 					}
 					//cancel on failure
 					if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
@@ -1190,19 +1226,22 @@ public class ImportTestCaseswithSteps{
 		String retMessage = "";
 		try {
 			String ApplicationLabel, testSummary, testDescription, testStepDescription, testStepData, testStepExpectedResult;
-			//String testId = "";
+			//String testId = "";			
 			
+			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Labels"));	
+			testSummary = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Summary"));		
+			testDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Description"));
 			
-			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Application Label");	
-			testSummary = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Test Name");		
-			testDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Test Description");
+			testStepDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Step"));
+			testStepData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Data"));
+			testStepExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Result"));
 			
-			testStepDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Test Step");
-			testStepData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Test Data");
-			testStepExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, "Expected Result");
-
 			if(testSummary != null)
-			{				
+			{
+				//get test case completion count
+//				if(startCount)
+//					Globalvars.TotalTestCaseUploaded++;
+				
 				testId = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel);
 				//check if there is failure
 				if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
@@ -1211,22 +1250,25 @@ public class ImportTestCaseswithSteps{
 					return retMessage;
 				}
 				retMessage = "Created Test Case : '" + testSummary + "'\n";
+
+//				if(!startCount)
+//					startCount = true;
 			}
-			//get test case completion count
-			else
-			{
-				if(counter == TotalRowCount)
-				{
-					Globalvars.TotalTestCaseUploaded++;
-				}
-				else
-				{
-					ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, "Application Label");
-					if(ApplicationLabel != null)
-						Globalvars.TotalTestCaseUploaded++;
-				}
-				
-			}
+//			//get test case completion count
+//			else
+//			{
+//				if(counter == TotalRowCount)
+//				{
+//					Globalvars.TotalTestCaseUploaded++;
+//				}
+//				else
+//				{
+//					ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, JiraExcelMap.get("Labels"));
+//					if(ApplicationLabel != null)
+//						Globalvars.TotalTestCaseUploaded++;
+//				}
+//				
+//			}
 
 			
 			createTestWithTestSteps.createTestStepinJira(testStepDescription, testStepData, testStepExpectedResult, testId);
@@ -1237,6 +1279,17 @@ public class ImportTestCaseswithSteps{
 				return retMessage;
 			}
 			retMessage += "Adding Steps for the test case";
+			//get test case completion count
+			if(counter == TotalRowCount)
+			{
+				Globalvars.TotalTestCaseUploaded++;
+			}
+			else
+			{
+				ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, JiraExcelMap.get("Labels"));
+				if(ApplicationLabel != null)
+					Globalvars.TotalTestCaseUploaded++;
+			}
 			testSummary = testDescription = testStepDescription = testStepData = testStepExpectedResult = null;
 			
 		} catch (Exception e) {
@@ -1266,6 +1319,32 @@ public class ImportTestCaseswithSteps{
 		try {
 			//set Cert path
 			//System.setProperty("javax.net.ssl.trustStore", Globalvars.strCertPath);
+			
+			
+			// Create a trust manager that does not validate certificate chains
+			TrustManager[] trustAllCerts = new TrustManager[] { 
+				    new X509TrustManager() {     
+				        public java.security.cert.X509Certificate[] getAcceptedIssuers() { 
+				            return new X509Certificate[0];
+				        } 
+				        public void checkClientTrusted( 
+				            java.security.cert.X509Certificate[] certs, String authType) {
+				            } 
+				        public void checkServerTrusted( 
+				            java.security.cert.X509Certificate[] certs, String authType) {
+				        }
+				    } 
+				}; 
+
+			// Install the all-trusting trust manager
+			try {
+			    SSLContext sc = SSLContext.getInstance("SSL"); 
+			    sc.init(null, trustAllCerts, new java.security.SecureRandom()); 
+			    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			} catch (GeneralSecurityException e) {
+			} 
+
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

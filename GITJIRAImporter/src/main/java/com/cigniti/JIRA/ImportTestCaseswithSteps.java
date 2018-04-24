@@ -84,7 +84,7 @@ public class ImportTestCaseswithSteps{
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
-	public String versionNumber = "1.3";
+	public String versionNumber = "1.4";
 	public String pageName = "Login";
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
@@ -706,26 +706,26 @@ public class ImportTestCaseswithSteps{
 		
 		//handle certificate
 		// Create a trust manager that does not validate certificate chains
-					TrustManager[] trustAllCerts = new TrustManager[] { 
-						    new X509TrustManager() {     
-						        public java.security.cert.X509Certificate[] getAcceptedIssuers() { 
-						            return new X509Certificate[0];
-						        } 
-						        public void checkClientTrusted( 
-						            java.security.cert.X509Certificate[] certs, String authType) {
-						            } 
-						        public void checkServerTrusted( 
-						            java.security.cert.X509Certificate[] certs, String authType) {
-						        }
-						    } 
-						}; 
+		TrustManager[] trustAllCerts = new TrustManager[] { 
+			    new X509TrustManager() {     
+			        public java.security.cert.X509Certificate[] getAcceptedIssuers() { 
+			            return new X509Certificate[0];
+			        } 
+			        public void checkClientTrusted( 
+			            java.security.cert.X509Certificate[] certs, String authType) {
+			            } 
+			        public void checkServerTrusted( 
+			            java.security.cert.X509Certificate[] certs, String authType) {
+			        }
+			    } 
+			}; 
 
-					// Install the all-trusting trust manager
-					SSLContext sslcontext = SSLContexts.custom().useSSL().build();
-			        sslcontext.init(null, trustAllCerts, new SecureRandom());
-			        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslcontext,
-			                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-			        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(factory).build();
+		// Install the all-trusting trust manager
+		SSLContext sslcontext = SSLContexts.custom().useSSL().build();
+        sslcontext.init(null, trustAllCerts, new SecureRandom());
+        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslcontext,
+                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(factory).build();
 		
 		//login
 		int returnCode = 0;
@@ -744,6 +744,11 @@ public class ImportTestCaseswithSteps{
 				String result = EntityUtils.toString(response.getEntity());
 				JSONProjectList = new JSONArray(result);
 				System.out.println(JSONProjectList.toString());
+				returnCode = response.getStatusLine().getStatusCode();
+			}
+			else if(response.getStatusLine().getStatusCode() == 401)
+			{				
+				System.out.println(response.getStatusLine());
 				returnCode = response.getStatusLine().getStatusCode();
 			}
         }
@@ -1134,9 +1139,13 @@ public class ImportTestCaseswithSteps{
 							break;
 						}
 						if(Globalvars.TotalTestCaseUploaded == Globalvars.TotalTestCaseCount)
-							setProgress(100);
+						{
+							setProgress(100);						
+						}
 						else
-							setProgress(Globalvars.TotalTestCaseUploaded * (100/Globalvars.TotalTestCaseCount));
+						{
+							setProgress(Globalvars.TotalTestCaseUploaded * (100/Globalvars.TotalTestCaseCount));							
+						}
 						
 					}
 					//cancel on failure
@@ -1280,7 +1289,7 @@ public class ImportTestCaseswithSteps{
 			}
 			retMessage += "Adding Steps for the test case";
 			//get test case completion count
-			if(counter == TotalRowCount)
+			if(counter.equals(TotalRowCount))
 			{
 				Globalvars.TotalTestCaseUploaded++;
 			}

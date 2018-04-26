@@ -255,7 +255,7 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(lblRememberMe);
 		
 		JLabel lblBackground = new JLabel("");
-		lblBackground.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground.png")));
+		lblBackground.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
 		lblBackground.setBounds(0, 0, 728, 434);
 		panelLogin.add(lblBackground);
 		
@@ -384,6 +384,7 @@ public class ImportTestCases extends JFrame {
 		panelSecond.add(scrollPane_1);
 		
 		lstWorkSheets = new JList();
+		lstWorkSheets.setBackground(new Color(245, 245, 245));
 		lstWorkSheets.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
 			    if(lstWorkSheets.isSelectionEmpty())
@@ -402,7 +403,7 @@ public class ImportTestCases extends JFrame {
 		panelSecond.add(lblWorksheets);
 		
 		JLabel lblBackgroundSec = new JLabel("");
-		lblBackgroundSec.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground.png")));
+		lblBackgroundSec.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
 		lblBackgroundSec.setBounds(0, 0, 728, 434);
 		panelSecond.add(lblBackgroundSec);
 		
@@ -569,13 +570,13 @@ public class ImportTestCases extends JFrame {
 				btnMapNext.setEnabled(true);
 			}
 		});
-		lblCheckmark.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/CheckMark.png")));
+		lblCheckmark.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/CheckMark1.png")));
 		lblCheckmark.setBounds(411, 253, 31, 34);
 		lblCheckmark.setVisible(false);
 		panelMapping.add(lblCheckmark);
 		
 		JLabel lblBackgroundMap = new JLabel("");
-		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground.png")));
+		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
 		lblBackgroundMap.setBounds(0, 0, 728, 434);
 		panelMapping.add(lblBackgroundMap);
 		
@@ -698,7 +699,7 @@ public class ImportTestCases extends JFrame {
 		panelConfirm.add(lblTestCasesCount);
 		
 		JLabel lblBackgroundCon = new JLabel("");
-		lblBackgroundCon.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground.png")));
+		lblBackgroundCon.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
 		lblBackgroundCon.setBounds(0, 0, 728, 434);
 		panelConfirm.add(lblBackgroundCon);
 		
@@ -795,7 +796,7 @@ public class ImportTestCases extends JFrame {
 		txtAreaConsole.setBackground(SystemColor.control);
 		
 		JLabel lblBackgroundRun = new JLabel("");
-		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground.png")));
+		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
 		lblBackgroundRun.setBounds(0, 0, 728, 434);
 		panelFinal.add(lblBackgroundRun);
 		

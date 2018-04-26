@@ -1200,7 +1200,7 @@ public class ImportTestCaseswithSteps{
 					}
 					else
 					{
-						ImportTestCases.lblSuccessMessage.setForeground(new Color(0, 128, 0));
+						//ImportTestCases.lblSuccessMessage.setForeground(new Color(0, 128, 0));
 						ImportTestCases.lblSuccessMessage.setText(createTestWithTestSteps.RespMessage.split("~")[1]);
 					}
 					

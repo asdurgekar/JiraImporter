@@ -86,6 +86,8 @@ public class ImportTestCaseswithSteps{
 	public String appName = "Jira Test Case Importer";
 	public String versionNumber = "1.4";
 	public String pageName = "Login";
+	public String strAuthenticationMessage;
+	public Boolean blnLoginSuccess;
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
@@ -172,55 +174,146 @@ public class ImportTestCaseswithSteps{
 	
 	public boolean fn_LoginToJira() {
 
-		boolean blnLoginSuccess = false;
-		try
-		{
-			String strAuthenticationMessage = "";
-			CreateTestWithTestSteps.userName = ImportTestCases.txtUserName.getText();
-			CreateTestWithTestSteps.password = new String(ImportTestCases.txtPassword.getPassword());
-			CreateTestWithTestSteps.accessKey = new String(ImportTestCases.txtAccessKey.getPassword());
-			CreateTestWithTestSteps.secretKey = new String(ImportTestCases.txtSecretKey.getPassword());
-			
-			int AuthResponse = fn_PerformAuthentication();
-			String KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);
-			
-			if(AuthResponse == 0)
-			{
-				strAuthenticationMessage = "Unable to connect on LAN. Please make sure you are connected on Wifi";
-			}
-			else if(AuthResponse != 200)
-			{
-				System.out.println("JSON Response: " + AuthResponse + "Login Failure");
-				strAuthenticationMessage = "Unable to Login. Please enter valid credentials";				
-			}
-			else if(!KeyResponse.equals("Success"))
-			{
-				System.out.println(KeyResponse);
-				strAuthenticationMessage = KeyResponse;				
-			}
-			else
-			{
-				System.out.println("JSON Response: " + AuthResponse + "Login Success");
-				strAuthenticationMessage = "";
-				fnCreateConfigFile();
-				if(ImportTestCases.chckbxRememberMe.isSelected())
-					fnStorePreferences("UserName",ImportTestCases.txtUserName.getText());
-					fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
-					fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
-				fnUpdateClientToken();
-				fnLaunchLoadSecondPanel();
-				blnLoginSuccess = true;
-				
-			}
-			ImportTestCases.lblAuthmessage.setText(strAuthenticationMessage);
+		blnLoginSuccess = false;
+		strAuthenticationMessage = "";
 		
+		try {
+			bgWorker = new SwingWorker<Void, String>(){
+				
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					// TODO Auto-generated method stub
+					publish("Start Login");
+					
+					CreateTestWithTestSteps.userName = ImportTestCases.txtUserName.getText();
+					CreateTestWithTestSteps.password = new String(ImportTestCases.txtPassword.getPassword());
+					CreateTestWithTestSteps.accessKey = new String(ImportTestCases.txtAccessKey.getPassword());
+					CreateTestWithTestSteps.secretKey = new String(ImportTestCases.txtSecretKey.getPassword());
+					
+					int AuthResponse = fn_PerformAuthentication();
+					String KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);
+					
+					if(AuthResponse == 0)
+					{
+						strAuthenticationMessage = "Unable to connect on LAN. Please make sure you are connected on Wifi";
+					}
+					else if(AuthResponse != 200)
+					{
+						System.out.println("JSON Response: " + AuthResponse + "Login Failure");
+						strAuthenticationMessage = "Unable to Login. Please enter valid credentials";				
+					}
+					else if(!KeyResponse.equals("Success"))
+					{
+						System.out.println(KeyResponse);
+						strAuthenticationMessage = KeyResponse;				
+					}
+					else
+					{
+						System.out.println("JSON Response: " + AuthResponse + "Login Success");
+						strAuthenticationMessage = "";
+						fnCreateConfigFile();
+						if(ImportTestCases.chckbxRememberMe.isSelected())
+							fnStorePreferences("UserName",ImportTestCases.txtUserName.getText());
+							fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
+							fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
+						fnUpdateClientToken();
+						fnLaunchLoadSecondPanel();
+						blnLoginSuccess = true;
+						
+					}
+					return null;
+				}
+				
+				@Override
+				protected void process(List<String> chunks) {
+					
+					//initialize variables
+					strAuthenticationMessage = "";
+					
+					//change UI components
+					ImportTestCases.btnLogin.setEnabled(false);
+					ImportTestCases.lblAuthmessage.setText(strAuthenticationMessage);
+					ImportTestCases.lblLoginloading.setVisible(true);
+				}
+				
+				@Override
+				protected void done() {
+					// TODO Auto-generated method stub
+					//super.done();
+					//after task complete
+					ImportTestCases.btnLogin.setEnabled(true);
+					ImportTestCases.lblAuthmessage.setText(strAuthenticationMessage);
+					ImportTestCases.lblLoginloading.setVisible(false);
+					
+				}
+				
+			};			
+			bgWorker.execute();
 			
-		}
-		catch(Exception e)
-		{
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		return blnLoginSuccess;
+		
+		
+		
+		
+		//--------------------------------Without background worker-------------------------------------------------
+		
+//		
+//		boolean blnLoginSuccess = false;
+//		try
+//		{
+//			String strAuthenticationMessage = "";
+//			CreateTestWithTestSteps.userName = ImportTestCases.txtUserName.getText();
+//			CreateTestWithTestSteps.password = new String(ImportTestCases.txtPassword.getPassword());
+//			CreateTestWithTestSteps.accessKey = new String(ImportTestCases.txtAccessKey.getPassword());
+//			CreateTestWithTestSteps.secretKey = new String(ImportTestCases.txtSecretKey.getPassword());
+//			
+//			int AuthResponse = fn_PerformAuthentication();
+//			String KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);
+//			
+//			if(AuthResponse == 0)
+//			{
+//				strAuthenticationMessage = "Unable to connect on LAN. Please make sure you are connected on Wifi";
+//			}
+//			else if(AuthResponse != 200)
+//			{
+//				System.out.println("JSON Response: " + AuthResponse + "Login Failure");
+//				strAuthenticationMessage = "Unable to Login. Please enter valid credentials";				
+//			}
+//			else if(!KeyResponse.equals("Success"))
+//			{
+//				System.out.println(KeyResponse);
+//				strAuthenticationMessage = KeyResponse;				
+//			}
+//			else
+//			{
+//				System.out.println("JSON Response: " + AuthResponse + "Login Success");
+//				strAuthenticationMessage = "";
+//				fnCreateConfigFile();
+//				if(ImportTestCases.chckbxRememberMe.isSelected())
+//					fnStorePreferences("UserName",ImportTestCases.txtUserName.getText());
+//					fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
+//					fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
+//				fnUpdateClientToken();
+//				fnLaunchLoadSecondPanel();
+//				blnLoginSuccess = true;
+//				
+//			}
+//			ImportTestCases.lblAuthmessage.setText(strAuthenticationMessage);
+//		
+//			
+//		}
+//		catch(Exception e)
+//		{
+//			e.printStackTrace();
+//		}
+//		return blnLoginSuccess;
 		
 	}
 
@@ -231,6 +324,7 @@ public class ImportTestCaseswithSteps{
 
 		try
 		{
+			
 			//Check if Preferences location and file exist
 			File jfile = new File(Globalvars.strPreferencesPath);
 			if(!jfile.exists()) 

@@ -104,6 +104,8 @@ public class ImportTestCases extends JFrame {
 	public static JLabel lblSuccessMessage;
 	public static JPasswordField txtAccessKey;
 	public static JPasswordField txtSecretKey;
+	public static JLabel lblLoginloading;
+	public static JButton btnLogin;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	
@@ -173,8 +175,8 @@ public class ImportTestCases extends JFrame {
 		});
 		contentPane.add(panelLogin, "name_1090758453858820");
 		
-		JButton btnLogin = new JButton("Login");
-		btnLogin.setBounds(289, 337, 157, 23);
+		btnLogin = new JButton("Login");
+		btnLogin.setBounds(289, 313, 157, 23);
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -196,12 +198,12 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblUserName = new JLabel("User Name");
 		lblUserName.setForeground(new Color(0, 0, 0));
-		lblUserName.setBounds(173, 124, 67, 14);
+		lblUserName.setBounds(173, 100, 67, 14);
 		lblUserName.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblUserName);
 		
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(173, 173, 67, 14);
+		lblPassword.setBounds(173, 149, 67, 14);
 		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblPassword);
 		
@@ -212,47 +214,53 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(lblWelcomeMessage);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(269, 169, 219, 20);
+		txtPassword.setBounds(269, 145, 219, 20);
 		panelLogin.add(txtPassword);
 		
 		txtUserName = new JTextField();
-		txtUserName.setBounds(271, 120, 217, 20);
+		txtUserName.setBounds(271, 96, 217, 20);
 		panelLogin.add(txtUserName);
 		txtUserName.setColumns(10);
 		
 		lblAuthmessage = new JLabel("");
-		lblAuthmessage.setBounds(189, 374, 380, 14);
+		lblAuthmessage.setBounds(189, 350, 380, 14);
 		lblAuthmessage.setForeground(Color.RED);
 		lblAuthmessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAuthmessage.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		panelLogin.add(lblAuthmessage);
 		
 		chckbxRememberMe = new JCheckBox("");
-		chckbxRememberMe.setBounds(310, 295, 21, 14);
+		chckbxRememberMe.setBounds(310, 271, 21, 14);
 		panelLogin.add(chckbxRememberMe);
 		
 		txtAccessKey = new JPasswordField();
-		txtAccessKey.setBounds(269, 217, 219, 20);
+		txtAccessKey.setBounds(269, 193, 219, 20);
 		panelLogin.add(txtAccessKey);
 		
 		txtSecretKey = new JPasswordField();
-		txtSecretKey.setBounds(269, 268, 219, 20);
+		txtSecretKey.setBounds(269, 244, 219, 20);
 		panelLogin.add(txtSecretKey);
 		
 		JLabel lblAccessKey = new JLabel("Access Key");
-		lblAccessKey.setBounds(173, 219, 67, 14);
+		lblAccessKey.setBounds(173, 195, 67, 14);
 		lblAccessKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblAccessKey);
 		
 		JLabel lblSecretKey = new JLabel("Secret Key");
-		lblSecretKey.setBounds(173, 272, 67, 14);
+		lblSecretKey.setBounds(173, 248, 67, 14);
 		lblSecretKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblSecretKey);
 		
 		JLabel lblRememberMe = new JLabel("Remember Me");
 		lblRememberMe.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblRememberMe.setBounds(337, 297, 109, 14);
+		lblRememberMe.setBounds(337, 273, 109, 14);
 		panelLogin.add(lblRememberMe);
+		
+		lblLoginloading = new JLabel("");
+		lblLoginloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px_White.gif")));
+		lblLoginloading.setBounds(327, 342, 78, 61);
+		lblLoginloading.setVisible(false);
+		panelLogin.add(lblLoginloading);
 		
 		JLabel lblBackground = new JLabel("");
 		lblBackground.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));

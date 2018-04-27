@@ -106,6 +106,8 @@ public class ImportTestCases extends JFrame {
 	public static JPasswordField txtSecretKey;
 	public static JLabel lblLoginloading;
 	public static JButton btnLogin;
+	public static JLabel lblValidateloading;
+	public static JButton btnMapNext;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	
@@ -230,6 +232,7 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(lblAuthmessage);
 		
 		chckbxRememberMe = new JCheckBox("");
+		chckbxRememberMe.setBackground(Color.GRAY);
 		chckbxRememberMe.setBounds(310, 271, 21, 14);
 		panelLogin.add(chckbxRememberMe);
 		
@@ -263,6 +266,7 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(lblLoginloading);
 		
 		JLabel lblBackground = new JLabel("");
+		lblBackground.setBackground(UIManager.getColor("Button.shadow"));
 		lblBackground.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
 		lblBackground.setBounds(0, 0, 728, 434);
 		panelLogin.add(lblBackground);
@@ -529,7 +533,7 @@ public class ImportTestCases extends JFrame {
 		btnMapBack.setBounds(282, 347, 89, 23);
 		panelMapping.add(btnMapBack);
 		
-		JButton btnMapNext = new JButton("Next");
+		btnMapNext = new JButton("Next");
 		btnMapNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ITCWS.fnStoreExcelandMapping();
@@ -544,20 +548,7 @@ public class ImportTestCases extends JFrame {
 		btnValidate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				String message = ITCWS.fnValidateExcelFormat();
-				if(message.equals("Success"))
-				{
-					lblCheckmark.setVisible(true);
-					lblValidationmessage.setText("");
-				}
-				else
-				{
-					lblValidationmessage.setVisible(true);
-					lblValidationmessage.setForeground(Color.RED);
-					lblValidationmessage.setText(message);
-					lblCheckmark.setVisible(false);
-				}
-				
+				ITCWS.fnValidateExcelFormat();
 				
 			}
 		});
@@ -583,10 +574,11 @@ public class ImportTestCases extends JFrame {
 		lblCheckmark.setVisible(false);
 		panelMapping.add(lblCheckmark);
 		
-		JLabel lblBackgroundMap = new JLabel("");
-		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
-		lblBackgroundMap.setBounds(0, 0, 728, 434);
-		panelMapping.add(lblBackgroundMap);
+		lblValidateloading = new JLabel("");
+		lblValidateloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px_White.gif")));
+		lblValidateloading.setBounds(295, 278, 86, 63);
+		lblValidateloading.setVisible(false);
+		panelMapping.add(lblValidateloading);
 		
 		panelConfirm = new JPanel();
 		panelConfirm.addComponentListener(new ComponentAdapter() {

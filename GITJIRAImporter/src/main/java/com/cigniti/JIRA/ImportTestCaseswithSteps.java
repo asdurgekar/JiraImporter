@@ -88,6 +88,7 @@ public class ImportTestCaseswithSteps{
 	public String pageName = "Login";
 	public String strAuthenticationMessage;
 	public Boolean blnLoginSuccess;
+	public String returnMessage;
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
@@ -906,83 +907,224 @@ public class ImportTestCaseswithSteps{
 
 	public String fnValidateExcelFormat() {
 		
-		try
-		{
-			String returnMessage = "Success";
-			String strRowString = "";
-			int TotalTestCaseCount = 0;
-			//get total row count
-			int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
-			
-			String strTestStep = "";
-			String strTestData = "";
-			String strExpectedResult = "";
-			for(int intRowCounter = 1;intRowCounter <= rowCount; intRowCounter++)
-			{
-				strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Step"));
-				strTestData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Data"));
-				strExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Result"));
+		returnMessage = "";
+		
+		try {
+			bgWorker = new SwingWorker<Void, String>(){
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					// TODO Auto-generated method stub
+					
+					publish("Start Validation");
+					String strRowString = "";
+					int TotalTestCaseCount = 0;
+					//get total row count
+					int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
+					
+					String strTestStep = "";
+					String strTestData = "";
+					String strExpectedResult = "";
+					Boolean blnValidationFlag = true;
+					for(int intRowCounter = 1;intRowCounter <= rowCount; intRowCounter++)
+					{
+						strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Step"));
+						strTestData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Data"));
+						strExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Result"));
+						
+						//verify blank values for Test Step
+						if(strTestStep == null)
+						{
+							returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
+							blnValidationFlag = false;
+							break;
+						}
+						else if(strTestStep.trim().isEmpty())
+						{
+							returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
+							blnValidationFlag = false;
+							break;
+						}
+					
+						//verify blank values for Test Data
+						if(strTestData == null)
+						{
+							returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
+							blnValidationFlag = false;
+							break;
+						}
+						else if(strTestData.trim().isEmpty())
+						{
+							returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
+							blnValidationFlag = false;
+							break;
+						}
+					
+						//verify blank values for Expected Result
+						if(strExpectedResult == null)
+						{
+							returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
+							blnValidationFlag = false;
+							break;
+						}
+						else if(strExpectedResult.trim().isEmpty())
+						{
+							returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
+							blnValidationFlag = false;
+							break;
+						}
+					
+					}
+					
+					if(blnValidationFlag)
+					{
+						//get total count of test cases
+						for(int intRowCounter = 1;intRowCounter <=rowCount; intRowCounter++)
+						{
+							strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
+							if(strRowString != null)
+							{
+								TotalTestCaseCount++;
+							}
+						
+						}
+						Globalvars.TotalTestCaseCount = TotalTestCaseCount;
+						returnMessage = "Success";						
+						
+					}
+					return null;
+					
+				}
 				
-				//verify blank values for Test Step
-				if(strTestStep == null)
-				{
-					returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
-					return returnMessage;
+				@Override
+				protected void process(List<String> chunks) {
+					// TODO Auto-generated method stub
+					//super.process(chunks);
+					
+					//initialize variable
+					returnMessage = "";
+					
+					//change UI Components
+					ImportTestCases.lblCheckmark.setVisible(false);
+					ImportTestCases.lblValidateloading.setVisible(true);
+					ImportTestCases.btnValidate.setEnabled(false);	
+					ImportTestCases.lblValidationmessage.setText(returnMessage);
+					ImportTestCases.btnMapNext.setEnabled(false);
+					
+						
 				}
-				else if(strTestStep.trim().isEmpty())
-				{
-					returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
-					return returnMessage;
-				}
-			
-				//verify blank values for Test Data
-				if(strTestData == null)
-				{
-					returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
-					return returnMessage;
-				}
-				else if(strTestData.trim().isEmpty())
-				{
-					returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
-					return returnMessage;
-				}
-			
-				//verify blank values for Expected Result
-				if(strExpectedResult == null)
-				{
-					returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
-					return returnMessage;
-				}
-				else if(strExpectedResult.trim().isEmpty())
-				{
-					returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
-					return returnMessage;
-				}
-			
-			}
-			//get total count of test cases
-			for(int intRowCounter = 1;intRowCounter <=rowCount; intRowCounter++)
-			{
-				strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
-				if(strRowString != null)
-				{
-					TotalTestCaseCount++;
-				}
-			
-			}
-			Globalvars.TotalTestCaseCount = TotalTestCaseCount;
-			
-			
-			return returnMessage;
-			
-			
 				
-		}
-		catch(Exception e)
-		{
+				@Override
+				protected void done() {
+					// TODO Auto-generated method stub
+					//super.done();
+					//after task complete
+					ImportTestCases.lblValidateloading.setVisible(false);
+					ImportTestCases.btnValidate.setEnabled(true);	
+					
+					if(returnMessage.equals("Success"))
+					{
+						ImportTestCases.lblCheckmark.setVisible(true);
+						ImportTestCases.lblValidationmessage.setText("");
+					}
+					else
+					{
+						ImportTestCases.lblValidationmessage.setVisible(true);
+						ImportTestCases.lblValidationmessage.setForeground(Color.RED);
+						ImportTestCases.lblValidationmessage.setText(returnMessage);
+						ImportTestCases.lblCheckmark.setVisible(false);
+					}
+					
+				}
+				
+			};			
+			bgWorker.execute();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		
+		return returnMessage;
+		
+		//------------------------------------without loading icon---------------------------------------		
+		
+//		try
+//		{
+//			String returnMessage = "Success";
+//			String strRowString = "";
+//			int TotalTestCaseCount = 0;
+//			//get total row count
+//			int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
+//			
+//			String strTestStep = "";
+//			String strTestData = "";
+//			String strExpectedResult = "";
+//			for(int intRowCounter = 1;intRowCounter <= rowCount; intRowCounter++)
+//			{
+//				strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Step"));
+//				strTestData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Data"));
+//				strExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Result"));
+//				
+//				//verify blank values for Test Step
+//				if(strTestStep == null)
+//				{
+//					returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
+//					return returnMessage;
+//				}
+//				else if(strTestStep.trim().isEmpty())
+//				{
+//					returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
+//					return returnMessage;
+//				}
+//			
+//				//verify blank values for Test Data
+//				if(strTestData == null)
+//				{
+//					returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
+//					return returnMessage;
+//				}
+//				else if(strTestData.trim().isEmpty())
+//				{
+//					returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
+//					return returnMessage;
+//				}
+//			
+//				//verify blank values for Expected Result
+//				if(strExpectedResult == null)
+//				{
+//					returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
+//					return returnMessage;
+//				}
+//				else if(strExpectedResult.trim().isEmpty())
+//				{
+//					returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
+//					return returnMessage;
+//				}
+//			
+//			}
+//			//get total count of test cases
+//			for(int intRowCounter = 1;intRowCounter <=rowCount; intRowCounter++)
+//			{
+//				strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
+//				if(strRowString != null)
+//				{
+//					TotalTestCaseCount++;
+//				}
+//			
+//			}
+//			Globalvars.TotalTestCaseCount = TotalTestCaseCount;
+//			
+//			
+//			return returnMessage;
+//			
+//			
+//				
+//		}
+//		catch(Exception e)
+//		{
+//			e.printStackTrace();
+//		}
+//		return null;
 		
 	}
 

@@ -580,6 +580,11 @@ public class ImportTestCases extends JFrame {
 		lblValidateloading.setVisible(false);
 		panelMapping.add(lblValidateloading);
 		
+		JLabel lblBackgroundmap = new JLabel("");
+		lblBackgroundmap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
+		lblBackgroundmap.setBounds(0, 0, 728, 434);
+		panelMapping.add(lblBackgroundmap);
+		
 		panelConfirm = new JPanel();
 		panelConfirm.addComponentListener(new ComponentAdapter() {
 			@Override

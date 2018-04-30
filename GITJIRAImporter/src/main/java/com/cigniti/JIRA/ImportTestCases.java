@@ -41,6 +41,8 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -132,6 +134,7 @@ public class ImportTestCases extends JFrame {
 	 * Create the frame.
 	 */
 	public ImportTestCases() {
+		
 		setResizable(false);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -232,7 +235,7 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(lblAuthmessage);
 		
 		chckbxRememberMe = new JCheckBox("");
-		chckbxRememberMe.setBackground(Color.GRAY);
+		chckbxRememberMe.setBackground(Color.WHITE);
 		chckbxRememberMe.setBounds(310, 271, 21, 14);
 		panelLogin.add(chckbxRememberMe);
 		
@@ -804,6 +807,29 @@ public class ImportTestCases extends JFrame {
 		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
 		lblBackgroundRun.setBounds(0, 0, 728, 434);
 		panelFinal.add(lblBackgroundRun);
+		
+		try {
+//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				//Nimbus;System;Metal;Motif
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());		            
+		            break;
+		        }
+		    }
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		
 	}

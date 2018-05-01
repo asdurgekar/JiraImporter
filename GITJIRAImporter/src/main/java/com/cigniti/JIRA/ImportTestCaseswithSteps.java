@@ -89,6 +89,8 @@ public class ImportTestCaseswithSteps{
 	public String strAuthenticationMessage;
 	public Boolean blnLoginSuccess;
 	public String returnMessage;
+	public int AuthResponse;
+	public String KeyResponse;
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
@@ -192,8 +194,29 @@ public class ImportTestCaseswithSteps{
 					CreateTestWithTestSteps.accessKey = new String(ImportTestCases.txtAccessKey.getPassword());
 					CreateTestWithTestSteps.secretKey = new String(ImportTestCases.txtSecretKey.getPassword());
 					
-					int AuthResponse = fn_PerformAuthentication();
-					String KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);
+					AuthResponse = fn_PerformAuthentication();
+					KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);					
+					
+					return null;
+				}
+				
+				@Override
+				protected void process(List<String> chunks) {
+					
+					//initialize variables
+					strAuthenticationMessage = "";
+					
+					//change UI components
+					ImportTestCases.btnLogin.setEnabled(false);
+					ImportTestCases.lblAuthmessage.setText(strAuthenticationMessage);
+					ImportTestCases.lblLoginloading.setVisible(true);
+				}
+				
+				@Override
+				protected void done() {
+					// TODO Auto-generated method stub
+					//super.done();
+					//after task complete					
 					
 					if(AuthResponse == 0)
 					{
@@ -223,26 +246,7 @@ public class ImportTestCaseswithSteps{
 						blnLoginSuccess = true;
 						
 					}
-					return null;
-				}
-				
-				@Override
-				protected void process(List<String> chunks) {
 					
-					//initialize variables
-					strAuthenticationMessage = "";
-					
-					//change UI components
-					ImportTestCases.btnLogin.setEnabled(false);
-					ImportTestCases.lblAuthmessage.setText(strAuthenticationMessage);
-					ImportTestCases.lblLoginloading.setVisible(true);
-				}
-				
-				@Override
-				protected void done() {
-					// TODO Auto-generated method stub
-					//super.done();
-					//after task complete
 					ImportTestCases.btnLogin.setEnabled(true);
 					ImportTestCases.lblAuthmessage.setText(strAuthenticationMessage);
 					ImportTestCases.lblLoginloading.setVisible(false);
@@ -838,8 +842,15 @@ public class ImportTestCaseswithSteps{
 			{
 				String result = EntityUtils.toString(response.getEntity());
 				JSONProjectList = new JSONArray(result);
-				System.out.println(JSONProjectList.toString());
-				returnCode = response.getStatusLine().getStatusCode();
+				if(JSONProjectList.length() == 0)
+				{
+					returnCode = 0;
+				}
+				else
+				{
+					System.out.println(JSONProjectList.toString());
+					returnCode = response.getStatusLine().getStatusCode();
+				}
 			}
 			else if(response.getStatusLine().getStatusCode() == 401)
 			{				

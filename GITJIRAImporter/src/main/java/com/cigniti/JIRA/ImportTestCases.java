@@ -11,6 +11,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -23,6 +24,7 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIDefaults;
 
 import java.awt.CardLayout;
 import java.awt.SystemColor;
@@ -144,7 +146,13 @@ public class ImportTestCases extends JFrame {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				//Nimbus;System;Metal;Motif
 		        if ("Nimbus".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());		            
+		            UIManager.setLookAndFeel(info.getClassName());	
+		            
+		            UIDefaults defaults = UIManager.getLookAndFeelDefaults();
+		            NimbusLookAndFeel localNimbusLookAndFeel = (NimbusLookAndFeel)UIManager.getLookAndFeel();
+		            Color derivedColor = localNimbusLookAndFeel.getDerivedColor("nimbusGreen", 0, 0.8835404F, 0, 0, true);		            
+		            defaults.put("nimbusOrange",derivedColor);
+		            
 		            break;
 		        }
 		    }
@@ -689,12 +697,12 @@ public class ImportTestCases extends JFrame {
 		panelConfirm.add(lblMappingList_1);
 		
 		lblProjectNameValue = new JLabel("Project Name Value");
-		lblProjectNameValue.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblProjectNameValue.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblProjectNameValue.setBounds(306, 80, 224, 14);
 		panelConfirm.add(lblProjectNameValue);
 		
 		lblExcelPathValue = new JLabel("Excel Path Value");
-		lblExcelPathValue.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblExcelPathValue.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblExcelPathValue.setBounds(306, 107, 336, 14);
 		panelConfirm.add(lblExcelPathValue);
 		
@@ -704,7 +712,7 @@ public class ImportTestCases extends JFrame {
 		panelConfirm.add(lblSheetName);
 		
 		lblSheetNameValue = new JLabel("Sheet Name Value");
-		lblSheetNameValue.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblSheetNameValue.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblSheetNameValue.setBounds(306, 134, 106, 16);
 		panelConfirm.add(lblSheetNameValue);
 		
@@ -730,7 +738,7 @@ public class ImportTestCases extends JFrame {
 		panelConfirm.add(lblNoOfTest);
 		
 		lblTestCasesCount = new JLabel("No. of TestValue");
-		lblTestCasesCount.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblTestCasesCount.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblTestCasesCount.setBounds(306, 163, 56, 16);
 		panelConfirm.add(lblTestCasesCount);
 		
@@ -778,15 +786,10 @@ public class ImportTestCases extends JFrame {
 		lblSuccessMessage.setBounds(146, 352, 389, 16);
 		panelFinal.add(lblSuccessMessage);
 		
-		UIManager.put("prgbarImport.background", Color.ORANGE);
-		UIManager.put("prgbarImport.foreground", Color.BLUE);
-		UIManager.put("prgbarImport.selectionBackground", Color.RED);
-		UIManager.put("prgbarImport.selectionForeground", Color.GREEN);
+
 		prgbarImport = new JProgressBar();
 		prgbarImport.setStringPainted(true);
-		prgbarImport.setForeground(new Color(0, 128, 0));
-//		prgbarImport.setBackground(Color.RED);
-//		prgbarImport.setForeground(Color.GREEN);
+		prgbarImport.setForeground(new Color(0, 0, 0));
 		prgbarImport.setBounds(136, 314, 405, 31);
 		panelFinal.add(prgbarImport);
 		

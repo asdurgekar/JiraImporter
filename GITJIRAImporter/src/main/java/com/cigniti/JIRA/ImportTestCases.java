@@ -22,6 +22,8 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import java.awt.CardLayout;
 import java.awt.SystemColor;
 import javax.swing.JPasswordField;
@@ -135,6 +137,32 @@ public class ImportTestCases extends JFrame {
 	 */
 	public ImportTestCases() {
 		
+		
+		//set look & feel for the application
+		try {
+//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				//Nimbus;System;Metal;Motif
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());		            
+		            break;
+		        }
+		    }
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
 		setResizable(false);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -219,11 +247,11 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(lblWelcomeMessage);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(269, 145, 219, 20);
+		txtPassword.setBounds(269, 145, 219, 28);
 		panelLogin.add(txtPassword);
 		
 		txtUserName = new JTextField();
-		txtUserName.setBounds(271, 96, 217, 20);
+		txtUserName.setBounds(271, 96, 217, 28);
 		panelLogin.add(txtUserName);
 		txtUserName.setColumns(10);
 		
@@ -236,15 +264,15 @@ public class ImportTestCases extends JFrame {
 		
 		chckbxRememberMe = new JCheckBox("");
 		chckbxRememberMe.setBackground(Color.WHITE);
-		chckbxRememberMe.setBounds(310, 271, 21, 14);
+		chckbxRememberMe.setBounds(310, 285, 21, 14);
 		panelLogin.add(chckbxRememberMe);
 		
 		txtAccessKey = new JPasswordField();
-		txtAccessKey.setBounds(269, 193, 219, 20);
+		txtAccessKey.setBounds(269, 193, 219, 28);
 		panelLogin.add(txtAccessKey);
 		
 		txtSecretKey = new JPasswordField();
-		txtSecretKey.setBounds(269, 244, 219, 20);
+		txtSecretKey.setBounds(269, 244, 219, 28);
 		panelLogin.add(txtSecretKey);
 		
 		JLabel lblAccessKey = new JLabel("Access Key");
@@ -259,18 +287,18 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblRememberMe = new JLabel("Remember Me");
 		lblRememberMe.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblRememberMe.setBounds(337, 273, 109, 14);
+		lblRememberMe.setBounds(343, 285, 109, 14);
 		panelLogin.add(lblRememberMe);
 		
 		lblLoginloading = new JLabel("");
-		lblLoginloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px_White.gif")));
+		lblLoginloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px.gif")));
 		lblLoginloading.setBounds(327, 342, 78, 61);
 		lblLoginloading.setVisible(false);
 		panelLogin.add(lblLoginloading);
 		
 		JLabel lblBackground = new JLabel("");
 		lblBackground.setBackground(UIManager.getColor("Button.shadow"));
-		lblBackground.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
+		lblBackground.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
 		lblBackground.setBounds(0, 0, 728, 434);
 		panelLogin.add(lblBackground);
 		
@@ -310,7 +338,7 @@ public class ImportTestCases extends JFrame {
 		
 		  	
 		});
-		txtExcelPath.setBounds(230, 180, 293, 20);
+		txtExcelPath.setBounds(230, 180, 293, 28);
 		panelSecond.add(txtExcelPath);
 		txtExcelPath.setColumns(10);
 		
@@ -332,11 +360,11 @@ public class ImportTestCases extends JFrame {
 			    }
 			}
 		});
-		btnBrowse.setBounds(533, 179, 89, 23);
+		btnBrowse.setBounds(533, 179, 89, 28);
 		panelSecond.add(btnBrowse);
 		
 		comBoxProjName = new JComboBox();
-		comBoxProjName.setBounds(230, 111, 212, 20);
+		comBoxProjName.setBounds(230, 111, 212, 25);
 		panelSecond.add(comBoxProjName);
 		
 		JLabel lblProjectName = new JLabel("Project Name");
@@ -418,7 +446,7 @@ public class ImportTestCases extends JFrame {
 		panelSecond.add(lblWorksheets);
 		
 		JLabel lblBackgroundSec = new JLabel("");
-		lblBackgroundSec.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
+		lblBackgroundSec.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
 		lblBackgroundSec.setBounds(0, 0, 728, 434);
 		panelSecond.add(lblBackgroundSec);
 		
@@ -578,13 +606,13 @@ public class ImportTestCases extends JFrame {
 		panelMapping.add(lblCheckmark);
 		
 		lblValidateloading = new JLabel("");
-		lblValidateloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px_White.gif")));
+		lblValidateloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px.gif")));
 		lblValidateloading.setBounds(295, 278, 86, 63);
 		lblValidateloading.setVisible(false);
 		panelMapping.add(lblValidateloading);
 		
 		JLabel lblBackgroundmap = new JLabel("");
-		lblBackgroundmap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
+		lblBackgroundmap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
 		lblBackgroundmap.setBounds(0, 0, 728, 434);
 		panelMapping.add(lblBackgroundmap);
 		
@@ -707,7 +735,7 @@ public class ImportTestCases extends JFrame {
 		panelConfirm.add(lblTestCasesCount);
 		
 		JLabel lblBackgroundCon = new JLabel("");
-		lblBackgroundCon.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
+		lblBackgroundCon.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
 		lblBackgroundCon.setBounds(0, 0, 728, 434);
 		panelConfirm.add(lblBackgroundCon);
 		
@@ -750,8 +778,15 @@ public class ImportTestCases extends JFrame {
 		lblSuccessMessage.setBounds(146, 352, 389, 16);
 		panelFinal.add(lblSuccessMessage);
 		
+		UIManager.put("prgbarImport.background", Color.ORANGE);
+		UIManager.put("prgbarImport.foreground", Color.BLUE);
+		UIManager.put("prgbarImport.selectionBackground", Color.RED);
+		UIManager.put("prgbarImport.selectionForeground", Color.GREEN);
 		prgbarImport = new JProgressBar();
+		prgbarImport.setStringPainted(true);
 		prgbarImport.setForeground(new Color(0, 128, 0));
+//		prgbarImport.setBackground(Color.RED);
+//		prgbarImport.setForeground(Color.GREEN);
 		prgbarImport.setBounds(136, 314, 405, 31);
 		panelFinal.add(prgbarImport);
 		
@@ -804,32 +839,9 @@ public class ImportTestCases extends JFrame {
 		txtAreaConsole.setBackground(SystemColor.control);
 		
 		JLabel lblBackgroundRun = new JLabel("");
-		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/NewBackground1.png")));
+		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
 		lblBackgroundRun.setBounds(0, 0, 728, 434);
 		panelFinal.add(lblBackgroundRun);
-		
-		try {
-//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				//Nimbus;System;Metal;Motif
-		        if ("Nimbus".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());		            
-		            break;
-		        }
-		    }
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
 		
 	}

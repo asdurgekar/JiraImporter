@@ -71,6 +71,7 @@ import com.thed.zephyr.cloud.rest.client.JwtGenerator;
 
 
 
+
 @SuppressWarnings("deprecation")
 public class CreateTestWithTestSteps {
 
@@ -78,6 +79,8 @@ public class CreateTestWithTestSteps {
 	private static String API_CREATE_TEST_STEP = "{SERVER}/public/rest/api/1.0/teststep/";
 	private static Long versionId = -1l;
 	private static String API_VALIDKEY = "{SERVER}/public/rest/api/1.0/teststep/-1?projectId=";
+	private static String API_GET_ISSUE = "{SERVER}/rest/api/2/issue/";
+	private static String API_LINK_ISSUE = "{SERVER}/rest/api/2/issueLink";
 	
 	/** Declare JIRA,Zephyr URL,access and secret Keys */
 	// Jira Cloud URL for the instance
@@ -102,6 +105,8 @@ public class CreateTestWithTestSteps {
 	private static final String createTestUri = API_CREATE_TEST.replace("{SERVER}", jiraBaseURL);
 	private static final String createTestStepUri = API_CREATE_TEST_STEP.replace("{SERVER}", zephyrBaseUrl);
 	private static final String validateKeyUri = API_VALIDKEY.replace("{SERVER}", zephyrBaseUrl);
+	private static final String getIssueUri = API_GET_ISSUE.replace("{SERVER}", jiraBaseURL);
+	private static final String issueLinkUri = API_LINK_ISSUE.replace("{SERVER}", jiraBaseURL);
 	
 	static ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
 			.build();
@@ -429,6 +434,84 @@ public class CreateTestWithTestSteps {
 		}
 		return cycleId;
 	}
+	
+	public String getIssueDetails(String IssueId) throws IOException {
+		
+		HttpResponse response = null;
+		try {
+			String finalURL = getIssueUri + IssueId;
+			HttpGet getIssueReq = new HttpGet(finalURL);
+			getIssueReq.addHeader(header);
+			getIssueReq.addHeader("Content-Type", "application/json");			
+			@SuppressWarnings("resource")
+			HttpClient restClient = new DefaultHttpClient();
+			response = restClient.execute(getIssueReq);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		int statusCode = getHTTPResponseCode(response);
+		String testId = null;
+		HttpEntity entity = response.getEntity();
+		if (statusCode >= 200 && statusCode < 300) {
+			String string = null;
+			try {
+				string = EntityUtils.toString(entity);
+				// System.out.println(string1);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println("Details retrieved for issue " + IssueId );
+
+		} else {
+			try {
+				String string = null;
+				
+				string = EntityUtils.toString(entity);
+				RespMessage = "Failure~" + string;
+				new JSONObject(string);
+				throw new ClientProtocolException("Unexpected response status: " + statusCode);
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return testId;
+	}
+	
+	
+	public String linkIssue(String InwardissueId, String issueKey, String relation) throws IOException {
+		
+		
+		System.out.println();
+		StringEntity createTestJSON = createIssueLinkJSON(InwardissueId, issueKey, relation);
+		HttpResponse response = executeCreateTestCase(issueLinkUri, header, createTestJSON);
+		int statusCode = getHTTPResponseCode(response);
+		String linkId = null;
+		HttpEntity entity = response.getEntity();
+		if (statusCode >= 200 && statusCode < 300) {			
+			System.out.println("Link is created for the issue " + issueKey );
+
+		} else {
+			try {
+				String string = null;
+				
+				string = EntityUtils.toString(entity);
+				RespMessage = "Failure~" + string;
+				new JSONObject(string);
+				throw new ClientProtocolException("Unexpected response status: " + statusCode);
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			}
+		}
+		return linkId;
+	}
 
 	
 	private static JSONObject createTestStepJSON(String testStepDescription,
@@ -549,6 +632,36 @@ public class CreateTestWithTestSteps {
 		JSONObject createTestObj = new JSONObject();
 		createTestObj.put("fields", fieldsObj);
 		return createTestObj;
+	}
+	
+	
+	private static StringEntity createIssueLinkJSON(String InwardissueId, String issueKey, String relation) {
+
+		//JSON object for relationship type of link
+		JSONObject type = new JSONObject();
+		type.put("name", relation);
+		
+		//JSON object for Issue Key to be linked
+		JSONObject inwardIssue = new JSONObject();
+		inwardIssue.put("id", InwardissueId);
+		
+		//JSON object for Issue Key to be linked
+		JSONObject outwardIssue = new JSONObject();
+		outwardIssue.put("key", issueKey);
+		
+		
+		JSONObject createLinkObj = new JSONObject();
+		createLinkObj.put("type", type);
+		createLinkObj.put("inwardIssue", inwardIssue);
+		createLinkObj.put("outwardIssue", outwardIssue);
+		
+		StringEntity createLinkJSON = null;
+		try {
+			createLinkJSON = new StringEntity(createLinkObj.toString());
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		return createLinkJSON;
 	}
 	
 	private String getFilePath(String fname)

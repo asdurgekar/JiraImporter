@@ -81,6 +81,7 @@ public class ImportTestCaseswithSteps{
 	public String OldSheetName;
 	public Boolean startCount;
 	public static String testId;
+	public static String linkId;
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
@@ -1499,6 +1500,10 @@ public class ImportTestCaseswithSteps{
 //					Globalvars.TotalTestCaseUploaded++;
 				
 				testId = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel);
+				
+				//Jira API to get details about an issue. To be used for debugging
+				//testId = createTestWithTestSteps.getIssueDetails("CAPPS-10986");
+				
 				//check if there is failure
 				if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 				{
@@ -1506,7 +1511,15 @@ public class ImportTestCaseswithSteps{
 					return retMessage;
 				}
 				retMessage = "Created Test Case : '" + testSummary + "'\n";
-
+				
+				linkId = createTestWithTestSteps.linkIssue(String.valueOf(testId),"CAPPS-10986","Relates");
+				
+				if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+				{
+					retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
+					return retMessage;
+				}
+				retMessage+= "Link created for the issue: '" + testSummary + "'\n";
 //				if(!startCount)
 //					startCount = true;
 			}

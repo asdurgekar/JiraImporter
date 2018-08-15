@@ -470,61 +470,19 @@ public class ImportTestCases extends JFrame {
 		contentPane.add(panelMapping, "name_1090770973820144");
 		panelMapping.setLayout(null);
 		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(75, 100, 119, 117);
-		panelMapping.add(scrollPane_2);
-		
-		lstJiraFields = new JList();
-		scrollPane_2.setViewportView(lstJiraFields);
-		lstJiraFields.setBorder(null);
-		lstJiraFields.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
-		
-		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setBounds(236, 100, 119, 117);
-		panelMapping.add(scrollPane_3);
-		
-		lstExcelColumns = new JList();
-		scrollPane_3.setViewportView(lstExcelColumns);
-		lstExcelColumns.setBorder(null);
-		lstExcelColumns.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(482, 95, 205, 128);
-		panelMapping.add(scrollPane);
-		
-		tblMapping = new JTable();
-		tblMapping.setBorder(new MatteBorder(1, 0, 0, 0, (Color) new Color(0, 0, 0)));
-		scrollPane.setViewportView(tblMapping);
-		tblMapping.setFillsViewportHeight(true);
-		tblMapping.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Jira Field", "Excel Column"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, String.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		
 		JLabel lblJiraFields = new JLabel("Jira Fields");
 		lblJiraFields.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblJiraFields.setBounds(96, 73, 86, 14);
+		lblJiraFields.setBounds(96, 41, 86, 14);
 		panelMapping.add(lblJiraFields);
 		
 		JLabel lblExcelColumn = new JLabel("Excel Column");
 		lblExcelColumn.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblExcelColumn.setBounds(252, 73, 86, 14);
+		lblExcelColumn.setBounds(250, 41, 86, 14);
 		panelMapping.add(lblExcelColumn);
 		
 		JLabel lblMappingList = new JLabel("Mapping List");
 		lblMappingList.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblMappingList.setBounds(529, 68, 86, 14);
+		lblMappingList.setBounds(542, 41, 86, 14);
 		panelMapping.add(lblMappingList);
 		
 		JButton btnAdd = new JButton(">>");
@@ -534,7 +492,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnAddToMapping();
 			}
 		});
-		btnAdd.setBounds(381, 148, 73, 23);
+		btnAdd.setBounds(381, 119, 73, 23);
 		panelMapping.add(btnAdd);
 		
 		JButton btnRemove = new JButton("<<");
@@ -544,7 +502,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnRemovefromMapping();
 			}
 		});
-		btnRemove.setBounds(380, 194, 74, 23);
+		btnRemove.setBounds(381, 154, 74, 23);
 		panelMapping.add(btnRemove);
 		
 		JButton btnMapCancel = new JButton("Cancel");
@@ -619,10 +577,51 @@ public class ImportTestCases extends JFrame {
 		lblValidateloading.setVisible(false);
 		panelMapping.add(lblValidateloading);
 		
-		JLabel lblBackgroundmap = new JLabel("");
-		lblBackgroundmap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
-		lblBackgroundmap.setBounds(0, 0, 728, 434);
-		panelMapping.add(lblBackgroundmap);
+		JScrollPane scrollPane_3 = new JScrollPane();
+		scrollPane_3.setBounds(60, 67, 128, 173);
+		panelMapping.add(scrollPane_3);
+		
+		lstJiraFields = new JList();
+		scrollPane_3.setViewportView(lstJiraFields);
+		lstJiraFields.setBorder(null);
+		lstJiraFields.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(224, 67, 128, 174);
+		panelMapping.add(scrollPane_2);
+		
+		lstExcelColumns = new JList();
+		scrollPane_2.setViewportView(lstExcelColumns);
+		lstExcelColumns.setBorder(null);
+		lstExcelColumns.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(480, 67, 195, 173);
+		panelMapping.add(scrollPane);
+		
+		tblMapping = new JTable();
+		scrollPane.setViewportView(tblMapping);
+		tblMapping.setBorder(new MatteBorder(1, 0, 0, 0, (Color) new Color(0, 0, 0)));
+		tblMapping.setFillsViewportHeight(true);
+		tblMapping.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Jira Field", "Excel Column"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		
+		JLabel lblBackgroundMap = new JLabel("");
+		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackgroundMap.setBounds(0, 0, 728, 434);
+		panelMapping.add(lblBackgroundMap);
 		
 		panelConfirm = new JPanel();
 		panelConfirm.addComponentListener(new ComponentAdapter() {
@@ -642,7 +641,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnLaunchRunPanel();
 			}
 		});
-		btnRun.setBounds(400, 347, 89, 23);
+		btnRun.setBounds(402, 365, 89, 23);
 		panelConfirm.add(btnRun);
 		
 		JLabel lblConfirmation = new JLabel("Confirmation");
@@ -662,7 +661,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnLaunchMappingPanel();
 			}
 		});
-		btnBack_2.setBounds(293, 347, 89, 23);
+		btnBack_2.setBounds(293, 365, 89, 23);
 		panelConfirm.add(btnBack_2);
 		
 		JButton btnCancel_2 = new JButton("Cancel");
@@ -678,7 +677,7 @@ public class ImportTestCases extends JFrame {
 		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			}
 		});
-		btnCancel_2.setBounds(183, 347, 89, 23);
+		btnCancel_2.setBounds(183, 365, 89, 23);
 		panelConfirm.add(btnCancel_2);
 		
 		JLabel lblProjectName_1 = new JLabel("Project Name");
@@ -717,10 +716,11 @@ public class ImportTestCases extends JFrame {
 		panelConfirm.add(lblSheetNameValue);
 		
 		JScrollPane scrollPane_4 = new JScrollPane();
-		scrollPane_4.setBounds(306, 198, 206, 128);
+		scrollPane_4.setBounds(302, 191, 228, 162);
 		panelConfirm.add(scrollPane_4);
 		
 		tblMapConfirm = new JTable();
+		scrollPane_4.setViewportView(tblMapConfirm);
 		tblMapConfirm.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
@@ -728,7 +728,6 @@ public class ImportTestCases extends JFrame {
 				"Jira Fields", "Excel Columns"
 			}
 		));
-		scrollPane_4.setViewportView(tblMapConfirm);
 		tblMapConfirm.setFillsViewportHeight(true);
 		tblMapConfirm.setBorder(new MatteBorder(1, 0, 0, 0, (Color) new Color(0, 0, 0)));
 		

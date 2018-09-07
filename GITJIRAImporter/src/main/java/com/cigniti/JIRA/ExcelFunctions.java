@@ -31,24 +31,30 @@ public class ExcelFunctions {
 	public static String fn_GetCellData(String WbookPath, String SheetName, int RowNum, String ColumnName)
 			throws IOException {
 
-		final MissingCellPolicy CREATE_NULL_AS_BLANK = MissingCellPolicy.CREATE_NULL_AS_BLANK;
-		FileInputStream FISObj = new FileInputStream(WbookPath);
-		@SuppressWarnings("resource")
-		XSSFWorkbook WbookObj = new XSSFWorkbook(FISObj);
-		XSSFSheet WSheetObj = WbookObj.getSheet(SheetName);
-		XSSFRow RowObj = WSheetObj.getRow(RowNum);
-		int columnNumber = fn_GetCellNumberByColumName(WSheetObj, ColumnName);
-		XSSFCell CellObj = RowObj.getCell(columnNumber, CREATE_NULL_AS_BLANK);
-		int celltypenumber = CellObj.getCellType();
-		String CellVal = null;
-		if (celltypenumber == XSSFCell.CELL_TYPE_NUMERIC) {
-			Double DblCellVal = CellObj.getNumericCellValue();
-			Integer intcellval = DblCellVal.intValue();
-			CellVal = intcellval.toString();
-		} else if (celltypenumber == XSSFCell.CELL_TYPE_STRING) {
-			CellVal = CellObj.getStringCellValue();
+		try {
+			final MissingCellPolicy CREATE_NULL_AS_BLANK = MissingCellPolicy.CREATE_NULL_AS_BLANK;
+			FileInputStream FISObj = new FileInputStream(WbookPath);
+			@SuppressWarnings("resource")
+			XSSFWorkbook WbookObj = new XSSFWorkbook(FISObj);
+			XSSFSheet WSheetObj = WbookObj.getSheet(SheetName);
+			XSSFRow RowObj = WSheetObj.getRow(RowNum);
+			int columnNumber = fn_GetCellNumberByColumName(WSheetObj, ColumnName);
+			XSSFCell CellObj = RowObj.getCell(columnNumber, CREATE_NULL_AS_BLANK);
+			int celltypenumber = CellObj.getCellType();
+			String CellVal = null;
+			if (celltypenumber == XSSFCell.CELL_TYPE_NUMERIC) {
+				Double DblCellVal = CellObj.getNumericCellValue();
+				Integer intcellval = DblCellVal.intValue();
+				CellVal = intcellval.toString();
+			} else if (celltypenumber == XSSFCell.CELL_TYPE_STRING) {
+				CellVal = CellObj.getStringCellValue();
+			}
+			return CellVal;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw(e);
 		}
-		return CellVal;
 	}
 
 	/**
@@ -118,13 +124,19 @@ public class ExcelFunctions {
 	 */
 	public static int fn_GetRowCount(String xl_FilePath, String SheetName) throws IOException {
 
-		File xlFileObj = new File(xl_FilePath);
-		FileInputStream FISObj = new FileInputStream(xlFileObj);
-		@SuppressWarnings("resource")
-		XSSFWorkbook WbookObj = new XSSFWorkbook(FISObj);
-		XSSFSheet WSheetObj = WbookObj.getSheet(SheetName);
-		int rowcount = WSheetObj.getLastRowNum();
-		return rowcount;
+		try {
+			File xlFileObj = new File(xl_FilePath);
+			FileInputStream FISObj = new FileInputStream(xlFileObj);
+			@SuppressWarnings("resource")
+			XSSFWorkbook WbookObj = new XSSFWorkbook(FISObj);
+			XSSFSheet WSheetObj = WbookObj.getSheet(SheetName);
+			int rowcount = WSheetObj.getLastRowNum();
+			return rowcount;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw(e);
+		}
 	}
 	
 	

@@ -446,6 +446,14 @@ public class ImportTestCaseswithSteps{
 				    ProjectMap.put(Project.get("name").toString(),Project.get("id").toString());
 				}
 				ImportTestCases.comBoxProjName.setModel(new DefaultComboBoxModel(ProjectList.toArray()));
+				ImportTestCases.comBoxProjName.setSelectedIndex(-1);				
+				
+				//reset all the fields to initial state
+				ImportTestCases.lstWorkSheets.setListData(new Object[0]);
+				ImportTestCases.txtExcelPath.setText("");
+				ImportTestCases.txtExcelPath.setEnabled(false);
+				ImportTestCases.btnBrowse.setEnabled(false);
+				ImportTestCases.lblValidationMessage.setText("");
 				System.out.println("Project values are loaded onto the application");
 			}
 			

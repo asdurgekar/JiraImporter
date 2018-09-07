@@ -71,6 +71,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class ImportTestCases extends JFrame {
 
@@ -114,6 +116,7 @@ public class ImportTestCases extends JFrame {
 	public static JButton btnLogin;
 	public static JLabel lblValidateloading;
 	public static JButton btnMapNext;
+	public static JButton btnBrowse;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	
@@ -323,6 +326,7 @@ public class ImportTestCases extends JFrame {
 		panelSecond.setLayout(null);
 		
 		txtExcelPath = new JTextField();
+		txtExcelPath.setEnabled(false);
 		txtExcelPath.getDocument().addDocumentListener(new DocumentListener() {
 			  public void changedUpdate(DocumentEvent e) {
 				  
@@ -350,7 +354,8 @@ public class ImportTestCases extends JFrame {
 		panelSecond.add(txtExcelPath);
 		txtExcelPath.setColumns(10);
 		
-		JButton btnBrowse = new JButton("Browse");
+		btnBrowse = new JButton("Browse");
+		btnBrowse.setEnabled(false);
 		btnBrowse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -372,6 +377,17 @@ public class ImportTestCases extends JFrame {
 		panelSecond.add(btnBrowse);
 		
 		comBoxProjName = new JComboBox();
+		comBoxProjName.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				
+				JComboBox comboBoxIn = (JComboBox) arg0.getSource();
+				if(comboBoxIn.getSelectedIndex() >= 0)
+				{
+					txtExcelPath.setEnabled(true);
+					btnBrowse.setEnabled(true);
+				}
+			}
+		});
 		comBoxProjName.setBounds(230, 111, 212, 25);
 		panelSecond.add(comBoxProjName);
 		

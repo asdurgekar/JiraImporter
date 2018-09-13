@@ -584,9 +584,9 @@ public class ImportTestCaseswithSteps{
 			JiraExcelMap.put("Summary", "");
 			JiraExcelMap.put("Labels", "");
 			JiraExcelMap.put("Description", "");
-			JiraExcelMap.put("Step", "");
-			JiraExcelMap.put("Data", "");
-			JiraExcelMap.put("Result", "");
+			JiraExcelMap.put("Test Step", "");
+			JiraExcelMap.put("Test Data", "");
+			JiraExcelMap.put("Expected Result", "");
 			
 			//new fields for Issue linking
 			JiraExcelMap.put("Link Issue", "");
@@ -962,9 +962,9 @@ public class ImportTestCaseswithSteps{
 							strLinkIssue = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Link Issue"));
 							strLinkType = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Link Type"));
 							
-							strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Step"));
-							strTestData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Data"));
-							strExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Result"));
+							strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Test Step"));
+							strTestData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Test Data"));
+							strExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Expected Result"));
 						} catch (Exception e) {
 							
 							returnMessage = "Excel Operation Failure: " + e.getMessage();							
@@ -1112,86 +1112,6 @@ public class ImportTestCaseswithSteps{
 		}
 		
 		return returnMessage;
-		
-		//------------------------------------without loading icon---------------------------------------		
-		
-//		try
-//		{
-//			String returnMessage = "Success";
-//			String strRowString = "";
-//			int TotalTestCaseCount = 0;
-//			//get total row count
-//			int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
-//			
-//			String strTestStep = "";
-//			String strTestData = "";
-//			String strExpectedResult = "";
-//			for(int intRowCounter = 1;intRowCounter <= rowCount; intRowCounter++)
-//			{
-//				strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Step"));
-//				strTestData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Data"));
-//				strExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Result"));
-//				
-//				//verify blank values for Test Step
-//				if(strTestStep == null)
-//				{
-//					returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
-//					return returnMessage;
-//				}
-//				else if(strTestStep.trim().isEmpty())
-//				{
-//					returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
-//					return returnMessage;
-//				}
-//			
-//				//verify blank values for Test Data
-//				if(strTestData == null)
-//				{
-//					returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
-//					return returnMessage;
-//				}
-//				else if(strTestData.trim().isEmpty())
-//				{
-//					returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
-//					return returnMessage;
-//				}
-//			
-//				//verify blank values for Expected Result
-//				if(strExpectedResult == null)
-//				{
-//					returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
-//					return returnMessage;
-//				}
-//				else if(strExpectedResult.trim().isEmpty())
-//				{
-//					returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
-//					return returnMessage;
-//				}
-//			
-//			}
-//			//get total count of test cases
-//			for(int intRowCounter = 1;intRowCounter <=rowCount; intRowCounter++)
-//			{
-//				strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
-//				if(strRowString != null)
-//				{
-//					TotalTestCaseCount++;
-//				}
-//			
-//			}
-//			Globalvars.TotalTestCaseCount = TotalTestCaseCount;
-//			
-//			
-//			return returnMessage;
-//			
-//			
-//				
-//		}
-//		catch(Exception e)
-//		{
-//			e.printStackTrace();
-//		}
-//		return null;
 		
 	}
 
@@ -1349,7 +1269,7 @@ public class ImportTestCaseswithSteps{
 			//Load values
 			ImportTestCases.lblExcelPathValue.setText(Globalvars.ExcelSheetPath);
 			ImportTestCases.lblSheetNameValue.setText(Globalvars.ExcelWorkSheetName);
-			ImportTestCases.lblTestCasesCount.setText(String.valueOf(Globalvars.TotalTestCaseCount));
+			ImportTestCases.lblTestCasesCount.setText(String.valueOf((int)Globalvars.TotalTestCaseCount));
 			
 			//clear table if any existing rows
 			DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapConfirm.getModel();
@@ -1394,7 +1314,7 @@ public class ImportTestCaseswithSteps{
 			ImportTestCases.lblSuccessMessage.setText("");
 			
 			//Load values
-			ImportTestCases.lblTotaltestcasesvalue.setText(String.valueOf(Globalvars.TotalTestCaseCount));
+			ImportTestCases.lblTotaltestcasesvalue.setText(String.valueOf((int)Globalvars.TotalTestCaseCount));
 			ImportTestCases.lblTotaltestcasesuploadedvalue.setText(String.valueOf(Globalvars.TotalTestCaseUploaded));
 			ImportTestCases.prgbarImport.setValue(0);
 			
@@ -1447,7 +1367,7 @@ public class ImportTestCaseswithSteps{
 						}
 						else
 						{
-							setProgress(Globalvars.TotalTestCaseUploaded * (100/Globalvars.TotalTestCaseCount));							
+							setProgress((int)(Globalvars.TotalTestCaseUploaded * (100/Globalvars.TotalTestCaseCount)));							
 						}
 						
 					}
@@ -1550,9 +1470,9 @@ public class ImportTestCaseswithSteps{
 			testSummary = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Summary"));		
 			testDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Description"));
 			
-			testStepDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Step"));
-			testStepData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Data"));
-			testStepExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Result"));
+			testStepDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Test Step"));
+			testStepData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Test Data"));
+			testStepExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Expected Result"));
 			
 			if(testSummary != null)
 			{

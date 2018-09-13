@@ -41,7 +41,7 @@ public class Globalvars {
 	
 	public static String ExcelSheetPath = "";
 	public static String ExcelWorkSheetName = "";
-	public static int TotalTestCaseCount = 0;
+	public static double TotalTestCaseCount = 0;
 	public static int TotalTestCaseUploaded = 0;
 	
 	public static String strPreferencesPath = System.getenv("APPDATA") + "\\JiraImporter\\Preferences.config";

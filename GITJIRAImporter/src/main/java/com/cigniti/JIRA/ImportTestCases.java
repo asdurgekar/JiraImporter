@@ -1,6 +1,5 @@
 package com.cigniti.JIRA;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -8,13 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import javax.swing.DefaultListModel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import java.awt.Toolkit;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -23,7 +17,6 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 
 import java.awt.CardLayout;
@@ -32,14 +25,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 
-import java.awt.List;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -50,23 +37,13 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import com.cigniti.util.Globalvars;
-
-import javax.swing.JTree;
-import javax.swing.JTextPane;
 import javax.swing.JCheckBox;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import javax.swing.border.EtchedBorder;
 import javax.swing.JScrollPane;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
-import javax.swing.border.LineBorder;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.JProgressBar;

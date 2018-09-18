@@ -7,7 +7,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingWorker;
 
 import java.awt.event.ActionListener;
@@ -15,19 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 
-import com.cigniti.util.Globalvars;
 
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import java.awt.Color;
-import java.awt.SystemColor;
-import java.awt.Toolkit;
-import java.awt.Panel;
-import javax.swing.JSpinner;
 import java.awt.Font;
-import java.awt.Window.Type;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
 
 public class LoadToJira {

@@ -961,13 +961,13 @@ public class ImportTestCaseswithSteps{
 								{	
 									if(strLinkType == null)
 									{
-										returnMessage = "'Link Type' value is required at row " + intRowCounter;
+										returnMessage = "'Link Type' value is required at row " + (intRowCounter + 1);
 										blnValidationFlag = false;
 										break;
 									}
 									else if(strLinkType.trim().isEmpty())
 									{
-										returnMessage = "'Link Type' value is required at row " + intRowCounter;
+										returnMessage = "'Link Type' value is required at row " + (intRowCounter + 1);
 										blnValidationFlag = false;
 										break;
 									}
@@ -980,13 +980,13 @@ public class ImportTestCaseswithSteps{
 						//verify blank values for Test Step
 						if(strTestStep == null)
 						{
-							returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
+							returnMessage = "Blank value in Column 'Test Step' at row " + (intRowCounter + 1);
 							blnValidationFlag = false;
 							break;
 						}
 						else if(strTestStep.trim().isEmpty())
 						{
-							returnMessage = "Blank value in Column 'Test Step' at row " + intRowCounter;
+							returnMessage = "Blank value in Column 'Test Step' at row " + (intRowCounter + 1);
 							blnValidationFlag = false;
 							break;
 						}
@@ -994,13 +994,13 @@ public class ImportTestCaseswithSteps{
 						//verify blank values for Test Data
 						if(strTestData == null)
 						{
-							returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
+							returnMessage = "Blank value in Column 'Test Data' at row " + (intRowCounter + 1);
 							blnValidationFlag = false;
 							break;
 						}
 						else if(strTestData.trim().isEmpty())
 						{
-							returnMessage = "Blank value in Column 'Test Data' at row " + intRowCounter;
+							returnMessage = "Blank value in Column 'Test Data' at row " + (intRowCounter + 1);
 							blnValidationFlag = false;
 							break;
 						}
@@ -1008,13 +1008,13 @@ public class ImportTestCaseswithSteps{
 						//verify blank values for Expected Result
 						if(strExpectedResult == null)
 						{
-							returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
+							returnMessage = "Blank value in Column 'Expected Result' at row " + (intRowCounter + 1);
 							blnValidationFlag = false;
 							break;
 						}
 						else if(strExpectedResult.trim().isEmpty())
 						{
-							returnMessage = "Blank value in Column 'Expected Result' at row " + intRowCounter;
+							returnMessage = "Blank value in Column 'Expected Result' at row " + (intRowCounter + 1);
 							blnValidationFlag = false;
 							break;
 						}

@@ -72,8 +72,12 @@ public class ImportTestCaseswithSteps{
 	public String KeyResponse;
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
+	
+	//Initial prototype
+	
 	public void fn_ImportTestCaseswithSteps() throws IOException {
 
+		/*
 		try
 		{
 			
@@ -149,10 +153,11 @@ public class ImportTestCaseswithSteps{
 		}
 		
 	
-	
+		*/
 		
 	}
 	
+
 	
 	public boolean fn_LoginToJira() {
 
@@ -570,6 +575,9 @@ public class ImportTestCaseswithSteps{
 			JiraExcelMap.put("Link Issue", "");
 			JiraExcelMap.put("Link Type", "");
 			
+			//Sprint field
+			JiraExcelMap.put("Sprint", "");
+			
 			JiralistModel = new DefaultListModel();
 			
 			//enable Validate button if no elements exist in list
@@ -937,12 +945,14 @@ public class ImportTestCaseswithSteps{
 						
 						try {
 							strSummary = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Summary"));
-							strLinkIssue = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Link Issue"));
-							strLinkType = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Link Type"));
 							
 							strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Test Step"));
 							strTestData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Test Data"));
 							strExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Expected Result"));
+							
+							strLinkIssue = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Link Issue"));
+							strLinkType = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Link Type"));
+							
 						} catch (Exception e) {
 							
 							returnMessage = "Excel Operation Failure: " + e.getMessage();							
@@ -1436,14 +1446,11 @@ public class ImportTestCaseswithSteps{
 		String retMessage = "";
 		try {
 			String ApplicationLabel, testSummary, testDescription, testStepDescription, testStepData,
-					testStepExpectedResult, linkIssue, linkType;
+					testStepExpectedResult, linkIssue, linkType, affectsVersion, sprint;
 			//String testId = "";			
 			
 			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Labels"));
 			
-			//new fields for issue linking
-			linkIssue = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Link Issue"));
-			linkType = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Link Type"));
 			
 			testSummary = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Summary"));		
 			testDescription = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Description"));
@@ -1452,13 +1459,19 @@ public class ImportTestCaseswithSteps{
 			testStepData = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Test Data"));
 			testStepExpectedResult = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Expected Result"));
 			
+			//new fields for issue linking
+			linkIssue = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Link Issue"));
+			linkType = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Link Type"));
+			//Sprint
+			sprint = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Sprint"));
+			
 			if(testSummary != null)
 			{
 				//get test case completion count
 //				if(startCount)
 //					Globalvars.TotalTestCaseUploaded++;
 				
-				testId = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel);
+				testId = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel, sprint);
 				
 				//Jira API to get details about an issue. To be used for debugging
 				//testId = createTestWithTestSteps.getIssueDetails("CAPPS-10986");

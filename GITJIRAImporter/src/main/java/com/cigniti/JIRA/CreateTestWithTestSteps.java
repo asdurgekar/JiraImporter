@@ -121,6 +121,8 @@ public class CreateTestWithTestSteps {
 		 * field objects if required
 		 */
 		
+		//Not in use
+		/*
 		CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 		
 		
@@ -151,6 +153,8 @@ public class CreateTestWithTestSteps {
 		//addAttachment("10627", projectId);
 	//	addAttachmentToIssue(testId, "C:\\Users\\dinran\\Downloads\\Zephyr1.png");
 		//createTestWithTestSteps.addAttachmentToIssue(testId, "C:\\Users\\dinran\\Downloads\\pom.xml");
+		 
+		 */
 	}
 
 	@SuppressWarnings("resource")
@@ -235,12 +239,12 @@ public class CreateTestWithTestSteps {
 	}
 
 	public String createTestCaseinJira(String testSummary, String testDescription,
-			String ApplicationLabel) throws IOException {
+			String ApplicationLabel, String sprint) throws IOException {
 		
 		testDescription = getTextFromHTML(testDescription);
 		testSummary = getTextFromHTML(testSummary);
 
-		StringEntity createTestJSON = createTestCaseEntity(testSummary, testDescription, ApplicationLabel);
+		StringEntity createTestJSON = createTestCaseEntity(testSummary, testDescription, ApplicationLabel, sprint);
 		HttpResponse response = executeCreateTestCase(createTestUri, header, createTestJSON);
 		int statusCode = getHTTPResponseCode(response);
 		String testId = null;
@@ -566,8 +570,8 @@ public class CreateTestWithTestSteps {
 		return response;
 	}
 
-	private static StringEntity createTestCaseEntity(String testSummary, String testDescription, String ApplicationLabel) {
-		JSONObject createTestObj = createTestCaseJSON(testSummary, testDescription, ApplicationLabel);
+	private static StringEntity createTestCaseEntity(String testSummary, String testDescription, String ApplicationLabel, String sprint) {
+		JSONObject createTestObj = createTestCaseJSON(testSummary, testDescription, ApplicationLabel, sprint);
 		StringEntity createTestJSON = null;
 		try {
 			createTestJSON = new StringEntity(createTestObj.toString());
@@ -592,17 +596,38 @@ public class CreateTestWithTestSteps {
 		return almText;
 	}
 	
+	@SuppressWarnings("null")
 	private static JSONObject createTestCaseJSON(String testSummary, String testDescription,
-			String ApplicationLabel) {
+			String ApplicationLabel, String sprint) {
 		JSONObject projectObj = new JSONObject();
 		projectObj.put("id", projectId); // Project ID where the Test to be
 		// Created
 
+		// type
 		JSONObject issueTypeObj = new JSONObject();
 		issueTypeObj.put("id", issueTypeId); // IssueType ID which is Test isse
-		// type
-		String[] LabelsObj = {ApplicationLabel};
-		JSONArray LabelsArrayObj = new JSONArray(Arrays.asList(LabelsObj));
+		
+		//Labels
+		String[] LabelsObj = {ApplicationLabel.trim()};
+		String[] LabelsInitObj = null;
+		if(ApplicationLabel.contains(","))
+		{	
+			LabelsInitObj =  ApplicationLabel.split(",");
+			LabelsObj = new String[ApplicationLabel.split(",").length];
+			for (int i = 0; i < LabelsInitObj.length; i++)
+				LabelsObj[i] = LabelsInitObj[i].trim();
+		}		
+		
+		JSONArray LabelsArrayObj = new JSONArray(Arrays.asList(LabelsObj));		
+		
+		//Affects Version
+		
+		
+//		JSONObject VersionObj = new JSONObject();
+//		VersionObj.put("id", affectsVersion);
+//		
+//		JSONArray VersionArrayObj = new JSONArray(Arrays.asList(VersionObj));
+		
 		
 		// JSONObject assigneeObj = new JSONObject();/
 		// assigneeObj.put("name", userName); // Username of the assignee
@@ -625,6 +650,14 @@ public class CreateTestWithTestSteps {
 		fieldsObj.put("labels", LabelsArrayObj);
 		fieldsObj.put("description", testDescription);
 		fieldsObj.put("issuetype", issueTypeObj);
+		//fieldsObj.put("versions", VersionArrayObj);
+		//Optional field with condition
+		if(sprint != null)
+			fieldsObj.put("customfield_10103", Integer.valueOf(sprint));
+		
+		
+		
+		
 		// fieldsObj.put("assignee", assigneeObj);
 		// fieldsObj.put("reporter", reporterObj);
 

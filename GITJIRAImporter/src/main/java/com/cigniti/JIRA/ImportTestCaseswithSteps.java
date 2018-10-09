@@ -59,6 +59,7 @@ public class ImportTestCaseswithSteps{
 	public String OldSheetName;
 	public Boolean startCount;
 	public static String testId;
+	public static String testKey;
 	public static String linkId;
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
@@ -1446,8 +1447,13 @@ public class ImportTestCaseswithSteps{
 		String retMessage = "";
 		try {
 			String ApplicationLabel, testSummary, testDescription, testStepDescription, testStepData,
-					testStepExpectedResult, linkIssue, linkType, affectsVersion, sprint;
-			//String testId = "";			
+					testStepExpectedResult, linkIssue, linkType, affectsVersion, sprint, str_TestDetails;
+			//Check if TestCaseId/IssueKey Column exist
+			if(!ExcelFunctions.fn_VerifyColumnExist(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, "TestCaseId"))
+			{
+				//if not, create a new TestCaseId Column
+				ExcelFunctions.fn_AddColumn(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, "TestCaseId");
+			}
 			
 			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Labels"));
 			
@@ -1471,7 +1477,11 @@ public class ImportTestCaseswithSteps{
 //				if(startCount)
 //					Globalvars.TotalTestCaseUploaded++;
 				
-				testId = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel, sprint);
+				//receive testid if optional boolean parameter is not passed
+				str_TestDetails = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel, sprint, true);
+				
+				testId = str_TestDetails.split(":")[0];
+				testKey = str_TestDetails.split(":")[1]; 
 				
 				//Jira API to get details about an issue. To be used for debugging
 				//testId = createTestWithTestSteps.getIssueDetails("CAPPS-10986");
@@ -1482,7 +1492,7 @@ public class ImportTestCaseswithSteps{
 					retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
 					return retMessage;
 				}
-				retMessage = "Created Test Case : '" + testSummary + "'\n";
+				retMessage = "Created Test Case '" + testKey + "': '" + testSummary + "'\n";
 				
 				if(linkIssue != null && linkType != null)
 				{
@@ -1495,8 +1505,10 @@ public class ImportTestCaseswithSteps{
 					}
 					retMessage+= "This test case is linked to : '" + linkIssue + " successfully '\n";
 				}
-//				if(!startCount)
-//					startCount = true;
+				
+				//Update Test Case Id for the created test case
+				ExcelFunctions.fn_SetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, "TestCaseId", counter, testKey);
+				
 			}
 //			//get test case completion count
 //			else

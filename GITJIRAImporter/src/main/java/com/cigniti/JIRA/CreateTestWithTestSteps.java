@@ -239,8 +239,19 @@ public class CreateTestWithTestSteps {
 	}
 
 	public String createTestCaseinJira(String testSummary, String testDescription,
-			String ApplicationLabel, String sprint) throws IOException {
+			String ApplicationLabel, String sprint, Boolean... getIssueKey) throws IOException {
 		
+		String str_TestCaseReturn = null;
+		Boolean bln_SendIDAndKey = false;
+		if (getIssueKey.length > 0) {
+			// int_SearchResultsRow = int_SearchResults.length > 0 ?
+			// int_SearchResults[0] : 0;
+			if(getIssueKey[0] == true)
+			{
+				bln_SendIDAndKey = true;
+			}
+			
+		}
 		testDescription = getTextFromHTML(testDescription);
 		testSummary = getTextFromHTML(testSummary);
 
@@ -248,9 +259,23 @@ public class CreateTestWithTestSteps {
 		HttpResponse response = executeCreateTestCase(createTestUri, header, createTestJSON);
 		int statusCode = getHTTPResponseCode(response);
 		String testId = null;
+		String testKey = null;
 		HttpEntity entity = response.getEntity();
 		if (statusCode >= 200 && statusCode < 300) {
-			testId = getTestCaseId(entity);
+			
+			
+			//if you are retrieving only Id after creation
+			if(!bln_SendIDAndKey)
+			{
+				str_TestCaseReturn = getTestCaseId(entity);
+			}
+			//if you are retrieving Id & Key after creation
+			else
+			{
+				str_TestCaseReturn = getTestCaseIDKey(entity);
+			}
+			
+			
 			System.out.println("Created Test Case in JIRA " + testDescription );
 
 		} else {
@@ -266,7 +291,7 @@ public class CreateTestWithTestSteps {
 				e.printStackTrace();
 			}
 		}
-		return testId;
+		return str_TestCaseReturn;
 	}
 
 	public String createCycleInJIRA(String cycleName, String cycleDescription) throws JSONException, URISyntaxException {
@@ -544,6 +569,25 @@ public class CreateTestWithTestSteps {
 		testId = createTestResp.getString("id");
 		return testId;
 	}
+	
+	private static String getTestCaseIDKey(HttpEntity entity) {
+		String testId;
+		String testKey;
+		String string = null;
+		try {
+			string = EntityUtils.toString(entity);
+			// System.out.println(string1);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		JSONObject createTestResp = new JSONObject(string);
+		testId = createTestResp.getString("id");
+		testKey = createTestResp.getString("key");
+		return testId + ":" + testKey;
+	}
 
 	private static int getHTTPResponseCode(HttpResponse response) {
 		int statusCode = response.getStatusLine().getStatusCode();
@@ -654,9 +698,7 @@ public class CreateTestWithTestSteps {
 		//Optional field with condition
 		if(sprint != null)
 			fieldsObj.put("customfield_10103", Integer.valueOf(sprint));
-		
-		
-		
+	
 		
 		// fieldsObj.put("assignee", assigneeObj);
 		// fieldsObj.put("reporter", reporterObj);

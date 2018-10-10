@@ -47,7 +47,7 @@ public class Globalvars {
 	public static String strCloudLocation = "\\\\racns\\department_3$\\InfTech\\Jira\\JiraTestCaseImporter\\";
 	public static String strLocalLocation = System.getenv("APPDATA") + "\\JiraImporter\\";
 	public static String strPreferencesConfigFileName = "Preferences.config";
-	public static String strExeFileName = "JiraTestCaseImporter.exe";
+	public static String strExeFileName = "JiraTestCaseImporterCore.exe";
 	public static String strVersionFileName = "version.ini";
 	public static String strReleaseInfoFileName = "ReleaseNotes.html";
 	public static String strPreferencesPath = strLocalLocation + strPreferencesConfigFileName;

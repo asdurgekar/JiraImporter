@@ -27,7 +27,7 @@ public class SupportingMethods {
 	{
 		try {
 		@SuppressWarnings("unused")
-		String command = "cmd /c start " + System.getenv("APPDATA") + "/JiraImporter/JiraTestCaseImporter.exe ";
+		String command = "cmd /c start " + Globalvars.strLocalExePath;
 		Runtime rt = Runtime.getRuntime();
 		Process pr = rt.exec(command);
 		//Exit for Version dialog

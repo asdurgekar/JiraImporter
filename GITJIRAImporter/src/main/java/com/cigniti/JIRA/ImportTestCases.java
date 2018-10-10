@@ -37,6 +37,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.launch.SupportingMethods;
+
 import javax.swing.JCheckBox;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -96,7 +98,7 @@ public class ImportTestCases extends JFrame {
 	public static JButton btnBrowse;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
-	
+	SupportingMethods suppMethods = new SupportingMethods();
 	/**
 	 * Launch the application.
 	 */
@@ -150,6 +152,7 @@ public class ImportTestCases extends JFrame {
 			e1.printStackTrace();
 		}
 		
+		ITCWS.versionNumber = suppMethods.fnGetLocalVersion();
 		
 		setResizable(false);
 		addWindowListener(new WindowAdapter() {
@@ -157,6 +160,7 @@ public class ImportTestCases extends JFrame {
 			public void windowOpened(WindowEvent arg0) {
 				ITCWS.fnInitialization();
 				ITCWS.fnLoadPreferences();
+				
 			}
 			
 		});

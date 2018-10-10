@@ -112,7 +112,7 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblANewVersion = new JLabel("Version 1.6 of Jira Test Case Importer is available for download.");
+		JLabel lblANewVersion = new JLabel("Version " + strCloudVersion + " of Jira Test Case Importer is available for download.");
 		lblANewVersion.setFont(new Font("SansSerif", Font.BOLD, 12));
 		lblANewVersion.setBounds(68, 16, 400, 34);
 		contentPane.add(lblANewVersion);

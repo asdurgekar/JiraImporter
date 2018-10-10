@@ -243,6 +243,53 @@ public class SupportingMethods {
 		return content;
 	}
 
+	public String fnGetLocalVersion(){
+
+		String localversion = null; 
+		try {
+			
+			//if folder is not present, create it and return false	
+			// and
+			//if folder is present and file is not present, return false
+			File file = new File(Globalvars.strLocalVersionPath);
+			String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+			content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+			if(content==null || !content.trim().contains("="))
+			{
+				System.out.println("Local Version file on cloud is corrupted");
+				try {
+					throw new Exception("Local Version file on cloud is corrupted");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else if(content.trim().split("=").length <= 1)
+			{
+				System.out.println("Local Version file on cloud is corrupted");
+				try {
+					throw new Exception("Local Version file on cloud is corrupted");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				localversion = content.trim().split("=")[1];				
+				
+			}
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return localversion;
+		}
+		return localversion;
+		
+	}
+
 	
 
 }

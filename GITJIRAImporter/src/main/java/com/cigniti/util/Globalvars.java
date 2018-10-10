@@ -44,7 +44,17 @@ public class Globalvars {
 	public static double TotalTestCaseCount = 0;
 	public static int TotalTestCaseUploaded = 0;
 	
-	public static String strPreferencesPath = System.getenv("APPDATA") + "\\JiraImporter\\Preferences.config";
+	public static String strCloudLocation = "\\\\racns\\department_3$\\InfTech\\Jira\\JiraTestCaseImporter\\";
+	public static String strLocalLocation = System.getenv("APPDATA") + "\\JiraImporter\\";
+	public static String strPreferencesConfigFileName = "Preferences.config";
+	public static String strExeFileName = "JiraTestCaseImporter.exe";
+	public static String strVersionFileName = "version.ini";
+	public static String strReleaseInfoFileName = "ReleaseNotes.html";
+	public static String strPreferencesPath = strLocalLocation + strPreferencesConfigFileName;
+	public static String strCloudVersionPath = strCloudLocation + strVersionFileName;
+	public static String strCloudExePath = strCloudLocation + strExeFileName;
+	public static String strLocalVersionPath = strLocalLocation + strVersionFileName;
+	public static String strLocalExePath = strLocalLocation + strExeFileName;
 	public static String strCertPath = "./resources/certs/cacerts";
 	//System.getProperty("user.dir").replace("\\", "/")+ 
 	

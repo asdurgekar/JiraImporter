@@ -64,7 +64,7 @@ public class ImportTestCaseswithSteps{
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
-	public String versionNumber = "1.6";
+	public String versionNumber = "1.7";
 	public String pageName = "Login";
 	public String strAuthenticationMessage;
 	public Boolean blnLoginSuccess;

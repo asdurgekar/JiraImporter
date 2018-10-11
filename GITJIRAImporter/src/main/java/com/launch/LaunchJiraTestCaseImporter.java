@@ -87,11 +87,6 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 			e1.printStackTrace();
 		}
 		
-		setResizable(false);
-		setTitle("Jira Test Case Importer - New Version available!");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(LaunchJiraTestCaseImporter.class.getResource("/images/JiraIcon.png")));
-		
-		
 		SupportingMethods suppMethods = new SupportingMethods();
 		
 		blnSameVersion = suppMethods.verifyToolVersion();
@@ -105,6 +100,13 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		//get the Tool's latest version release information
 		strReleaseInfo = suppMethods.getReleaseInfo();
 		
+		setResizable(false);
+		setTitle("Jira Test Case Importer - " + strCloudVersion + " : New Version available!");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LaunchJiraTestCaseImporter.class.getResource("/images/JiraIcon.png")));
+		
+		
+		
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 526, 396);
 		contentPane = new JPanel();
@@ -112,7 +114,7 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblANewVersion = new JLabel("Version 1.7 of Jira Test Case Importer is available for Update.");
+		JLabel lblANewVersion = new JLabel("Version " + strCloudVersion + " of Jira Test Case Importer is available for Update.");
 		lblANewVersion.setFont(new Font("SansSerif", Font.BOLD, 12));
 		lblANewVersion.setBounds(68, 16, 400, 34);
 		contentPane.add(lblANewVersion);

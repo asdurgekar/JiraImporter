@@ -27,9 +27,17 @@ public class SupportingMethods {
 	{
 		try {
 		@SuppressWarnings("unused")
-		String command = "cmd /c start " + Globalvars.strLocalExePath;
-		Runtime rt = Runtime.getRuntime();
-		Process pr = rt.exec(command);
+		File file = new File(Globalvars.strLocalExePath);
+		if(file.exists()) 
+		{
+			String command = "cmd /c start " + Globalvars.strLocalExePath;
+			Runtime rt = Runtime.getRuntime();
+			Process pr = rt.exec(command);
+		}
+		else
+		{
+			System.out.println("Local Core exe file is missing in path : " + Globalvars.strLocalExePath);
+		}
 		//Exit for Version dialog
 		System.exit(0);
 		} catch (IOException e) {

@@ -112,12 +112,12 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblANewVersion = new JLabel("Version " + strCloudVersion + " of Jira Test Case Importer is available for download.");
+		JLabel lblANewVersion = new JLabel("Version 1.7 of Jira Test Case Importer is available for Update.");
 		lblANewVersion.setFont(new Font("SansSerif", Font.BOLD, 12));
 		lblANewVersion.setBounds(68, 16, 400, 34);
 		contentPane.add(lblANewVersion);
 		
-		JButton btnDownload = new JButton("Download");
+		JButton btnDownload = new JButton("Update & Launch");
 		btnDownload.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -126,10 +126,10 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 				
 			}
 		});
-		btnDownload.setBounds(120, 272, 89, 23);
+		btnDownload.setBounds(85, 272, 142, 23);
 		contentPane.add(btnDownload);
 		
-		JButton btnIgnore = new JButton("Ignore");
+		JButton btnIgnore = new JButton("Run Existing Version");
 		btnIgnore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -138,7 +138,7 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 				
 			}
 		});
-		btnIgnore.setBounds(286, 272, 89, 23);
+		btnIgnore.setBounds(268, 272, 142, 23);
 		contentPane.add(btnIgnore);
 		
 		lblCopyLoading = new JLabel("");

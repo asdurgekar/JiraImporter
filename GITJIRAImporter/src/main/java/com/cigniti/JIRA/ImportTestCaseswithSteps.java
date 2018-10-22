@@ -487,8 +487,10 @@ public class ImportTestCaseswithSteps{
 			//Update Sheet Name
 			Globalvars.ExcelWorkSheetName = ImportTestCases.lstWorkSheets.getSelectedValue().toString();
 			
-			if(!Globalvars.ExcelSheetPath.equals(OldExcelPath) || !Globalvars.ExcelWorkSheetName.equals(OldSheetName))
-			{
+			//commented code to check if same excel has been selected again
+			
+//			if(!Globalvars.ExcelSheetPath.equals(OldExcelPath) || !Globalvars.ExcelWorkSheetName.equals(OldSheetName))
+//			{
 				fnCreateJiraFields();
 				//check if Mapping is in preferences
 				if(fnLoadPreferencesMapping())
@@ -528,7 +530,7 @@ public class ImportTestCaseswithSteps{
 				//get the project id
 				CreateTestWithTestSteps.projectId = ProjectMap.get(ImportTestCases.comBoxProjName.getSelectedItem().toString());
 				
-			}
+//			}
 				
 		}
 		catch(Exception e)

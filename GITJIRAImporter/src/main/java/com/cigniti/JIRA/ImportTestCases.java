@@ -553,7 +553,7 @@ public class ImportTestCases extends JFrame {
 		lblValidationmessage = new JLabel("");
 		lblValidationmessage.setForeground(new Color(0, 0, 0));
 		lblValidationmessage.setHorizontalAlignment(SwingConstants.CENTER);
-		lblValidationmessage.setBounds(173, 303, 359, 16);
+		lblValidationmessage.setBounds(85, 289, 520, 33);
 		panelMapping.add(lblValidationmessage);
 		
 		lblCheckmark = new JLabel("");
@@ -646,9 +646,9 @@ public class ImportTestCases extends JFrame {
 		lblConfirmation.setBounds(293, 24, 89, 14);
 		panelConfirm.add(lblConfirmation);
 		
-		JLabel lblPleaseConfirmThe = new JLabel("Please confirm the below options and click on Run button");
+		JLabel lblPleaseConfirmThe = new JLabel("Please confirm the below options and close the excel sheet before clicking on Run button");
 		lblPleaseConfirmThe.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblPleaseConfirmThe.setBounds(146, 51, 415, 14);
+		lblPleaseConfirmThe.setBounds(103, 49, 516, 14);
 		panelConfirm.add(lblPleaseConfirmThe);
 		
 		JButton btnBack_2 = new JButton("Back");

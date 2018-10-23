@@ -61,11 +61,13 @@ public class ImportTestCaseswithSteps{
 	public static String testId;
 	public static String testKey;
 	public static String linkId;
+	public static Boolean blnStepExecute = false;
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
 	public String versionNumber = "";
 	public String pageName = "Login";
+	public String TestCaseIdColumn = "TestCaseId";
 	public String strAuthenticationMessage;
 	public Boolean blnLoginSuccess;
 	public String returnMessage;
@@ -941,6 +943,8 @@ public class ImportTestCaseswithSteps{
 					String strTestStep = "";
 					String strTestData = "";
 					String strExpectedResult = "";
+					String strTestCaseId = "";
+					Boolean blnCheckTestCaseId = false;
 					
 					Boolean blnValidationFlag = true;
 					for(int intRowCounter = 1;intRowCounter <= rowCount; intRowCounter++)
@@ -1036,18 +1040,43 @@ public class ImportTestCaseswithSteps{
 					
 					if(blnValidationFlag)
 					{
+						
+						if(ExcelFunctions.fn_VerifyColumnExist(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn))
+							blnCheckTestCaseId = true;
 						//get total count of test cases
 						for(int intRowCounter = 1;intRowCounter <=rowCount; intRowCounter++)
 						{
 							strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
-							if(strRowString != null)
+							if(blnCheckTestCaseId)
 							{
-								TotalTestCaseCount++;
+								strTestCaseId = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, TestCaseIdColumn);
+								if(strRowString != null && (strTestCaseId == null || strTestCaseId.trim().isEmpty()))
+								{
+									TotalTestCaseCount++;
+								}
+							}
+							
+							else
+							{	
+								if(strRowString != null)
+								{
+									TotalTestCaseCount++;
+								}
 							}
 						
 						}
-						Globalvars.TotalTestCaseCount = TotalTestCaseCount;
-						returnMessage = "Success";						
+						
+						//check if number of test cases to uploaded if greater than 0
+						if(TotalTestCaseCount <= 0)
+						{
+							returnMessage = "<html>Number of test cases to be uploaded is " + TotalTestCaseCount + ". " + "<br>" + 
+									" Update the '" + TestCaseIdColumn + "' column accordingly for selection</html>";													
+						}
+						else
+						{
+							Globalvars.TotalTestCaseCount = TotalTestCaseCount;
+							returnMessage = "Success";
+						}
 						
 					}
 					return null;
@@ -1379,11 +1408,13 @@ public class ImportTestCaseswithSteps{
 						String ConsoleText = ImportTestCases.txtAreaConsole.getText();
 						if(ConsoleText.isEmpty())
 						{
+							if(line != null && !line.isEmpty())
 							ImportTestCases.txtAreaConsole.setText(line);
 						}
 						else
 						{
-							ImportTestCases.txtAreaConsole.setText(ConsoleText + "\n" + line);
+							if(line != null && !line.isEmpty())
+								ImportTestCases.txtAreaConsole.setText(ConsoleText + "\n" + line);
 						}
 						
 					}
@@ -1449,12 +1480,13 @@ public class ImportTestCaseswithSteps{
 		String retMessage = "";
 		try {
 			String ApplicationLabel, testSummary, testDescription, testStepDescription, testStepData,
-					testStepExpectedResult, linkIssue, linkType, affectsVersion, sprint, str_TestDetails;
+					testStepExpectedResult, linkIssue, linkType, affectsVersion, sprint, str_TestDetails, strTestCaseId;
+			
 			//Check if TestCaseId/IssueKey Column exist
-			if(!ExcelFunctions.fn_VerifyColumnExist(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, "TestCaseId"))
+			if(!ExcelFunctions.fn_VerifyColumnExist(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn))
 			{
 				//if not, create a new TestCaseId Column
-				ExcelFunctions.fn_AddColumn(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, "TestCaseId");
+				ExcelFunctions.fn_AddColumn(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn);
 			}
 			
 			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Labels"));
@@ -1472,13 +1504,17 @@ public class ImportTestCaseswithSteps{
 			linkType = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Link Type"));
 			//Sprint
 			sprint = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Sprint"));
+			//TestCaseId
+			strTestCaseId = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, TestCaseIdColumn);
 			
-			if(testSummary != null)
+			if(strTestCaseId != null && !strTestCaseId.trim().isEmpty() && testSummary != null)
 			{
-				//get test case completion count
-//				if(startCount)
-//					Globalvars.TotalTestCaseUploaded++;
-				
+				blnStepExecute = false;
+			}	
+			else if((strTestCaseId == null || strTestCaseId.trim().isEmpty()) && testSummary != null)
+			{
+
+				blnStepExecute = true;
 				//receive testid if optional boolean parameter is not passed
 				str_TestDetails = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel, sprint, true);
 				
@@ -1509,45 +1545,36 @@ public class ImportTestCaseswithSteps{
 				}
 				
 				//Update Test Case Id for the created test case
-				ExcelFunctions.fn_SetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, "TestCaseId", counter, testKey);
+				ExcelFunctions.fn_SetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn, counter, testKey);
 				
 			}
-//			//get test case completion count
-//			else
-//			{
-//				if(counter == TotalRowCount)
-//				{
-//					Globalvars.TotalTestCaseUploaded++;
-//				}
-//				else
-//				{
-//					ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, JiraExcelMap.get("Labels"));
-//					if(ApplicationLabel != null)
-//						Globalvars.TotalTestCaseUploaded++;
-//				}
-//				
-//			}
 
 			
-			createTestWithTestSteps.createTestStepinJira(testStepDescription, testStepData, testStepExpectedResult, testId);
-			//check if there is failure
-			if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+			if(blnStepExecute)
 			{
-				retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
-				return retMessage;
-			}
-			retMessage += "Adding Steps for the test case";
-			//get test case completion count
-			if(counter.equals(TotalRowCount))
-			{
-				Globalvars.TotalTestCaseUploaded++;
-			}
-			else
-			{
-				ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, JiraExcelMap.get("Labels"));
-				if(ApplicationLabel != null)
+				//Create test step
+				createTestWithTestSteps.createTestStepinJira(testStepDescription, testStepData, testStepExpectedResult, testId);
+				//check if there is failure
+				if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+				{
+					retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
+					return retMessage;
+				}
+				retMessage += "Adding Steps for the test case";
+			
+				//get test case completion count
+				if(counter.equals(TotalRowCount))
+				{
 					Globalvars.TotalTestCaseUploaded++;
+				}
+				else
+				{
+					ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, JiraExcelMap.get("Labels"));
+					if(ApplicationLabel != null)
+						Globalvars.TotalTestCaseUploaded++;
+				}
 			}
+			
 			testSummary = testDescription = testStepDescription = testStepData = testStepExpectedResult = null;
 			
 		} catch (Exception e) {

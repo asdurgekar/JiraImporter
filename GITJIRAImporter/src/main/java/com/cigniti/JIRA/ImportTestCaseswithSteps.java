@@ -62,6 +62,7 @@ public class ImportTestCaseswithSteps{
 	public static String testKey;
 	public static String linkId;
 	public static Boolean blnStepExecute = false;
+	public static Boolean blnUpdateTestCaseId = false;
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
@@ -1366,6 +1367,17 @@ public class ImportTestCaseswithSteps{
 				protected Void doInBackground() throws Exception {
 					// TODO Auto-generated method stub
 					int rowCount = ExcelFunctions.fn_GetRowCount(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName);
+					
+					//Check if TestCaseId/IssueKey Column exist
+					if(!ExcelFunctions.fn_VerifyColumnExist(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn))
+					{
+						//if not, create a new TestCaseId Column
+						if(ExcelFunctions.fn_AddColumn(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn))
+						{
+							blnUpdateTestCaseId = true;
+						}
+								
+					}
 					startCount = false;
 					for (int counter = 1; counter <= rowCount; counter++) 
 					{	
@@ -1480,14 +1492,9 @@ public class ImportTestCaseswithSteps{
 		String retMessage = "";
 		try {
 			String ApplicationLabel, testSummary, testDescription, testStepDescription, testStepData,
-					testStepExpectedResult, linkIssue, linkType, affectsVersion, sprint, str_TestDetails, strTestCaseId;
+					testStepExpectedResult, linkIssue, linkType, affectsVersion, sprint, str_TestDetails;
+			String strTestCaseId = "";
 			
-			//Check if TestCaseId/IssueKey Column exist
-			if(!ExcelFunctions.fn_VerifyColumnExist(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn))
-			{
-				//if not, create a new TestCaseId Column
-				ExcelFunctions.fn_AddColumn(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn);
-			}
 			
 			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Labels"));
 			
@@ -1504,8 +1511,11 @@ public class ImportTestCaseswithSteps{
 			linkType = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Link Type"));
 			//Sprint
 			sprint = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Sprint"));
-			//TestCaseId
-			strTestCaseId = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, TestCaseIdColumn);
+			//TestCaseId - Only if column exist
+			if(blnUpdateTestCaseId)
+			{
+				strTestCaseId = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, TestCaseIdColumn);
+			}
 			
 			if(strTestCaseId != null && !strTestCaseId.trim().isEmpty() && testSummary != null)
 			{
@@ -1545,8 +1555,10 @@ public class ImportTestCaseswithSteps{
 				}
 				
 				//Update Test Case Id for the created test case
-				ExcelFunctions.fn_SetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn, counter, testKey);
-				
+				if(blnUpdateTestCaseId)
+				{
+					ExcelFunctions.fn_SetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn, counter, testKey);
+				}
 			}
 
 			

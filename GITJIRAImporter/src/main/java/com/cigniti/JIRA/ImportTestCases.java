@@ -638,9 +638,8 @@ public class ImportTestCases extends JFrame {
 				if(!ITCWS.fn_VerifyFileClosed())
 				{
 					JFrame frame = new JFrame("...");
-			        JOptionPane.showMessageDialog(frame,"Please close the excel before running the import process");
-			        
-				}
+			        JOptionPane.showMessageDialog(frame, "Please close the test case excel file before running the import process","Excel is Open",JOptionPane.WARNING_MESSAGE);
+			    }
 				else
 				{
 					ITCWS.fnLaunchRunPanel();

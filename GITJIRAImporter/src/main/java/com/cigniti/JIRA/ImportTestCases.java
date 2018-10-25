@@ -635,7 +635,16 @@ public class ImportTestCases extends JFrame {
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				ITCWS.fnLaunchRunPanel();
+				if(!ITCWS.fn_VerifyFileClosed())
+				{
+					JFrame frame = new JFrame("...");
+			        JOptionPane.showMessageDialog(frame,"Please close the excel before running the import process");
+			        
+				}
+				else
+				{
+					ITCWS.fnLaunchRunPanel();
+				}
 			}
 		});
 		btnRun.setBounds(402, 365, 89, 23);

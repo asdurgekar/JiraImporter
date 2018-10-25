@@ -66,7 +66,7 @@ public class ImportTestCaseswithSteps{
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
-	public String versionNumber = "2.1";
+	public String versionNumber = "2.2";
 	public String pageName = "Login";
 	public String TestCaseIdColumn = "TestCaseId";
 	public String strAuthenticationMessage;
@@ -1272,7 +1272,25 @@ public class ImportTestCaseswithSteps{
 	    return model;
 	}
 
-
+	public Boolean fn_VerifyFileClosed()
+	{
+		
+		Boolean blnExcelOpen = false;
+		try {
+			blnExcelOpen = ExcelFunctions.fn_VerifyFileClosed(Globalvars.ExcelSheetPath);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return blnExcelOpen;
+		}
+		
+		return blnExcelOpen;
+	}
+	
+	
+	
+	
 	public void fnLaunchConfirmationPanel() {
 		try
 		{

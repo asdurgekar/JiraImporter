@@ -334,6 +334,30 @@ public class ExcelFunctions {
 			}
 			return true;
 		}
+		
+		
+		@SuppressWarnings("deprecation")
+		public static boolean fn_VerifyFileClosed(String xl_FilePath){
+			//System.out.println("**************addColumn*********************");
+
+			try{	
+				
+				File file = new File(xl_FilePath);
+			    // try to rename the file with the same name
+			    File sameFileName = new File(xl_FilePath);
+
+			    if(file.renameTo(sameFileName))
+			    	return true;
+			    else
+			    	return false;
+			    
+
+			}catch(Exception e){
+				e.printStackTrace();
+				return false;
+			}
+			
+		}
 
 
 }

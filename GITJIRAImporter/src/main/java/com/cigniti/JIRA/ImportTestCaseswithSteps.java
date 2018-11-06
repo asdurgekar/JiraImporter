@@ -168,6 +168,8 @@ public class ImportTestCaseswithSteps{
 		blnLoginSuccess = false;
 		strAuthenticationMessage = "";
 		
+		
+		
 		try {
 			bgWorker = new SwingWorker<Void, String>(){
 				
@@ -231,6 +233,7 @@ public class ImportTestCaseswithSteps{
 							fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
 						fnUpdateClientToken();
 						fnLaunchLoadSecondPanel();
+						fn_Testing();
 						blnLoginSuccess = true;
 						
 					}
@@ -312,6 +315,19 @@ public class ImportTestCaseswithSteps{
 
 
 	
+
+	private void fn_Testing() {
+		
+		try {			
+			createTestWithTestSteps.UpdateExecution("10357", "02fe07d3-b380-4665-8e12-b720e206ddd4", "26972");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+
 
 	private void fnCreateConfigFile() {
 

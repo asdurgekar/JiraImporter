@@ -80,6 +80,8 @@ public class CreateTestWithTestSteps {
 	private static String API_VALIDKEY = "{SERVER}/public/rest/api/1.0/teststep/-1?projectId=";
 	private static String API_GET_ISSUE = "{SERVER}/rest/api/2/issue/";
 	private static String API_LINK_ISSUE = "{SERVER}/rest/api/2/issueLink";
+	private static String API_EXECUTION = "{SERVER}/public/rest/api/1.0/execution";
+	
 	
 	/** Declare JIRA,Zephyr URL,access and secret Keys */
 	// Jira Cloud URL for the instance
@@ -106,6 +108,7 @@ public class CreateTestWithTestSteps {
 	private static final String validateKeyUri = API_VALIDKEY.replace("{SERVER}", zephyrBaseUrl);
 	private static final String getIssueUri = API_GET_ISSUE.replace("{SERVER}", jiraBaseURL);
 	private static final String issueLinkUri = API_LINK_ISSUE.replace("{SERVER}", jiraBaseURL);
+	private static final String ExecutionUri = API_EXECUTION.replace("{SERVER}", zephyrBaseUrl);
 	
 	static ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
 			.build();
@@ -599,13 +602,28 @@ public class CreateTestWithTestSteps {
 			StringEntity createTestJSON) {
 		HttpResponse response = null;
 		try {
-			// System.out.println(issueSearchURL);
-			HttpPost createTestReq = new HttpPost(createTestUri);
-			createTestReq.addHeader(header);
-			createTestReq.addHeader("Content-Type", "application/json");
-			createTestReq.setEntity(createTestJSON);
+			
+			
+			URI uri = null;
+			try {
+				uri = new URI(createTestUri);
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			int expirationInSec = 360;
+			
+			JwtGenerator jwtGenerator = client.getJwtGenerator();
+			String jwt = jwtGenerator.generateJWT("POST", uri, expirationInSec);
+
+			HttpPost addTestStepReq = new HttpPost(uri);
+			addTestStepReq.addHeader("Content-Type", "application/json");
+			addTestStepReq.addHeader(HttpHeaders.AUTHORIZATION, jwt);
+			addTestStepReq.addHeader("zapiAccessKey", accessKey);
+			addTestStepReq.setEntity(createTestJSON);
+			
 			HttpClient restClient = new DefaultHttpClient();
-			response = restClient.execute(createTestReq);
+			response = restClient.execute(addTestStepReq);
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -728,6 +746,30 @@ public class CreateTestWithTestSteps {
 		createLinkObj.put("type", type);
 		createLinkObj.put("inwardIssue", inwardIssue);
 		createLinkObj.put("outwardIssue", outwardIssue);
+		
+		StringEntity createLinkJSON = null;
+		try {
+			createLinkJSON = new StringEntity(createLinkObj.toString());
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		return createLinkJSON;
+	}
+	
+	private static StringEntity createExecutionJSON(String InwardissueId, String issueKey, String relation) {
+
+		//JSON object for relationship type of link
+		JSONObject statusId = new JSONObject();
+		statusId.put("id", 1);
+		
+		
+		JSONObject createLinkObj = new JSONObject();
+		createLinkObj.put("cycleId", "fafc0a99-74d4-4465-a9f2-34fe0c269a99");
+		createLinkObj.put("id", "02fe07d3-b380-4665-8e12-b720e206ddd4");
+		createLinkObj.put("issueId", 26972);
+		createLinkObj.put("projectId", 10357);
+		createLinkObj.put("versionId", -1);
+		createLinkObj.put("status", statusId);
 		
 		StringEntity createLinkJSON = null;
 		try {
@@ -864,6 +906,34 @@ public class CreateTestWithTestSteps {
 		return ResponseMessage;
 	}
 
+	public String UpdateExecution(String projectId, String ExecutionId, String IssueId) throws IOException {
+		
+		
+		System.out.println();
+		StringEntity createExecJSON = createExecutionJSON(ExecutionId, projectId, IssueId);
+//		HttpResponse response = executeCreateTestCase(ExecutionUri + ExecutionId + "?projectId=" +
+//				projectId + "&issueId=" + IssueId, header, createExecJSON);
+		HttpResponse response = executeCreateTestCase(ExecutionUri, header, createExecJSON);
+		int statusCode = getHTTPResponseCode(response);
+		String linkId = null;
+		HttpEntity entity = response.getEntity();
+		if (statusCode >= 200 && statusCode < 300) {			
+			System.out.println("Link is created for the issue " + IssueId );
 
+		} else {
+			try {
+				String string = null;
+				
+				string = EntityUtils.toString(entity);
+				RespMessage = "Failure~" + string;
+				new JSONObject(string);
+				throw new ClientProtocolException("Unexpected response status: " + statusCode);
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			}
+		}
+		return linkId;
+	}
 	
 }

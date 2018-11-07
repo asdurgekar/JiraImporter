@@ -1393,8 +1393,11 @@ public class ImportTestCaseswithSteps{
 						if(ExcelFunctions.fn_AddColumn(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn))
 						{
 							blnUpdateTestCaseId = true;
-						}
-								
+						}		
+					}
+					else
+					{
+						blnUpdateTestCaseId = true;
 					}
 					startCount = false;
 					for (int counter = 1; counter <= rowCount; counter++) 

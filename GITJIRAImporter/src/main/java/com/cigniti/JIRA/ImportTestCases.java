@@ -57,9 +57,10 @@ public class ImportTestCases extends JFrame {
 
 	private JPanel contentPane;
 	public static JTextField txtExcelPath;
-	public static JTable tblMapping;
-	public static JPasswordField txtPassword;
+	public static JTable tblMapping;	
+	public static JTextField txtJiraURL;
 	public static JTextField txtUserName;
+	public static JPasswordField txtPassword;
 	public static JLabel lblAuthmessage;
 	public static JPanel panelLogin;
 	public static JPanel panelSecond;
@@ -99,6 +100,12 @@ public class ImportTestCases extends JFrame {
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	SupportingMethods suppMethods = new SupportingMethods();
+	private JLabel lblBackgroundLogin;
+	private JLabel lblBackgroundSec;
+	private JLabel lblBackgroundMap;
+	private JLabel lblBackgroundConf;
+	private JLabel lblBackgroundRun;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -183,7 +190,7 @@ public class ImportTestCases extends JFrame {
 		setTitle(ITCWS.appName + " v" + ITCWS.versionNumber + " - " + ITCWS.pageName);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ImportTestCases.class.getResource("/images/JiraIcon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 744, 472);
+		setBounds(100, 100, 776, 537);
 		contentPane = new JPanel();
 		contentPane.setBackground(SystemColor.inactiveCaption);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -201,7 +208,7 @@ public class ImportTestCases extends JFrame {
 		contentPane.add(panelLogin, "name_1090758453858820");
 		
 		btnLogin = new JButton("Login");
-		btnLogin.setBounds(289, 313, 157, 23);
+		btnLogin.setBounds(289, 347, 157, 23);
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -223,32 +230,26 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblUserName = new JLabel("User Name");
 		lblUserName.setForeground(new Color(0, 0, 0));
-		lblUserName.setBounds(173, 100, 67, 14);
+		lblUserName.setBounds(173, 134, 67, 14);
 		lblUserName.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblUserName);
 		
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(173, 149, 67, 14);
+		lblPassword.setBounds(173, 183, 67, 14);
 		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblPassword);
 		
-		JLabel lblWelcomeMessage = new JLabel("");
-		lblWelcomeMessage.setBounds(269, 64, 151, 14);
-		lblWelcomeMessage.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblWelcomeMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		panelLogin.add(lblWelcomeMessage);
-		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(269, 145, 219, 28);
+		txtPassword.setBounds(269, 179, 219, 28);
 		panelLogin.add(txtPassword);
 		
 		txtUserName = new JTextField();
-		txtUserName.setBounds(271, 96, 217, 28);
+		txtUserName.setBounds(271, 130, 217, 28);
 		panelLogin.add(txtUserName);
 		txtUserName.setColumns(10);
 		
 		lblAuthmessage = new JLabel("");
-		lblAuthmessage.setBounds(189, 350, 380, 14);
+		lblAuthmessage.setBounds(189, 384, 380, 14);
 		lblAuthmessage.setForeground(Color.RED);
 		lblAuthmessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAuthmessage.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -256,43 +257,53 @@ public class ImportTestCases extends JFrame {
 		
 		chckbxRememberMe = new JCheckBox("");
 		chckbxRememberMe.setBackground(Color.WHITE);
-		chckbxRememberMe.setBounds(310, 285, 21, 14);
+		chckbxRememberMe.setBounds(310, 319, 21, 14);
 		panelLogin.add(chckbxRememberMe);
 		
 		txtAccessKey = new JPasswordField();
-		txtAccessKey.setBounds(269, 193, 219, 28);
+		txtAccessKey.setBounds(269, 227, 219, 28);
 		panelLogin.add(txtAccessKey);
 		
 		txtSecretKey = new JPasswordField();
-		txtSecretKey.setBounds(269, 244, 219, 28);
+		txtSecretKey.setBounds(269, 278, 219, 28);
 		panelLogin.add(txtSecretKey);
 		
 		JLabel lblAccessKey = new JLabel("Access Key");
-		lblAccessKey.setBounds(173, 195, 67, 14);
+		lblAccessKey.setBounds(173, 229, 67, 14);
 		lblAccessKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblAccessKey);
 		
 		JLabel lblSecretKey = new JLabel("Secret Key");
-		lblSecretKey.setBounds(173, 248, 67, 14);
+		lblSecretKey.setBounds(173, 282, 67, 14);
 		lblSecretKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblSecretKey);
 		
 		JLabel lblRememberMe = new JLabel("Remember Me");
 		lblRememberMe.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblRememberMe.setBounds(343, 285, 109, 14);
+		lblRememberMe.setBounds(343, 319, 109, 14);
 		panelLogin.add(lblRememberMe);
 		
 		lblLoginloading = new JLabel("");
 		lblLoginloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px.gif")));
-		lblLoginloading.setBounds(327, 342, 78, 61);
+		lblLoginloading.setBounds(327, 376, 78, 61);
 		lblLoginloading.setVisible(false);
 		panelLogin.add(lblLoginloading);
 		
-		JLabel lblBackground = new JLabel("");
-		lblBackground.setBackground(UIManager.getColor("Button.shadow"));
-		lblBackground.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
-		lblBackground.setBounds(0, 0, 728, 434);
-		panelLogin.add(lblBackground);
+		JLabel lbl_jiraURL = new JLabel("Jira URL");
+		lbl_jiraURL.setForeground(Color.BLACK);
+		lbl_jiraURL.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lbl_jiraURL.setBounds(173, 80, 67, 14);
+		panelLogin.add(lbl_jiraURL);
+		
+		txtJiraURL = new JTextField();
+		txtJiraURL.setColumns(10);
+		txtJiraURL.setBounds(271, 76, 217, 28);
+		panelLogin.add(txtJiraURL);
+		
+		lblBackgroundLogin = new JLabel("");
+		lblBackgroundLogin.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackgroundLogin.setBounds(0, 0, 760, 499);
+		panelLogin.add(lblBackgroundLogin);
 		
 		
 		panelSecond = new JPanel();
@@ -331,7 +342,7 @@ public class ImportTestCases extends JFrame {
 		
 		  	
 		});
-		txtExcelPath.setBounds(230, 180, 293, 28);
+		txtExcelPath.setBounds(245, 188, 293, 28);
 		panelSecond.add(txtExcelPath);
 		txtExcelPath.setColumns(10);
 		
@@ -354,7 +365,7 @@ public class ImportTestCases extends JFrame {
 			    }
 			}
 		});
-		btnBrowse.setBounds(533, 179, 89, 28);
+		btnBrowse.setBounds(548, 187, 89, 28);
 		panelSecond.add(btnBrowse);
 		
 		comBoxProjName = new JComboBox();
@@ -369,17 +380,17 @@ public class ImportTestCases extends JFrame {
 				}
 			}
 		});
-		comBoxProjName.setBounds(230, 111, 212, 25);
+		comBoxProjName.setBounds(245, 119, 212, 25);
 		panelSecond.add(comBoxProjName);
 		
 		JLabel lblProjectName = new JLabel("Project Name");
 		lblProjectName.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblProjectName.setBounds(136, 114, 76, 14);
+		lblProjectName.setBounds(151, 122, 76, 14);
 		panelSecond.add(lblProjectName);
 		
 		JLabel lblExcelPath = new JLabel("Excel Path");
 		lblExcelPath.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblExcelPath.setBounds(136, 183, 64, 14);
+		lblExcelPath.setBounds(151, 191, 64, 14);
 		panelSecond.add(lblExcelPath);
 		
 		btnNext = new JButton("Next");
@@ -390,7 +401,7 @@ public class ImportTestCases extends JFrame {
 					ITCWS.fnLaunchMappingPanel();
 			}
 		});
-		btnNext.setBounds(413, 326, 89, 23);
+		btnNext.setBounds(428, 334, 89, 23);
 		panelSecond.add(btnNext);
 		
 		JButton btnBack = new JButton("Back");
@@ -402,7 +413,7 @@ public class ImportTestCases extends JFrame {
 				
 			}
 		});
-		btnBack.setBounds(314, 326, 89, 23);
+		btnBack.setBounds(329, 334, 89, 23);
 		panelSecond.add(btnBack);
 		
 		JButton btnCancel = new JButton("Cancel");		
@@ -419,16 +430,16 @@ public class ImportTestCases extends JFrame {
 					
 				}
 		});
-		btnCancel.setBounds(215, 326, 89, 23);
+		btnCancel.setBounds(230, 334, 89, 23);
 		panelSecond.add(btnCancel);
 		
 		lblValidationMessage = new JLabel("");
 		lblValidationMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		lblValidationMessage.setBounds(160, 297, 415, 16);
+		lblValidationMessage.setBounds(175, 305, 415, 16);
 		panelSecond.add(lblValidationMessage);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(230, 233, 160, 51);
+		scrollPane_1.setBounds(245, 241, 160, 51);
 		panelSecond.add(scrollPane_1);
 		
 		lstWorkSheets = new JList();
@@ -447,12 +458,12 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblWorksheets = new JLabel("Worksheets");
 		lblWorksheets.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblWorksheets.setBounds(136, 235, 82, 16);
+		lblWorksheets.setBounds(151, 243, 82, 16);
 		panelSecond.add(lblWorksheets);
 		
-		JLabel lblBackgroundSec = new JLabel("");
+		lblBackgroundSec = new JLabel("");
 		lblBackgroundSec.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
-		lblBackgroundSec.setBounds(0, 0, 728, 434);
+		lblBackgroundSec.setBounds(0, 0, 760, 499);
 		panelSecond.add(lblBackgroundSec);
 		
 		
@@ -469,17 +480,17 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblJiraFields = new JLabel("Jira Fields");
 		lblJiraFields.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblJiraFields.setBounds(96, 41, 86, 14);
+		lblJiraFields.setBounds(102, 61, 86, 14);
 		panelMapping.add(lblJiraFields);
 		
 		JLabel lblExcelColumn = new JLabel("Excel Column");
 		lblExcelColumn.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblExcelColumn.setBounds(250, 41, 86, 14);
+		lblExcelColumn.setBounds(256, 61, 86, 14);
 		panelMapping.add(lblExcelColumn);
 		
 		JLabel lblMappingList = new JLabel("Mapping List");
 		lblMappingList.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblMappingList.setBounds(542, 41, 86, 14);
+		lblMappingList.setBounds(548, 61, 86, 14);
 		panelMapping.add(lblMappingList);
 		
 		JButton btnAdd = new JButton(">>");
@@ -489,7 +500,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnAddToMapping();
 			}
 		});
-		btnAdd.setBounds(381, 119, 73, 23);
+		btnAdd.setBounds(387, 139, 73, 23);
 		panelMapping.add(btnAdd);
 		
 		JButton btnRemove = new JButton("<<");
@@ -499,7 +510,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnRemovefromMapping();
 			}
 		});
-		btnRemove.setBounds(381, 154, 74, 23);
+		btnRemove.setBounds(387, 174, 74, 23);
 		panelMapping.add(btnRemove);
 		
 		JButton btnMapCancel = new JButton("Cancel");
@@ -515,7 +526,7 @@ public class ImportTestCases extends JFrame {
 		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			}
 		});
-		btnMapCancel.setBounds(173, 347, 89, 23);
+		btnMapCancel.setBounds(179, 367, 89, 23);
 		panelMapping.add(btnMapCancel);
 		
 		JButton btnMapBack = new JButton("Back");
@@ -524,7 +535,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnLaunchLoadSecondPanel();
 			}
 		});
-		btnMapBack.setBounds(282, 347, 89, 23);
+		btnMapBack.setBounds(288, 367, 89, 23);
 		panelMapping.add(btnMapBack);
 		
 		btnMapNext = new JButton("Next");
@@ -535,7 +546,7 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		btnMapNext.setEnabled(false);
-		btnMapNext.setBounds(384, 347, 89, 23);
+		btnMapNext.setBounds(390, 367, 89, 23);
 		panelMapping.add(btnMapNext);
 		
 		btnValidate = new JButton("Validate");
@@ -547,13 +558,13 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		btnValidate.setEnabled(false);
-		btnValidate.setBounds(285, 253, 97, 25);
+		btnValidate.setBounds(291, 273, 97, 25);
 		panelMapping.add(btnValidate);
 		
 		lblValidationmessage = new JLabel("");
 		lblValidationmessage.setForeground(new Color(0, 0, 0));
 		lblValidationmessage.setHorizontalAlignment(SwingConstants.CENTER);
-		lblValidationmessage.setBounds(85, 289, 520, 33);
+		lblValidationmessage.setBounds(91, 309, 520, 33);
 		panelMapping.add(lblValidationmessage);
 		
 		lblCheckmark = new JLabel("");
@@ -564,18 +575,18 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		lblCheckmark.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/CheckMark1.png")));
-		lblCheckmark.setBounds(411, 253, 31, 34);
+		lblCheckmark.setBounds(417, 273, 31, 34);
 		lblCheckmark.setVisible(false);
 		panelMapping.add(lblCheckmark);
 		
 		lblValidateloading = new JLabel("");
 		lblValidateloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px.gif")));
-		lblValidateloading.setBounds(295, 278, 86, 63);
+		lblValidateloading.setBounds(301, 298, 86, 63);
 		lblValidateloading.setVisible(false);
 		panelMapping.add(lblValidateloading);
 		
 		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setBounds(60, 67, 128, 173);
+		scrollPane_3.setBounds(66, 87, 128, 173);
 		panelMapping.add(scrollPane_3);
 		
 		lstJiraFields = new JList();
@@ -584,7 +595,7 @@ public class ImportTestCases extends JFrame {
 		lstJiraFields.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(224, 67, 128, 174);
+		scrollPane_2.setBounds(230, 87, 128, 174);
 		panelMapping.add(scrollPane_2);
 		
 		lstExcelColumns = new JList();
@@ -593,7 +604,7 @@ public class ImportTestCases extends JFrame {
 		lstExcelColumns.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(480, 67, 195, 173);
+		scrollPane.setBounds(486, 87, 195, 173);
 		panelMapping.add(scrollPane);
 		
 		tblMapping = new JTable();
@@ -615,9 +626,9 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		
-		JLabel lblBackgroundMap = new JLabel("");
+		lblBackgroundMap = new JLabel("");
 		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
-		lblBackgroundMap.setBounds(0, 0, 728, 434);
+		lblBackgroundMap.setBounds(0, 0, 760, 499);
 		panelMapping.add(lblBackgroundMap);
 		
 		panelConfirm = new JPanel();
@@ -646,17 +657,17 @@ public class ImportTestCases extends JFrame {
 				}
 			}
 		});
-		btnRun.setBounds(402, 365, 89, 23);
+		btnRun.setBounds(403, 395, 89, 23);
 		panelConfirm.add(btnRun);
 		
 		JLabel lblConfirmation = new JLabel("Confirmation");
 		lblConfirmation.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblConfirmation.setBounds(293, 24, 89, 14);
+		lblConfirmation.setBounds(294, 54, 89, 14);
 		panelConfirm.add(lblConfirmation);
 		
 		JLabel lblPleaseConfirmThe = new JLabel("Please confirm the below options and close the excel sheet before clicking on Run button");
 		lblPleaseConfirmThe.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblPleaseConfirmThe.setBounds(103, 49, 516, 14);
+		lblPleaseConfirmThe.setBounds(104, 79, 516, 14);
 		panelConfirm.add(lblPleaseConfirmThe);
 		
 		JButton btnBack_2 = new JButton("Back");
@@ -666,7 +677,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnLaunchMappingPanel();
 			}
 		});
-		btnBack_2.setBounds(293, 365, 89, 23);
+		btnBack_2.setBounds(294, 395, 89, 23);
 		panelConfirm.add(btnBack_2);
 		
 		JButton btnCancel_2 = new JButton("Cancel");
@@ -682,46 +693,46 @@ public class ImportTestCases extends JFrame {
 		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			}
 		});
-		btnCancel_2.setBounds(183, 365, 89, 23);
+		btnCancel_2.setBounds(184, 395, 89, 23);
 		panelConfirm.add(btnCancel_2);
 		
 		JLabel lblProjectName_1 = new JLabel("Project Name");
 		lblProjectName_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblProjectName_1.setBounds(183, 80, 89, 14);
+		lblProjectName_1.setBounds(184, 110, 89, 14);
 		panelConfirm.add(lblProjectName_1);
 		
 		JLabel lblExcelPath_1 = new JLabel("Excel Path");
 		lblExcelPath_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblExcelPath_1.setBounds(183, 107, 71, 14);
+		lblExcelPath_1.setBounds(184, 137, 71, 14);
 		panelConfirm.add(lblExcelPath_1);
 		
 		JLabel lblMappingList_1 = new JLabel("Mapping List");
 		lblMappingList_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblMappingList_1.setBounds(183, 198, 89, 14);
+		lblMappingList_1.setBounds(184, 228, 89, 14);
 		panelConfirm.add(lblMappingList_1);
 		
 		lblProjectNameValue = new JLabel("Project Name Value");
 		lblProjectNameValue.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblProjectNameValue.setBounds(306, 80, 224, 14);
+		lblProjectNameValue.setBounds(307, 110, 224, 14);
 		panelConfirm.add(lblProjectNameValue);
 		
 		lblExcelPathValue = new JLabel("Excel Path Value");
 		lblExcelPathValue.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblExcelPathValue.setBounds(306, 107, 336, 14);
+		lblExcelPathValue.setBounds(307, 137, 336, 14);
 		panelConfirm.add(lblExcelPathValue);
 		
 		JLabel lblSheetName = new JLabel("Sheet Name");
 		lblSheetName.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblSheetName.setBounds(183, 134, 71, 16);
+		lblSheetName.setBounds(184, 164, 71, 16);
 		panelConfirm.add(lblSheetName);
 		
 		lblSheetNameValue = new JLabel("Sheet Name Value");
 		lblSheetNameValue.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblSheetNameValue.setBounds(306, 134, 106, 16);
+		lblSheetNameValue.setBounds(307, 164, 106, 16);
 		panelConfirm.add(lblSheetNameValue);
 		
 		JScrollPane scrollPane_4 = new JScrollPane();
-		scrollPane_4.setBounds(302, 191, 228, 162);
+		scrollPane_4.setBounds(303, 221, 228, 162);
 		panelConfirm.add(scrollPane_4);
 		
 		tblMapConfirm = new JTable();
@@ -738,18 +749,18 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblNoOfTest = new JLabel("No. of Test Cases");
 		lblNoOfTest.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNoOfTest.setBounds(183, 163, 106, 16);
+		lblNoOfTest.setBounds(184, 193, 106, 16);
 		panelConfirm.add(lblNoOfTest);
 		
 		lblTestCasesCount = new JLabel("No. of TestValue");
 		lblTestCasesCount.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblTestCasesCount.setBounds(306, 163, 56, 16);
+		lblTestCasesCount.setBounds(307, 193, 56, 16);
 		panelConfirm.add(lblTestCasesCount);
 		
-		JLabel lblBackgroundCon = new JLabel("");
-		lblBackgroundCon.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
-		lblBackgroundCon.setBounds(0, 0, 728, 434);
-		panelConfirm.add(lblBackgroundCon);
+		lblBackgroundConf = new JLabel("");
+		lblBackgroundConf.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackgroundConf.setBounds(0, 0, 760, 499);
+		panelConfirm.add(lblBackgroundConf);
 		
 		panelFinal = new JPanel();
 		panelFinal.addComponentListener(new ComponentAdapter() {
@@ -764,22 +775,22 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblTotalNumberOf = new JLabel("Total Number of Test Cases to be Uploaded");
 		lblTotalNumberOf.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotalNumberOf.setBounds(136, 50, 295, 14);
+		lblTotalNumberOf.setBounds(148, 65, 295, 14);
 		panelFinal.add(lblTotalNumberOf);
 		
 		JLabel lblTotalNumberOf_1 = new JLabel("Number of Test Cases Uploaded");
 		lblTotalNumberOf_1.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotalNumberOf_1.setBounds(136, 80, 253, 14);
+		lblTotalNumberOf_1.setBounds(148, 95, 253, 14);
 		panelFinal.add(lblTotalNumberOf_1);
 		
 		lblTotaltestcasesvalue = new JLabel("0");
 		lblTotaltestcasesvalue.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotaltestcasesvalue.setBounds(502, 50, 61, 14);
+		lblTotaltestcasesvalue.setBounds(514, 65, 61, 14);
 		panelFinal.add(lblTotaltestcasesvalue);
 		
 		lblTotaltestcasesuploadedvalue = new JLabel("0");
 		lblTotaltestcasesuploadedvalue.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotaltestcasesuploadedvalue.setBounds(502, 80, 97, 14);
+		lblTotaltestcasesuploadedvalue.setBounds(514, 95, 97, 14);
 		panelFinal.add(lblTotaltestcasesuploadedvalue);
 		
 		lblSuccessMessage = new JLabel("");
@@ -787,14 +798,14 @@ public class ImportTestCases extends JFrame {
 		lblSuccessMessage.setVerticalAlignment(SwingConstants.TOP);
 		lblSuccessMessage.setForeground(Color.BLACK);
 		lblSuccessMessage.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblSuccessMessage.setBounds(146, 352, 389, 16);
+		lblSuccessMessage.setBounds(158, 367, 389, 16);
 		panelFinal.add(lblSuccessMessage);
 		
 
 		prgbarImport = new JProgressBar();
 		prgbarImport.setStringPainted(true);
 		prgbarImport.setForeground(new Color(0, 0, 0));
-		prgbarImport.setBounds(136, 314, 405, 31);
+		prgbarImport.setBounds(148, 329, 405, 31);
 		panelFinal.add(prgbarImport);
 		
 		btnCancelImport = new JButton("Cancel Import");
@@ -813,7 +824,7 @@ public class ImportTestCases extends JFrame {
 		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			}
 		});
-		btnCancelImport.setBounds(269, 379, 145, 25);
+		btnCancelImport.setBounds(281, 394, 145, 25);
 		panelFinal.add(btnCancelImport);
 		
 		btnRunBack = new JButton("Back");
@@ -823,7 +834,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnLaunchConfirmationPanel();
 			}
 		});
-		btnRunBack.setBounds(125, 379, 97, 25);
+		btnRunBack.setBounds(137, 394, 97, 25);
 		panelFinal.add(btnRunBack);
 		
 		btnClose = new JButton("Close");
@@ -833,11 +844,11 @@ public class ImportTestCases extends JFrame {
 				dispose();
 			}
 		});
-		btnClose.setBounds(459, 379, 97, 25);
+		btnClose.setBounds(471, 394, 97, 25);
 		panelFinal.add(btnClose);
 		
 		JScrollPane scrollPane_5 = new JScrollPane();
-		scrollPane_5.setBounds(136, 124, 407, 173);
+		scrollPane_5.setBounds(148, 139, 407, 173);
 		panelFinal.add(scrollPane_5);
 		
 		txtAreaConsole = new JTextArea();
@@ -845,9 +856,9 @@ public class ImportTestCases extends JFrame {
 		txtAreaConsole.setEditable(false);
 		txtAreaConsole.setBackground(SystemColor.control);
 		
-		JLabel lblBackgroundRun = new JLabel("");
+		lblBackgroundRun = new JLabel("");
 		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
-		lblBackgroundRun.setBounds(0, 0, 728, 434);
+		lblBackgroundRun.setBounds(0, 0, 760, 499);
 		panelFinal.add(lblBackgroundRun);
 		
 		

@@ -66,7 +66,7 @@ public class ImportTestCaseswithSteps{
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
-	public String versionNumber = "2.21";
+	public String versionNumber = "2.3";
 	public String pageName = "Login";
 	public String TestCaseIdColumn = "TestCaseId";
 	public String strAuthenticationMessage;
@@ -177,6 +177,11 @@ public class ImportTestCaseswithSteps{
 					// TODO Auto-generated method stub
 					publish("Start Login");
 					
+					//Update all URLs for connection
+					fnUpdateURIs(ImportTestCases.txtJiraURL.getText().trim());
+					
+					//get values from UI
+					CreateTestWithTestSteps.jiraURL = ImportTestCases.txtJiraURL.getText();
 					CreateTestWithTestSteps.userName = ImportTestCases.txtUserName.getText();
 					CreateTestWithTestSteps.password = new String(ImportTestCases.txtPassword.getPassword());
 					CreateTestWithTestSteps.accessKey = new String(ImportTestCases.txtAccessKey.getPassword());
@@ -208,7 +213,7 @@ public class ImportTestCaseswithSteps{
 					
 					if(AuthResponse == 0)
 					{
-						strAuthenticationMessage = "Unable to connect on LAN. Please make sure you are connected on Wifi";
+						strAuthenticationMessage = "Please enter a valid Jira URL";
 					}
 					else if(AuthResponse != 200)
 					{
@@ -226,10 +231,12 @@ public class ImportTestCaseswithSteps{
 						strAuthenticationMessage = "";
 						fnCreateConfigFile();
 						if(ImportTestCases.chckbxRememberMe.isSelected())
+							fnStorePreferences("JiraURL",ImportTestCases.txtJiraURL.getText());
 							fnStorePreferences("UserName",ImportTestCases.txtUserName.getText());
 							fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
 							fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
 						fnUpdateClientToken();
+						
 						fnLaunchLoadSecondPanel();
 						blnLoginSuccess = true;
 						
@@ -238,6 +245,23 @@ public class ImportTestCaseswithSteps{
 					ImportTestCases.btnLogin.setEnabled(true);
 					ImportTestCases.lblAuthmessage.setText(strAuthenticationMessage);
 					ImportTestCases.lblLoginloading.setVisible(false);
+					
+				}
+
+				private void fnUpdateURIs(String jiraURL) {
+					
+					
+					try {
+						CreateTestWithTestSteps.jiraBaseURL = jiraURL;
+						CreateTestWithTestSteps.createTestUri = CreateTestWithTestSteps.API_CREATE_TEST.replace("{SERVER}", jiraURL);
+						CreateTestWithTestSteps.createTestStepUri = CreateTestWithTestSteps.API_CREATE_TEST_STEP.replace("{SERVER}", CreateTestWithTestSteps.zephyrBaseUrl);
+						CreateTestWithTestSteps.validateKeyUri = CreateTestWithTestSteps.API_VALIDKEY.replace("{SERVER}", CreateTestWithTestSteps.zephyrBaseUrl);
+						CreateTestWithTestSteps.getIssueUri = CreateTestWithTestSteps.API_GET_ISSUE.replace("{SERVER}", jiraURL);
+						CreateTestWithTestSteps.issueLinkUri = CreateTestWithTestSteps.API_LINK_ISSUE.replace("{SERVER}", jiraURL);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 				}
 				
@@ -893,6 +917,9 @@ public class ImportTestCaseswithSteps{
 					{
 						switch(strLine.split("::")[0])
 						{
+						case "JiraURL":
+							ImportTestCases.txtJiraURL.setText(strLine.split("::")[1]);
+							break;
 						case "UserName":
 							ImportTestCases.txtUserName.setText(strLine.split("::")[1]);
 							break;

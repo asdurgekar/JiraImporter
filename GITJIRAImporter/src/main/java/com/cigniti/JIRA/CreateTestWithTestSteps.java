@@ -74,16 +74,16 @@ import com.thed.zephyr.cloud.rest.client.JwtGenerator;
 @SuppressWarnings("deprecation")
 public class CreateTestWithTestSteps {
 
-	private static String API_CREATE_TEST = "{SERVER}/rest/api/2/issue";
-	private static String API_CREATE_TEST_STEP = "{SERVER}/public/rest/api/1.0/teststep/";
-	private static Long versionId = -1l;
-	private static String API_VALIDKEY = "{SERVER}/public/rest/api/1.0/teststep/-1?projectId=";
-	private static String API_GET_ISSUE = "{SERVER}/rest/api/2/issue/";
-	private static String API_LINK_ISSUE = "{SERVER}/rest/api/2/issueLink";
+	public static String API_CREATE_TEST = "{SERVER}/rest/api/2/issue";
+	public static String API_CREATE_TEST_STEP = "{SERVER}/public/rest/api/1.0/teststep/";
+	public static Long versionId = -1l;
+	public static String API_VALIDKEY = "{SERVER}/public/rest/api/1.0/teststep/-1?projectId=";
+	public static String API_GET_ISSUE = "{SERVER}/rest/api/2/issue/";
+	public static String API_LINK_ISSUE = "{SERVER}/rest/api/2/issueLink";
 	
 	/** Declare JIRA,Zephyr URL,access and secret Keys */
 	// Jira Cloud URL for the instance
-	public static String jiraBaseURL = "https://rentacenter.atlassian.net";
+	public static String jiraBaseURL = "";
 	// Replace zephyr baseurl <ZAPI_Cloud_URL> shared with the user for ZAPI
 	// Cloud Installation
 	public static String zephyrBaseUrl = "https://prod-api.zephyr4jiracloud.com/connect";
@@ -95,17 +95,18 @@ public class CreateTestWithTestSteps {
 	public static String secretKey = "";
 	
 	/** Declare parameter values here */
-
+	
+	public static String jiraURL = Globalvars.JIRA_URL;
 	public static String userName = Globalvars.JIRA_userName;
 	public static String password = Globalvars.JIRA_password;
 	public static String projectId = Globalvars.JIRA_projectId;
-	private static String issueTypeId = Globalvars.JIRA_issueTypeId;
+	public static String issueTypeId = Globalvars.JIRA_issueTypeId;
 	
-	private static final String createTestUri = API_CREATE_TEST.replace("{SERVER}", jiraBaseURL);
-	private static final String createTestStepUri = API_CREATE_TEST_STEP.replace("{SERVER}", zephyrBaseUrl);
-	private static final String validateKeyUri = API_VALIDKEY.replace("{SERVER}", zephyrBaseUrl);
-	private static final String getIssueUri = API_GET_ISSUE.replace("{SERVER}", jiraBaseURL);
-	private static final String issueLinkUri = API_LINK_ISSUE.replace("{SERVER}", jiraBaseURL);
+	public static String createTestUri = "";
+	public static String createTestStepUri = "";
+	public static String validateKeyUri = "";
+	public static String getIssueUri = "";
+	public static String issueLinkUri = "";
 	
 	static ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
 			.build();

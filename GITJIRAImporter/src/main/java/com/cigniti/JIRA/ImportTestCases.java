@@ -58,7 +58,7 @@ public class ImportTestCases extends JFrame {
 	private JPanel contentPane;
 	public static JTextField txtExcelPath;
 	public static JTable tblMapping;	
-	public static JTextField txtJiraURL;
+	public static JPasswordField txtJiraURL;
 	public static JTextField txtUserName;
 	public static JPasswordField txtPassword;
 	public static JLabel lblAuthmessage;
@@ -100,11 +100,12 @@ public class ImportTestCases extends JFrame {
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	SupportingMethods suppMethods = new SupportingMethods();
-	private JLabel lblBackgroundLogin;
 	private JLabel lblBackgroundSec;
 	private JLabel lblBackgroundMap;
 	private JLabel lblBackgroundConf;
 	private JLabel lblBackgroundRun;
+	private JLabel lblBackgroundLogin;
+	
 	
 	/**
 	 * Launch the application.
@@ -295,9 +296,8 @@ public class ImportTestCases extends JFrame {
 		lbl_jiraURL.setBounds(173, 80, 67, 14);
 		panelLogin.add(lbl_jiraURL);
 		
-		txtJiraURL = new JTextField();
-		txtJiraURL.setColumns(10);
-		txtJiraURL.setBounds(271, 76, 217, 28);
+		txtJiraURL = new JPasswordField();
+		txtJiraURL.setBounds(269, 73, 219, 28);
 		panelLogin.add(txtJiraURL);
 		
 		lblBackgroundLogin = new JLabel("");

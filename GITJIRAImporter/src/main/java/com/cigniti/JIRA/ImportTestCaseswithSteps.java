@@ -178,10 +178,10 @@ public class ImportTestCaseswithSteps{
 					publish("Start Login");
 					
 					//Update all URLs for connection
-					fnUpdateURIs(ImportTestCases.txtJiraURL.getText().trim());
+					fnUpdateURIs(new String(ImportTestCases.txtJiraURL.getPassword()));
 					
 					//get values from UI
-					CreateTestWithTestSteps.jiraURL = ImportTestCases.txtJiraURL.getText();
+					CreateTestWithTestSteps.jiraURL = new String(ImportTestCases.txtJiraURL.getPassword());
 					CreateTestWithTestSteps.userName = ImportTestCases.txtUserName.getText();
 					CreateTestWithTestSteps.password = new String(ImportTestCases.txtPassword.getPassword());
 					CreateTestWithTestSteps.accessKey = new String(ImportTestCases.txtAccessKey.getPassword());
@@ -231,7 +231,7 @@ public class ImportTestCaseswithSteps{
 						strAuthenticationMessage = "";
 						fnCreateConfigFile();
 						if(ImportTestCases.chckbxRememberMe.isSelected())
-							fnStorePreferences("JiraURL",ImportTestCases.txtJiraURL.getText());
+							fnStorePreferences("JiraURL",new String(ImportTestCases.txtJiraURL.getPassword()));
 							fnStorePreferences("UserName",ImportTestCases.txtUserName.getText());
 							fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
 							fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));

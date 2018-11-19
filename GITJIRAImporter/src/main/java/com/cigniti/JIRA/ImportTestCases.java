@@ -106,6 +106,9 @@ public class ImportTestCases extends JFrame {
 	private JLabel lblBackgroundRun;
 	private JLabel lblBackgroundLogin;
 	
+	//local variables
+	private String str_VersionNumber;
+	
 	
 	/**
 	 * Launch the application.
@@ -160,7 +163,11 @@ public class ImportTestCases extends JFrame {
 			e1.printStackTrace();
 		}
 		
-		ITCWS.versionNumber = suppMethods.fnGetLocalVersion();
+		str_VersionNumber = suppMethods.fnGetLocalVersion();
+		if(str_VersionNumber != null)
+		{
+			ITCWS.versionNumber = str_VersionNumber;
+		}
 		
 		setResizable(false);
 		addWindowListener(new WindowAdapter() {

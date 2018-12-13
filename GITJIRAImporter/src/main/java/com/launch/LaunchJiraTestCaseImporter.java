@@ -94,8 +94,13 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		{
 			suppMethods.LaunchTool();
 		}
+		
+		//testing from one drive
+		//get files from one drive
+		strCloudVersion = suppMethods.getGDriveVersion();
+		
 		//get the tool version in Cloud
-		strCloudVersion = suppMethods.getCloudVersion();
+		//strCloudVersion = suppMethods.getCloudVersion();
 		
 		//get the Tool's latest version release information
 		strReleaseInfo = suppMethods.getReleaseInfo();

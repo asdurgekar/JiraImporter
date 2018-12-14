@@ -15,10 +15,13 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
@@ -27,14 +30,18 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class LaunchJiraTestCaseImporter extends JFrame {
 
 	private JPanel contentPane;
 	public static JLabel lblCopyLoading;
 	public static Boolean blnSameVersion;
-	public static String strReleaseInfo;
+	public static String strLatestReleaseInfo;
+	public static String strReleaseHistory;
 	public static String strCloudVersion;
+	public static JTextPane txtpnncolor;
+	public static JLabel lblToggleReleaseInfo;
 
 	/**
 	 * Launch the application.
@@ -98,7 +105,8 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		strCloudVersion = suppMethods.getCloudVersion();
 		
 		//get the Tool's latest version release information
-		strReleaseInfo = suppMethods.getReleaseInfo();
+		strLatestReleaseInfo = suppMethods.getLatestReleaseInfo();
+		strReleaseHistory = suppMethods.getReleaseHistory();
 		
 		setResizable(false);
 		setTitle("Jira Test Case Importer - " + strCloudVersion + " : New Version available!");
@@ -116,7 +124,7 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		
 		JLabel lblANewVersion = new JLabel("Version " + strCloudVersion + " of Jira Test Case Importer is available for Update.");
 		lblANewVersion.setFont(new Font("SansSerif", Font.BOLD, 12));
-		lblANewVersion.setBounds(68, 16, 400, 34);
+		lblANewVersion.setBounds(69, 13, 400, 34);
 		contentPane.add(lblANewVersion);
 		
 		JButton btnDownload = new JButton("Update & Launch");
@@ -128,7 +136,7 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 				
 			}
 		});
-		btnDownload.setBounds(85, 272, 142, 23);
+		btnDownload.setBounds(88, 281, 142, 23);
 		contentPane.add(btnDownload);
 		
 		JButton btnIgnore = new JButton("Run Existing Version");
@@ -140,7 +148,7 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 				
 			}
 		});
-		btnIgnore.setBounds(268, 272, 142, 23);
+		btnIgnore.setBounds(270, 281, 142, 23);
 		contentPane.add(btnIgnore);
 		
 		lblCopyLoading = new JLabel("");
@@ -149,24 +157,40 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		contentPane.add(lblCopyLoading);
 		
 		JLabel lblBelowAreThe = new JLabel("Below are the updates for this version");
-		lblBelowAreThe.setBounds(78, 62, 228, 16);
+		lblBelowAreThe.setBounds(78, 47, 228, 16);
 		contentPane.add(lblBelowAreThe);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(75, 81, 348, 179);
+		scrollPane.setBounds(78, 67, 348, 179);
 		contentPane.add(scrollPane);
 		
-		JTextPane txtpnncolor = new JTextPane();
+		txtpnncolor = new JTextPane();
 		txtpnncolor.setEditable(false);
 		txtpnncolor.setContentType("text/html");
 		scrollPane.setViewportView(txtpnncolor);
-		txtpnncolor.setText(strReleaseInfo);
+		txtpnncolor.setText(strLatestReleaseInfo);
 		txtpnncolor.setCaretPosition(0);
+		
+		lblToggleReleaseInfo = new JLabel("<html><a href=''>View Release History</a></html>");
+		lblToggleReleaseInfo.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblToggleReleaseInfo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblToggleReleaseInfo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
+				JLabel ToggleLabel = (JLabel) arg0.getSource();				
+				suppMethods.displayReleaseInfo(ToggleLabel.getText());
+			}
+		});
+		lblToggleReleaseInfo.setBounds(284, 244, 142, 23);
+		contentPane.add(lblToggleReleaseInfo);
 		
 		JLabel lblBackground = new JLabel("");
 		lblBackground.setIcon(new ImageIcon(LaunchJiraTestCaseImporter.class.getResource("/images/FileTransfer_Resized1.png")));
 		lblBackground.setBounds(0, 0, 520, 368);
 		contentPane.add(lblBackground);
 		lblCopyLoading.setVisible(false);
+		
+		
 	}
 }

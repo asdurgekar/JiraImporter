@@ -50,7 +50,8 @@ public class Globalvars {
 	public static String strPreferencesConfigFileName = "Preferences.config";
 	public static String strExeFileName = "JiraTestCaseImporterCore.exe";
 	public static String strVersionFileName = "version.ini";
-	public static String strReleaseInfoFileName = "ReleaseNotes.html";
+	public static String strLatestReleaseInfoFileName = "ReleaseNotes.html";
+	public static String strReleaseHistoryFileName = "ReleaseHistory.html";
 	public static String strPreferencesPath = strLocalLocation + strPreferencesConfigFileName;
 	public static String strCloudVersionPath = strCloudLocation + strVersionFileName;
 	public static String strCloudExePath = strCloudLocation + strExeFileName;

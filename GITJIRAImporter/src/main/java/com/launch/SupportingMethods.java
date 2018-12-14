@@ -18,8 +18,7 @@ import com.cigniti.JIRA.CreateTestWithTestSteps;
 import com.cigniti.JIRA.ImportTestCases;
 import com.cigniti.util.Globalvars;
 
-public class SupportingMethods {
-	
+public class SupportingMethods{
 	
 	private SwingWorker<Void, String> bgWorker;
 	
@@ -234,11 +233,28 @@ public class SupportingMethods {
 		return cloudversion;
 	}
 
-	public String getReleaseInfo() {
+	public String getLatestReleaseInfo() {
 		
 		StringBuilder contentBuilder = new StringBuilder();
 		try {
-		    BufferedReader in = new BufferedReader(new FileReader(Globalvars.strCloudLocation + Globalvars.strReleaseInfoFileName));
+		    BufferedReader in = new BufferedReader(new FileReader(Globalvars.strCloudLocation + Globalvars.strLatestReleaseInfoFileName));
+		    String str;
+		    while ((str = in.readLine()) != null) {
+		        contentBuilder.append(str);
+		    }
+		    in.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String content = contentBuilder.toString();
+		return content;
+	}
+	
+	public String getReleaseHistory() {
+		
+		StringBuilder contentBuilder = new StringBuilder();
+		try {
+		    BufferedReader in = new BufferedReader(new FileReader(Globalvars.strCloudLocation + Globalvars.strReleaseHistoryFileName));
 		    String str;
 		    while ((str = in.readLine()) != null) {
 		        contentBuilder.append(str);
@@ -295,6 +311,25 @@ public class SupportingMethods {
 			return localversion;
 		}
 		return localversion;
+		
+	}
+
+	public void displayReleaseInfo(String strClickedText) {
+		
+		//If clicked on View Release History, then switch content and text for Jlabel
+		if(strClickedText.contains("View Release History"))
+		{
+			LaunchJiraTestCaseImporter.txtpnncolor.setText(LaunchJiraTestCaseImporter.strReleaseHistory);
+			LaunchJiraTestCaseImporter.txtpnncolor.setCaretPosition(0);
+			LaunchJiraTestCaseImporter.lblToggleReleaseInfo.setText("<html><a href=''>View Latest Version Info</a></html>");
+		}
+		else if(strClickedText.contains("View Latest Version Info"))
+		{
+			LaunchJiraTestCaseImporter.txtpnncolor.setText(LaunchJiraTestCaseImporter.strLatestReleaseInfo);
+			LaunchJiraTestCaseImporter.txtpnncolor.setCaretPosition(0);
+			LaunchJiraTestCaseImporter.lblToggleReleaseInfo.setText("<html><a href=''>View Release History</a></html>");
+		}
+		//If clicked on View Latest Version Info, then switch content and text for Jlabel 
 		
 	}
 

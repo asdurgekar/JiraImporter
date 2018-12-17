@@ -975,10 +975,18 @@ public class ImportTestCaseswithSteps{
 					Boolean blnCheckTestCaseId = false;
 					
 					Boolean blnValidationFlag = true;
+					
+					//check if Test Case Id column should be considered while counting number of test cases
+					if(ExcelFunctions.fn_VerifyColumnExist(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn))
+						blnCheckTestCaseId = true;
+					
 					for(int intRowCounter = 1;intRowCounter <= rowCount; intRowCounter++)
-					{
+					{					
+						
 						
 						try {
+							
+							
 							strSummary = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Summary"));
 							
 							strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Test Step"));
@@ -1063,36 +1071,32 @@ public class ImportTestCaseswithSteps{
 							blnValidationFlag = false;
 							break;
 						}
+						
+						
+						//get total count of test cases -- increment count
+						strRowString = strSummary;
+						if(blnCheckTestCaseId)
+						{
+							strTestCaseId = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, TestCaseIdColumn);
+							if(strRowString != null && (strTestCaseId == null || strTestCaseId.trim().isEmpty()))
+							{
+								TotalTestCaseCount++;
+							}
+						}
+						
+						else
+						{	
+							if(strRowString != null)
+							{
+								TotalTestCaseCount++;
+							}
+						}
 					
 					}
 					
+					
 					if(blnValidationFlag)
 					{
-						
-						if(ExcelFunctions.fn_VerifyColumnExist(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn))
-							blnCheckTestCaseId = true;
-						//get total count of test cases
-						for(int intRowCounter = 1;intRowCounter <=rowCount; intRowCounter++)
-						{
-							strRowString = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Labels"));
-							if(blnCheckTestCaseId)
-							{
-								strTestCaseId = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, TestCaseIdColumn);
-								if(strRowString != null && (strTestCaseId == null || strTestCaseId.trim().isEmpty()))
-								{
-									TotalTestCaseCount++;
-								}
-							}
-							
-							else
-							{	
-								if(strRowString != null)
-								{
-									TotalTestCaseCount++;
-								}
-							}
-						
-						}
 						
 						//check if number of test cases to uploaded if greater than 0
 						if(TotalTestCaseCount <= 0)

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -357,6 +358,52 @@ public class ExcelFunctions {
 				return false;
 			}
 			
+		}
+		
+		/**
+		 * 
+		 * @param WbookPath
+		 * @param SheetName
+		 * @param RowNum
+		 * @param ColumnName
+		 * @return
+		 * @throws IOException
+		 * @Createddate Dec 17, 2018
+		 * @author duraka
+		 */
+		public static HashMap<String, String> fn_GetRowData(String WbookPath, String SheetName, int RowNum, HashMap<String, String> ExcelRowData)
+				throws IOException {
+
+			try {
+				final MissingCellPolicy CREATE_NULL_AS_BLANK = MissingCellPolicy.CREATE_NULL_AS_BLANK;
+				FileInputStream FISObj = new FileInputStream(WbookPath);
+				@SuppressWarnings("resource")
+				XSSFWorkbook WbookObj = new XSSFWorkbook(FISObj);
+				XSSFSheet WSheetObj = WbookObj.getSheet(SheetName);
+				XSSFRow RowObj = WSheetObj.getRow(RowNum);
+				int columnNumber = 0;
+				
+				for (String ColumnName : ExcelRowData.keySet())
+				{
+					columnNumber = fn_GetCellNumberByColumName(WSheetObj, ColumnName);
+					XSSFCell CellObj = RowObj.getCell(columnNumber, CREATE_NULL_AS_BLANK);
+					int celltypenumber = CellObj.getCellType();
+					String CellVal = null;
+					if (celltypenumber == XSSFCell.CELL_TYPE_NUMERIC) {
+						Double DblCellVal = CellObj.getNumericCellValue();
+						Integer intcellval = DblCellVal.intValue();
+						CellVal = intcellval.toString();
+					} else if (celltypenumber == XSSFCell.CELL_TYPE_STRING) {
+						CellVal = CellObj.getStringCellValue();
+					}
+					ExcelRowData.put(ColumnName, CellVal);
+				}
+				return ExcelRowData;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw(e);
+			}
 		}
 
 

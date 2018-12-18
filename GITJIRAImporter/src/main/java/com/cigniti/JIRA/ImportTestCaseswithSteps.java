@@ -74,6 +74,7 @@ public class ImportTestCaseswithSteps{
 	public String returnMessage;
 	public int AuthResponse;
 	public String KeyResponse;
+	public static HashMap<String, String> ExcelRowData = new HashMap<String, String>();
 	public CreateTestWithTestSteps createTestWithTestSteps = new CreateTestWithTestSteps();
 	
 	
@@ -976,6 +977,14 @@ public class ImportTestCaseswithSteps{
 					
 					Boolean blnValidationFlag = true;
 					
+					
+					ExcelRowData.put(JiraExcelMap.get("Summary"),"");
+					ExcelRowData.put(JiraExcelMap.get("Test Step"),"");
+					ExcelRowData.put(JiraExcelMap.get("Test Data"),"");
+					ExcelRowData.put(JiraExcelMap.get("Expected Result"),"");
+					ExcelRowData.put(JiraExcelMap.get("Link Issue"),"");
+					ExcelRowData.put(JiraExcelMap.get("Link Type"),"");
+					
 					//check if Test Case Id column should be considered while counting number of test cases
 					if(ExcelFunctions.fn_VerifyColumnExist(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn))
 						blnCheckTestCaseId = true;
@@ -986,7 +995,18 @@ public class ImportTestCaseswithSteps{
 						
 						try {
 							
+							ExcelRowData = ExcelFunctions.fn_GetRowData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, ExcelRowData);
 							
+							strSummary = ExcelRowData.get(JiraExcelMap.get("Summary"));
+							
+							strTestStep = ExcelRowData.get(JiraExcelMap.get("Test Step"));
+							strTestData = ExcelRowData.get(JiraExcelMap.get("Test Data"));
+							strExpectedResult = ExcelRowData.get(JiraExcelMap.get("Expected Result"));
+							
+							strLinkIssue = ExcelRowData.get(JiraExcelMap.get("Link Issue"));
+							strLinkType = ExcelRowData.get(JiraExcelMap.get("Link Type"));
+							
+							/*
 							strSummary = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Summary"));
 							
 							strTestStep = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Test Step"));
@@ -995,6 +1015,7 @@ public class ImportTestCaseswithSteps{
 							
 							strLinkIssue = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Link Issue"));
 							strLinkType = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath,Globalvars.ExcelWorkSheetName, intRowCounter, JiraExcelMap.get("Link Type"));
+							*/
 							
 						} catch (Exception e) {
 							
@@ -1091,6 +1112,8 @@ public class ImportTestCaseswithSteps{
 								TotalTestCaseCount++;
 							}
 						}
+						//Console update
+						System.out.println("Validating excel row :" + (intRowCounter + 1));
 					
 					}
 					
@@ -1437,6 +1460,19 @@ public class ImportTestCaseswithSteps{
 						{
 							break;
 						}
+						
+						
+						ExcelRowData.put(JiraExcelMap.get("Labels"),"");
+						ExcelRowData.put(JiraExcelMap.get("Summary"),"");
+						ExcelRowData.put(JiraExcelMap.get("Description"),"");
+						ExcelRowData.put(JiraExcelMap.get("Test Step"),"");
+						ExcelRowData.put(JiraExcelMap.get("Test Data"),"");
+						ExcelRowData.put(JiraExcelMap.get("Expected Result"),"");
+						ExcelRowData.put(JiraExcelMap.get("Link Issue"),"");
+						ExcelRowData.put(JiraExcelMap.get("Link Type"),"");
+						ExcelRowData.put(JiraExcelMap.get("Sprint"),"");
+						
+						
 						String Message = fnImportExcelRowData(rowCount, counter);
 						
 						publish(Message);
@@ -1548,6 +1584,20 @@ public class ImportTestCaseswithSteps{
 			String strTestCaseId = "";
 			
 			
+			
+			ExcelRowData = ExcelFunctions.fn_GetRowData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, ExcelRowData);
+			
+			ApplicationLabel = ExcelRowData.get(JiraExcelMap.get("Labels"));
+			testSummary = ExcelRowData.get(JiraExcelMap.get("Summary"));
+			testDescription = ExcelRowData.get(JiraExcelMap.get("Description"));
+			testStepDescription = ExcelRowData.get(JiraExcelMap.get("Test Step"));
+			testStepData = ExcelRowData.get(JiraExcelMap.get("Test Data"));
+			testStepExpectedResult = ExcelRowData.get(JiraExcelMap.get("Expected Result"));
+			linkIssue = ExcelRowData.get(JiraExcelMap.get("Link Issue"));
+			linkType = ExcelRowData.get(JiraExcelMap.get("Link Type"));
+			sprint = ExcelRowData.get(JiraExcelMap.get("Sprint"));
+			
+			/*
 			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Labels"));
 			
 			
@@ -1563,6 +1613,7 @@ public class ImportTestCaseswithSteps{
 			linkType = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Link Type"));
 			//Sprint
 			sprint = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Sprint"));
+			*/
 			//TestCaseId - Only if column exist
 			if(blnUpdateTestCaseId)
 			{

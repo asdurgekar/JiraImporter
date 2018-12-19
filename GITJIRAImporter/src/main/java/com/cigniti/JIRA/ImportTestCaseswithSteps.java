@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -37,6 +38,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.cigniti.util.Globalvars;
@@ -232,8 +234,7 @@ public class ImportTestCaseswithSteps{
 							fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
 							fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
 						fnUpdateClientToken();
-						fnLaunchLoadSecondPanel();
-						fn_Testing();
+						fnLaunchLoadSecondPanel();						
 						blnLoginSuccess = true;
 						
 					}
@@ -316,11 +317,65 @@ public class ImportTestCaseswithSteps{
 
 	
 
-	private void fn_Testing() {
+	public void fn_Testing(){
 		
-		try {			
-			createTestWithTestSteps.UpdateExecution("10357", "02fe07d3-b380-4665-8e12-b720e206ddd4", "26972");
-		} catch (IOException e) {
+		try {
+			
+			//Cycle Details
+			String cycleName = "TestingCycle17";
+			String cycleDescription = "TestingCycleDescription4";
+			//Defect Details
+			String bugSummary = "Testing Bug creation";
+			String bugDescription = "Description for Testing Bug creation";
+			String bugLabel = "aws";
+			String str_BugDetails = "";
+			
+			//Execution Details
+			String testId = "61472";
+			String ExecutionStatus = "FAIL";			
+			String ExecutionComment = "Fail due to some Issue";
+			
+			
+			List<String> executionIds = new ArrayList<String>(); 
+			CreateTestWithTestSteps.userName = Globalvars.JIRA_userName;
+			CreateTestWithTestSteps.password = Globalvars.JIRA_password;
+			CreateTestWithTestSteps.accessKey = "MjJiMDY4YzctMWE1Mi0zNzlhLTg4NzktZjExOTNhNWRmN2Q1IHJhbmdhbmF0aGRpbmR1a3VydGhpIFVTRVJfREVGQVVMVF9OQU1F";
+			CreateTestWithTestSteps.secretKey = "BQiA2HmIH__GLfley3fwfoai7jG4Mu6DAFyDlnUCSso";
+			
+			//Login functions
+			AuthResponse = fn_PerformAuthentication();
+			KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);	
+			fnUpdateClientToken();
+			
+			//Create Cycle
+			String cycleID = createTestWithTestSteps.createCycleInJIRA(cycleName, cycleDescription);
+			
+			//Add Tests to Cycle
+			createTestWithTestSteps.addTestToCycle(testId, cycleID);
+			
+			//Get Execution details in Cycle
+			Thread.sleep(1000);
+			executionIds = createTestWithTestSteps.searchCycleExecutions(cycleID,Globalvars.JIRA_projectId);
+			
+			if(ExecutionStatus.toLowerCase().contains("fail"))
+			{
+				//Create Defect
+				str_BugDetails = createTestWithTestSteps.createBuginJira(bugSummary, bugDescription, bugLabel, "", true);
+				String defectId = str_BugDetails.split(":")[0];
+				String defectKey = str_BugDetails.split(":")[1]; 
+				String[] defectIds = {defectId};
+				
+				//Update Execution details
+				createTestWithTestSteps.UpdateExecution(Globalvars.JIRA_projectId,cycleID, executionIds.get(0),testId,"2",ExecutionComment,defectIds);
+			}
+			else if(ExecutionStatus.toLowerCase().contains("pass"))
+			{
+				//Update Execution details
+				createTestWithTestSteps.UpdateExecution(Globalvars.JIRA_projectId,cycleID, executionIds.get(0),testId,"1");
+			}
+			
+		
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

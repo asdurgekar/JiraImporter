@@ -35,8 +35,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
@@ -49,6 +51,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -80,12 +83,13 @@ public class CreateTestWithTestSteps {
 	private static String API_VALIDKEY = "{SERVER}/public/rest/api/1.0/teststep/-1?projectId=";
 	private static String API_GET_ISSUE = "{SERVER}/rest/api/2/issue/";
 	private static String API_LINK_ISSUE = "{SERVER}/rest/api/2/issueLink";
-	private static String API_EXECUTION = "{SERVER}/public/rest/api/1.0/execution";
+	private static String API_EXECUTION = "{SERVER}/public/rest/api/1.0/execution/";
+	private static String API_CYCLEEXECUTION = "{SERVER}/public/rest/api/2.0/executions/search/cycle/";
 	
 	
 	/** Declare JIRA,Zephyr URL,access and secret Keys */
 	// Jira Cloud URL for the instance
-	public static String jiraBaseURL = "https://rentacenter.atlassian.net";
+	public static String jiraBaseURL = "https://gamestop.atlassian.net";
 	// Replace zephyr baseurl <ZAPI_Cloud_URL> shared with the user for ZAPI
 	// Cloud Installation
 	public static String zephyrBaseUrl = "https://prod-api.zephyr4jiracloud.com/connect";
@@ -102,6 +106,7 @@ public class CreateTestWithTestSteps {
 	public static String password = Globalvars.JIRA_password;
 	public static String projectId = Globalvars.JIRA_projectId;
 	private static String issueTypeId = Globalvars.JIRA_issueTypeId;
+	private static String bugTypeId = Globalvars.JIRA_bugTypeId;
 	
 	private static final String createTestUri = API_CREATE_TEST.replace("{SERVER}", jiraBaseURL);
 	private static final String createTestStepUri = API_CREATE_TEST_STEP.replace("{SERVER}", zephyrBaseUrl);
@@ -109,6 +114,7 @@ public class CreateTestWithTestSteps {
 	private static final String getIssueUri = API_GET_ISSUE.replace("{SERVER}", jiraBaseURL);
 	private static final String issueLinkUri = API_LINK_ISSUE.replace("{SERVER}", jiraBaseURL);
 	private static final String ExecutionUri = API_EXECUTION.replace("{SERVER}", zephyrBaseUrl);
+	private static final String SearchCycleExecUri = API_CYCLEEXECUTION.replace("{SERVER}", zephyrBaseUrl);
 	
 	static ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
 			.build();
@@ -315,7 +321,7 @@ public class CreateTestWithTestSteps {
 		}
 		String cycleID = createCycle(createCycleUri, client, accessKey, cycleJSON);
 
-		System.out.println("Created Test Cycle in JIRA " + cycleName );
+		System.out.println("Created Test Cycle in JIRA with name : " + cycleName );
 
 		/**
 		 * Add tests to Cycle IssueId's
@@ -324,7 +330,7 @@ public class CreateTestWithTestSteps {
 		return cycleID;
 	}
 
-	public void addTestToCycle(String issueID, String cycleID)
+	public String addTestToCycle(String issueID, String cycleID)
 			throws URISyntaxException, IOException {
 		String addTestsUri = zephyrBaseUrl + "/public/rest/api/1.0/executions/add/cycle/" + cycleID;
 		String[] issueIds = { issueID }; //Issue Id's to be added to Test Cycle, add more issueKeys separated by comma
@@ -333,7 +339,7 @@ public class CreateTestWithTestSteps {
 		addTestsObj.put("issues", issueIds);
 		addTestsObj.put("method", "1");
 		addTestsObj.put("projectId", projectId);
-		addTestsObj.put("versionId", versionId);
+		addTestsObj.put("versionId", -1);
 
 		StringEntity addTestsJSON = null;
 		try {
@@ -341,8 +347,9 @@ public class CreateTestWithTestSteps {
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 		}
-		addTestsToCycle(addTestsUri, client, accessKey, addTestsJSON);
-		System.out.println("Tests added successfully to Test Cycle ");
+		String ExecutionId = addTestsToCycle(addTestsUri, client, accessKey, addTestsJSON);
+		System.out.println("Test: " + issueID + " is added successfully to Test Cycle ");
+		return ExecutionId;
 	}
 	
 	@SuppressWarnings("resource")
@@ -611,8 +618,8 @@ public class CreateTestWithTestSteps {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			int expirationInSec = 360;
 			
+			int expirationInSec = 360;
 			JwtGenerator jwtGenerator = client.getJwtGenerator();
 			String jwt = jwtGenerator.generateJWT("POST", uri, expirationInSec);
 
@@ -631,6 +638,34 @@ public class CreateTestWithTestSteps {
 		}
 		return response;
 	}
+	
+	
+	@SuppressWarnings("resource")
+	private static HttpResponse executeCreateBug(final String createTestUri, Header header,
+			StringEntity createTestJSON) {
+		HttpResponse response = null;
+		try {
+			
+			URI uri = null;
+			try {
+				uri = new URI(createTestUri);
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			HttpPost addTestStepReq = new HttpPost(uri);
+			addTestStepReq.addHeader("Content-Type", "application/json");
+			addTestStepReq.setHeader(header);
+			addTestStepReq.setEntity(createTestJSON);
+			
+			HttpClient restClient = new DefaultHttpClient();
+			response = restClient.execute(addTestStepReq);
+		} catch (Exception e) {
+			e.printStackTrace();		
+		}
+		return response;
+	}
 
 	private static StringEntity createTestCaseEntity(String testSummary, String testDescription, String ApplicationLabel, String sprint) {
 		JSONObject createTestObj = createTestCaseJSON(testSummary, testDescription, ApplicationLabel, sprint);
@@ -641,6 +676,17 @@ public class CreateTestWithTestSteps {
 			e1.printStackTrace();
 		}
 		return createTestJSON;
+	}
+	
+	private static StringEntity createBugEntity(String bugSummary, String bugDescription, String ApplicationLabel, String sprint) {
+		JSONObject createBugObj = createBugJSON(bugSummary, bugDescription, ApplicationLabel, sprint);
+		StringEntity createBugJSON = null;
+		try {
+			createBugJSON = new StringEntity(createBugObj.toString());
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		return createBugJSON;
 	}
 
 	public static Header createAuthorizationHeader() {
@@ -726,6 +772,84 @@ public class CreateTestWithTestSteps {
 		return createTestObj;
 	}
 	
+	private static JSONObject createBugJSON(String bugSummary, String bugDescription,
+			String ApplicationLabel, String sprint) {
+		
+		
+		JSONObject createTestObj = null;
+		try {
+			JSONObject projectObj = new JSONObject();
+			projectObj.put("id", projectId); // Project ID where the Test to be
+			// Created
+
+			// type
+			JSONObject issueTypeObj = new JSONObject();
+			issueTypeObj.put("id", bugTypeId); // IssueType ID which is Test isse
+			
+			//Labels
+			String[] LabelsObj = {ApplicationLabel.trim()};
+			String[] LabelsInitObj = null;
+			if(ApplicationLabel.contains(","))
+			{	
+				LabelsInitObj =  ApplicationLabel.split(",");
+				LabelsObj = new String[ApplicationLabel.split(",").length];
+				for (int i = 0; i < LabelsInitObj.length; i++)
+					LabelsObj[i] = LabelsInitObj[i].trim();
+			}		
+			
+			JSONArray LabelsArrayObj = new JSONArray(Arrays.asList(LabelsObj));		
+			
+			//Affects Version
+			
+			
+//		JSONObject VersionObj = new JSONObject();
+//		VersionObj.put("id", affectsVersion);
+//		
+//		JSONArray VersionArrayObj = new JSONArray(Arrays.asList(VersionObj));
+			
+			
+			// JSONObject assigneeObj = new JSONObject();/
+			// assigneeObj.put("name", userName); // Username of the assignee
+
+			// JSONObject reporterObj = new JSONObject();
+			// reporterObj.put("name", userName); // Username of the Reporter
+
+			// Case
+			// Summary/Name
+
+			/**
+			 * Create JSON payload to POST Add more field objects if required
+			 * 
+			 * ***DONOT EDIT BELOW ***
+			 */
+
+			JSONObject fieldsObj = new JSONObject();
+			fieldsObj.put("project", projectObj);
+			fieldsObj.put("summary", bugSummary);
+			fieldsObj.put("labels", LabelsArrayObj);
+			fieldsObj.put("description", bugDescription);
+			fieldsObj.put("issuetype", issueTypeObj);
+			//fieldsObj.put("versions", VersionArrayObj);
+			//Optional field with condition
+			if(sprint != null && !sprint.trim().isEmpty())
+				fieldsObj.put("customfield_10103", Integer.valueOf(sprint));
+
+			
+			// fieldsObj.put("assignee", assigneeObj);
+			// fieldsObj.put("reporter", reporterObj);
+
+			createTestObj = new JSONObject();
+			createTestObj.put("fields", fieldsObj);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return createTestObj;
+	}
+	
 	
 	private static StringEntity createIssueLinkJSON(String InwardissueId, String issueKey, String relation) {
 
@@ -756,20 +880,52 @@ public class CreateTestWithTestSteps {
 		return createLinkJSON;
 	}
 	
-	private static StringEntity createExecutionJSON(String InwardissueId, String issueKey, String relation) {
+	private static StringEntity createExecutionJSON_old(String StatusId) {
+
+		//JSON object for relationship type of link
+		JSONObject createLinkObj = new JSONObject();
+		createLinkObj.put("status", 1);
+		
+		StringEntity createLinkJSON = null;
+		try {
+			createLinkJSON = new StringEntity(createLinkObj.toString());
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		return createLinkJSON;
+	}
+	
+	private static StringEntity createExecutionJSON(String projectId, String cycleId, String ExecutionId, String IssueId,
+			String StatusId, String Comment, String[] defectIds) {
 
 		//JSON object for relationship type of link
 		JSONObject statusId = new JSONObject();
-		statusId.put("id", 1);
+		statusId.put("id", Integer.parseInt(StatusId));
+		
+		
 		
 		
 		JSONObject createLinkObj = new JSONObject();
-		createLinkObj.put("cycleId", "fafc0a99-74d4-4465-a9f2-34fe0c269a99");
-		createLinkObj.put("id", "02fe07d3-b380-4665-8e12-b720e206ddd4");
-		createLinkObj.put("issueId", 26972);
-		createLinkObj.put("projectId", 10357);
-		createLinkObj.put("versionId", -1);
+		createLinkObj.put("cycleId", cycleId);
+		createLinkObj.put("id", ExecutionId);
+		createLinkObj.put("issueId", IssueId);
+		createLinkObj.put("projectId", projectId);
 		createLinkObj.put("status", statusId);
+		
+		if(defectIds != null)
+		{
+			JSONArray defects = new JSONArray();
+			for(String inddefect :defectIds)
+				defects.put(inddefect);
+			createLinkObj.put("defects", defects);
+		}
+		
+		if(Comment != null)
+		{
+			createLinkObj.put("comment", Comment);
+		}
+		createLinkObj.put("versionId", -1);
+		
 		
 		StringEntity createLinkJSON = null;
 		try {
@@ -906,19 +1062,49 @@ public class CreateTestWithTestSteps {
 		return ResponseMessage;
 	}
 
-	public String UpdateExecution(String projectId, String ExecutionId, String IssueId) throws IOException {
+	public String UpdateExecution_old(String ExecutionId, String StatusId) throws IOException {
 		
 		
-		System.out.println();
-		StringEntity createExecJSON = createExecutionJSON(ExecutionId, projectId, IssueId);
-//		HttpResponse response = executeCreateTestCase(ExecutionUri + ExecutionId + "?projectId=" +
-//				projectId + "&issueId=" + IssueId, header, createExecJSON);
-		HttpResponse response = executeCreateTestCase(ExecutionUri, header, createExecJSON);
-		int statusCode = getHTTPResponseCode(response);
+		
+		String finalURL = ExecutionUri.replace("id",ExecutionId);
+		URI uri = null;
+		try {
+			uri = new URI(finalURL);
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		int expirationInSec = 360;
+		ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
+				.build();
+		JwtGenerator jwtGenerator = client.getJwtGenerator();
+		String jwt = jwtGenerator.generateJWT("PUT", uri, expirationInSec);
+
+		
+		StringEntity createExecJSON = createExecutionJSON_old(StatusId);
+		
+		HttpResponse responseExec = null;
+		HttpPut ExecReq = new HttpPut(uri);
+		ExecReq.addHeader("Content-Type", "application/json");
+		ExecReq.addHeader(HttpHeaders.AUTHORIZATION, jwt);
+		ExecReq.addHeader("zapiAccessKey", accessKey);
+		ExecReq.setEntity(createExecJSON);
+
+		try {
+			HttpClient restClient = new DefaultHttpClient();
+			responseExec = restClient.execute(ExecReq);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		int statusCode = getHTTPResponseCode(responseExec);
+		
+		
 		String linkId = null;
-		HttpEntity entity = response.getEntity();
+		HttpEntity entity = responseExec.getEntity();
 		if (statusCode >= 200 && statusCode < 300) {			
-			System.out.println("Link is created for the issue " + IssueId );
+			System.out.println("Execution status is updated for Execution Id : " + ExecutionId );
 
 		} else {
 			try {
@@ -934,6 +1120,235 @@ public class CreateTestWithTestSteps {
 			}
 		}
 		return linkId;
+	}
+	
+	
+	public void UpdateExecution(String projectId, String cycleId, String ExecutionId, String IssueId, String StatusId,
+		Object... OptParams) throws IOException {
+		
+	
+		String Comment = "";
+		String[] defectIds = null;
+		
+		if (OptParams.length > 0) 
+		{
+		      if (!(OptParams[0] instanceof String)) { 
+		          throw new IllegalArgumentException("String argument need to be passed");
+		      }
+		      Comment = OptParams[0].toString();
+		}
+	    if (OptParams.length > 1) 
+	    {
+	        if (!(OptParams[1] instanceof String[])) { 
+	            throw new IllegalArgumentException("String array need to be passed");
+	        }
+	        defectIds = (String[])OptParams[1];	        
+	    }
+	    
+		String finalURL = ExecutionUri + ExecutionId + "?projectId=" +
+				projectId + "&issueId=" + IssueId;
+		URI uri = null;
+		try {
+			uri = new URI(finalURL);
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		StringEntity createExecJSON = createExecutionJSON(projectId, cycleId, ExecutionId, IssueId, StatusId, Comment, defectIds);
+//		HttpResponse response = executeCreateTestCase(ExecutionUri + ExecutionId + "?projectId=" +
+//				projectId + "&issueId=" + IssueId, header, createExecJSON);
+		
+		int expirationInSec = 360;
+		ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
+				.build();
+		JwtGenerator jwtGenerator = client.getJwtGenerator();
+		String jwt = jwtGenerator.generateJWT("PUT", uri, expirationInSec);
+		
+		
+		HttpResponse responseExec = null;
+		HttpPut ExecReq = new HttpPut(uri);
+		ExecReq.addHeader("Content-Type", "application/json");
+		ExecReq.addHeader(HttpHeaders.AUTHORIZATION, jwt);
+		ExecReq.addHeader("zapiAccessKey", accessKey);
+		ExecReq.setEntity(createExecJSON);
+		
+		
+		try {
+			HttpClient restClient = new DefaultHttpClient();
+			responseExec = restClient.execute(ExecReq);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		int statusCode = getHTTPResponseCode(responseExec);		
+		HttpEntity entity = responseExec.getEntity();
+		if (statusCode >= 200 && statusCode < 300) {			
+			System.out.println("Execution status is updated for  " + ExecutionId );
+
+		} else {
+			try {
+				String string = null;
+				
+				string = EntityUtils.toString(entity);
+				RespMessage = "Failure~" + string;
+				new JSONObject(string);
+				throw new ClientProtocolException("Unexpected response status: " + statusCode);
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	public List<String> searchCycleExecutions(String cycleID, String JIRA_projectId) throws ParseException, IOException {
+
+		List<String> executionIds = new ArrayList<String>();
+		String finalURL = SearchCycleExecUri + cycleID + "?projectId=" +
+				JIRA_projectId + "&versionId=" + versionId;
+		URI uri = null;
+		try {
+			uri = new URI(finalURL);
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		//StringEntity createExecJSON = createExecutionJSON(ExecutionId, projectId, IssueId, StatusId);
+//		HttpResponse response = executeCreateTestCase(ExecutionUri + ExecutionId + "?projectId=" +
+//				projectId + "&issueId=" + IssueId, header, createExecJSON);
+		
+		int expirationInSec = 360;
+		ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
+				.build();
+		JwtGenerator jwtGenerator = client.getJwtGenerator();
+		String jwt = jwtGenerator.generateJWT("GET", uri, expirationInSec);
+		
+		
+		HttpResponse responseCycle = null;
+		HttpGet SearchReq = new HttpGet(uri);
+		SearchReq.addHeader("Content-Type", "application/json");
+		SearchReq.addHeader(HttpHeaders.AUTHORIZATION, jwt);
+		SearchReq.addHeader("zapiAccessKey", accessKey);
+		
+		
+		
+		try {
+			HttpClient restClient = new DefaultHttpClient();
+			responseCycle = restClient.execute(SearchReq);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		int statusCode = getHTTPResponseCode(responseCycle);		
+		HttpEntity entity = responseCycle.getEntity();
+		if (statusCode >= 200 && statusCode < 300) {
+			String result = EntityUtils.toString(responseCycle.getEntity());
+			JSONObject JSONCycleTests = new JSONObject(result);
+			executionIds = fn_GetExecutionIds(JSONCycleTests);
+			System.out.println("Cycle executions are retrieved for Cycle Id : " + cycleID );
+
+		} else {
+			try {
+				String string = null;
+				
+				try {
+					string = EntityUtils.toString(entity);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				RespMessage = "Failure~" + string;
+				new JSONObject(string);
+				throw new ClientProtocolException("Unexpected response status: " + statusCode);
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			}
+		}
+		return executionIds;
+		
+	}
+
+	private List<String> fn_GetExecutionIds(JSONObject jSONCycleTests) {
+		
+		// TODO Auto-generated method stub
+		List<String> executionIds = new ArrayList<String>();
+		
+		JSONObject searObjList = jSONCycleTests.getJSONObject("searchResult");
+		JSONArray SearchJSONArray = searObjList.getJSONArray("searchObjectList");
+		
+		for (int arrCounter = 0; arrCounter < SearchJSONArray.length(); arrCounter++) 
+		{
+		    JSONObject IndTest = SearchJSONArray.getJSONObject(arrCounter);
+		    JSONObject IndTestExec = IndTest.getJSONObject("execution");
+		    executionIds.add(IndTestExec.get("id").toString());
+		}
+		
+		return executionIds;
+	}
+	
+	public String createBuginJira(String bugSummary, String bugDescription,
+			String ApplicationLabel, String sprint, Boolean... getIssueKey) throws IOException {
+		
+		String str_TestCaseReturn = null;
+		Boolean bln_SendIDAndKey = false;
+		if (getIssueKey.length > 0) {
+			// int_SearchResultsRow = int_SearchResults.length > 0 ?
+			// int_SearchResults[0] : 0;
+			if(getIssueKey[0] == true)
+			{
+				bln_SendIDAndKey = true;
+			}
+			
+		}
+		bugDescription = getTextFromHTML(bugDescription);
+		bugSummary = getTextFromHTML(bugSummary);
+
+		StringEntity createTestJSON = createBugEntity(bugSummary, bugDescription, ApplicationLabel, sprint);
+		HttpResponse response = executeCreateBug(createTestUri, header, createTestJSON);
+		int statusCode = getHTTPResponseCode(response);
+		String testId = null;
+		String testKey = null;
+		HttpEntity entity = response.getEntity();
+		
+		if (statusCode >= 200 && statusCode < 300) {
+			
+			
+			//if you are retrieving only Id after creation
+			if(!bln_SendIDAndKey)
+			{
+				str_TestCaseReturn = getTestCaseId(entity);
+			}
+			//if you are retrieving Id & Key after creation
+			else
+			{
+				str_TestCaseReturn = getTestCaseIDKey(entity);
+			}
+			
+			
+			System.out.println("Created Bug in JIRA with description : " + bugDescription );
+
+		} else {
+			try {
+				String string = null;
+				
+				string = EntityUtils.toString(entity);
+				RespMessage = "Failure~" + string;
+				new JSONObject(string);
+				throw new ClientProtocolException("Unexpected response status: " + statusCode);
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			}
+		}
+		return str_TestCaseReturn;
 	}
 	
 }

@@ -322,10 +322,12 @@ public class ImportTestCaseswithSteps{
 		try {
 			
 			//Cycle Details
-			String cycleName = "TestingCycle17";
+			String cycleName = "TestingCycle20";
 			String cycleDescription = "TestingCycleDescription4";
 			//Defect Details
-			String bugSummary = "Testing Bug creation";
+			String defectId = "";
+			String defectKey = "";
+			String bugSummary = "Testing Bug create new";
 			String bugDescription = "Description for Testing Bug creation";
 			String bugLabel = "aws";
 			String str_BugDetails = "";
@@ -359,10 +361,16 @@ public class ImportTestCaseswithSteps{
 			
 			if(ExecutionStatus.toLowerCase().contains("fail"))
 			{
-				//Create Defect
-				str_BugDetails = createTestWithTestSteps.createBuginJira(bugSummary, bugDescription, bugLabel, "", true);
-				String defectId = str_BugDetails.split(":")[0];
-				String defectKey = str_BugDetails.split(":")[1]; 
+				//Search if defect exists
+				defectId = createTestWithTestSteps.getExistingDefectId(Globalvars.JIRA_projectId,bugSummary);
+				//if defect does not exists, then create a new defect
+				if(defectId == null)
+				{
+					//Create Defect
+					str_BugDetails = createTestWithTestSteps.createBuginJira(bugSummary, bugDescription, bugLabel, "", true);
+					defectId = str_BugDetails.split(":")[0];
+					defectKey = str_BugDetails.split(":")[1]; 
+				}
 				String[] defectIds = {defectId};
 				
 				//Update Execution details

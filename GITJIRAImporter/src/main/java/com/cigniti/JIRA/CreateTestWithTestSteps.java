@@ -85,6 +85,7 @@ public class CreateTestWithTestSteps {
 	private static String API_LINK_ISSUE = "{SERVER}/rest/api/2/issueLink";
 	private static String API_EXECUTION = "{SERVER}/public/rest/api/1.0/execution/";
 	private static String API_CYCLEEXECUTION = "{SERVER}/public/rest/api/2.0/executions/search/cycle/";
+	private static String API_SEARCHISSUE = "{SERVER}/rest/api/2/search";
 	
 	
 	/** Declare JIRA,Zephyr URL,access and secret Keys */
@@ -115,6 +116,7 @@ public class CreateTestWithTestSteps {
 	private static final String issueLinkUri = API_LINK_ISSUE.replace("{SERVER}", jiraBaseURL);
 	private static final String ExecutionUri = API_EXECUTION.replace("{SERVER}", zephyrBaseUrl);
 	private static final String SearchCycleExecUri = API_CYCLEEXECUTION.replace("{SERVER}", zephyrBaseUrl);
+	private static final String SearchIssueUri = API_SEARCHISSUE.replace("{SERVER}", jiraBaseURL);
 	
 	static ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
 			.build();
@@ -641,7 +643,7 @@ public class CreateTestWithTestSteps {
 	
 	
 	@SuppressWarnings("resource")
-	private static HttpResponse executeCreateBug(final String createTestUri, Header header,
+	private static HttpResponse executePostwithHeader(final String createTestUri, Header header,
 			StringEntity createTestJSON) {
 		HttpResponse response = null;
 		try {
@@ -848,6 +850,93 @@ public class CreateTestWithTestSteps {
 			e.printStackTrace();
 		}
 		return createTestObj;
+	}
+	
+	
+	private static StringEntity createSearchRequest(String jiraProjectId, String issueTypeId,
+			String bugSummary) {
+		
+		
+		JSONObject createSearchObj = null;
+		StringEntity createSearchStrEnt = null;
+		try {
+			/*
+			JSONObject projectObj = new JSONObject();
+			projectObj.put("id", projectId); // Project ID where the Test to be
+			// Created
+
+			// type
+			JSONObject issueTypeObj = new JSONObject();
+			issueTypeObj.put("id", bugTypeId); // IssueType ID which is Test isse
+			
+			//Labels
+			String[] LabelsObj = {ApplicationLabel.trim()};
+			String[] LabelsInitObj = null;
+			if(ApplicationLabel.contains(","))
+			{	
+				LabelsInitObj =  ApplicationLabel.split(",");
+				LabelsObj = new String[ApplicationLabel.split(",").length];
+				for (int i = 0; i < LabelsInitObj.length; i++)
+					LabelsObj[i] = LabelsInitObj[i].trim();
+			}		
+			
+			JSONArray LabelsArrayObj = new JSONArray(Arrays.asList(LabelsObj));		
+			*/
+			
+			//Affects Version
+			
+			
+			//		JSONObject VersionObj = new JSONObject();
+			//		VersionObj.put("id", affectsVersion);
+			//		
+			//		JSONArray VersionArrayObj = new JSONArray(Arrays.asList(VersionObj));
+			
+			
+			// JSONObject assigneeObj = new JSONObject();/
+			// assigneeObj.put("name", userName); // Username of the assignee
+
+			// JSONObject reporterObj = new JSONObject();
+			// reporterObj.put("name", userName); // Username of the Reporter
+
+			// Case
+			// Summary/Name
+
+			/**
+			 * Create JSON payload to POST Add more field objects if required
+			 * 
+			 * ***DONOT EDIT BELOW ***
+			 */
+			
+			JSONArray fieldsArray = new JSONArray();
+			fieldsArray.put("summary");
+			fieldsArray.put("status");
+			fieldsArray.put("assignee");
+
+			String jqlString = "project = " + jiraProjectId + " AND issuetype = " + issueTypeId + 
+					" AND summary ~ '" + bugSummary + "' ORDER BY created DESC";
+			JSONObject fieldsObj = new JSONObject();
+			fieldsObj.put("jql", jqlString);
+			fieldsObj.put("startAt", 0);
+			fieldsObj.put("maxResults", 5);
+			fieldsObj.put("fields", fieldsArray);
+			
+			createSearchObj = fieldsObj;
+			
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			createSearchStrEnt = new StringEntity(createSearchObj.toString());
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		
+		return createSearchStrEnt;
 	}
 	
 	
@@ -1312,7 +1401,7 @@ public class CreateTestWithTestSteps {
 		bugSummary = getTextFromHTML(bugSummary);
 
 		StringEntity createTestJSON = createBugEntity(bugSummary, bugDescription, ApplicationLabel, sprint);
-		HttpResponse response = executeCreateBug(createTestUri, header, createTestJSON);
+		HttpResponse response = executePostwithHeader(createTestUri, header, createTestJSON);
 		int statusCode = getHTTPResponseCode(response);
 		String testId = null;
 		String testKey = null;
@@ -1349,6 +1438,51 @@ public class CreateTestWithTestSteps {
 			}
 		}
 		return str_TestCaseReturn;
+	}
+
+	public String getExistingDefectId(String JIRA_projectId, String bugSummary) 
+			throws ParseException, IOException {
+
+		String str_defectId = null;
+		String str_defectKey = null;
+		StringEntity createSearchJSON = createSearchRequest(JIRA_projectId, bugTypeId, bugSummary);
+		HttpResponse response = executePostwithHeader(SearchIssueUri, header, createSearchJSON);
+		int statusCode = getHTTPResponseCode(response);
+		String testId = null;
+		String testKey = null;
+		HttpEntity entity = response.getEntity();
+		
+		if (statusCode >= 200 && statusCode < 300) {
+			
+			//retrieve defect id
+			JSONObject IssuesObj = new JSONObject(EntityUtils.toString(entity));
+			JSONArray IssuesObjArr = IssuesObj.getJSONArray("issues");
+			if(IssuesObjArr.length() > 0)
+			{
+				JSONObject IssueObj = IssuesObjArr.getJSONObject(0);
+				str_defectId = IssueObj.get("id").toString();
+				str_defectKey = IssueObj.get("key").toString();
+				System.out.println("Existing defect found  : " + str_defectKey);
+			}
+			else
+			{
+				System.out.println("No existing defect with Summary contaning  : '" + bugSummary + "'");
+			}
+
+		} else {
+			try {
+				String string = null;
+				
+				string = EntityUtils.toString(entity);
+				RespMessage = "Failure~" + string;
+				new JSONObject(string);
+				throw new ClientProtocolException("Unexpected response status: " + statusCode);
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			}
+		}
+		return str_defectId;
 	}
 	
 }

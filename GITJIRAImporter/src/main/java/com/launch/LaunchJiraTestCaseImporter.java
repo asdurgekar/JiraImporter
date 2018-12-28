@@ -90,7 +90,9 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		SupportingMethods suppMethods = new SupportingMethods();
 		
 		//get files from github
-		strCloudVersion = suppMethods.getGitHubVersion();
+		strCloudVersion = suppMethods.getGitFileDownload();
+		//get files from github
+		//strCloudVersion = suppMethods.getGitHubVersion();
 		
 		//get files from one drive
 		//strCloudVersion = suppMethods.getOneDriveVersion_Latest();

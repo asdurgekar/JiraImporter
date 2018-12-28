@@ -89,21 +89,30 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		
 		SupportingMethods suppMethods = new SupportingMethods();
 		
+		//get files from github
+		strCloudVersion = suppMethods.getGitHubVersion();
+		
+		//get files from one drive
+		//strCloudVersion = suppMethods.getOneDriveVersion_Latest();
+		
+		//get files from google drive
+		//strCloudVersion = suppMethods.getGDriveVersion();
+		
+		//get the tool version in Cloud
+		//strCloudVersion = suppMethods.getCloudVersion();
+		
 		blnSameVersion = suppMethods.verifyToolVersion();
 		if(blnSameVersion)
 		{
 			suppMethods.LaunchTool();
 		}
 		
-		//testing from one drive
-		//get files from one drive
-		strCloudVersion = suppMethods.getGDriveVersion();
 		
-		//get the tool version in Cloud
-		//strCloudVersion = suppMethods.getCloudVersion();
 		
 		//get the Tool's latest version release information
-		strReleaseInfo = suppMethods.getReleaseInfo();
+		//strReleaseInfo = suppMethods.getReleaseInfo();
+		
+		strReleaseInfo = suppMethods.getGitHubReleaseInfo();
 		
 		setResizable(false);
 		setTitle("Jira Test Case Importer - " + strCloudVersion + " : New Version available!");

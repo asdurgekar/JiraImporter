@@ -2,21 +2,43 @@ package com.launch;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
 
 import javax.swing.SwingWorker;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.cigniti.JIRA.CreateTestWithTestSteps;
 import com.cigniti.JIRA.ImportTestCases;
 import com.cigniti.util.Globalvars;
+import com.cigniti.util.UtilFunctions;
+import com.onedrive4j.AccessToken;
+import com.onedrive4j.Drive;
+import com.onedrive4j.DriveItem;
+import com.onedrive4j.DriveService;
+import com.onedrive4j.OneDrive;
+import com.onedrive4j.Scope;
 
 public class SupportingMethods {
 	
@@ -250,6 +272,25 @@ public class SupportingMethods {
 		String content = contentBuilder.toString();
 		return content;
 	}
+	
+	public String getGitHubReleaseInfo() {
+		
+		String releaseinfo = "";
+		try {
+		  
+		  String link ="https://raw.githubusercontent.com/asdurgekar/JiraImporterCodeBase/master/ReleaseNotes.html";
+		  		  
+		  String responseString = getGitHubFileContent(link);
+		  releaseinfo = responseString;	
+		  System.out.println(releaseinfo);
+		  
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return releaseinfo;
+	}
 
 	public String fnGetLocalVersion(){
 
@@ -305,6 +346,147 @@ public class SupportingMethods {
 		
 		
 		return null;
+	}
+
+	public String getOneDriveVersion() {
+		
+		try {
+			
+			Properties prop = UtilFunctions.loadApiSettings();
+			OneDrive oneDrive = new OneDrive(prop.getProperty("client_id"), prop.getProperty("client_secret"), prop.getProperty("callback_url"));
+			DriveService driveService = oneDrive.getDriveService();
+	
+			String authzUrl = oneDrive.authorize(new Scope[] { Scope.SKYDRIVE_UPDATE,  Scope.SKYDRIVE });
+		
+		
+			System.out.println("Follow this URL to authorise yourself on OneDrive");
+	        System.out.println(authzUrl);
+	        System.out.println("Paste in the access code from the URL that you got redirected to:");
+	        System.out.print(">>");	        
+			Scanner scanner = new Scanner(System.in);
+			String code = scanner.nextLine();
+			
+			AccessToken token = oneDrive.getAccessToken(code);
+	        //AccessToken token = oneDrive.getAccessTokenfromAuth(new Scope[] { Scope.SKYDRIVE_UPDATE,  Scope.SKYDRIVE });
+	       // AccessToken token = oneDrive.getAccessToken_Latest(prop.getProperty("tenant_id"), new Scope[] { Scope.SKYDRIVE_UPDATE,  Scope.SKYDRIVE });
+			System.out.println("UserId: " + token.getUserId());
+			System.out.println("AccessToken: " + token.getAccessToken());
+			
+			System.out.println("==============");
+			System.out.print("READ:: OneDrive Drives");
+			List<Drive> drives = driveService.getDrives(token.getAccessToken());
+			for (Drive d : drives) {
+				System.out.println(d.toString());
+			}
+
+			System.out.println("==============");
+			System.out.print("READ:: OneDrive Drive Items");
+			List<DriveItem> items = driveService.getRootItems(token.getAccessToken(), drives.get(0).id);
+			for (DriveItem i : items) {
+				System.out.println("ID: " + i.name.toString() + "\n" +
+								"Name: " + i.name.toString() + "\n" + 
+							"DownloadURL: " + i.downloadUrl);
+			}
+
+			//scanner.close();					
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+public String getOneDriveVersion_Latest() {
+		
+		try {
+			
+			Properties prop = UtilFunctions.loadApiSettings();
+			OneDrive oneDrive = new OneDrive(prop.getProperty("client_id"), prop.getProperty("client_secret"), prop.getProperty("callback_url"));
+			DriveService driveService = oneDrive.getDriveService();
+	
+			/*
+			String authzUrl = oneDrive.authorize(new Scope[] { Scope.SKYDRIVE_UPDATE,  Scope.SKYDRIVE });
+		
+		
+			System.out.println("Follow this URL to authorise yourself on OneDrive");
+	        System.out.println(authzUrl);
+	        System.out.println("Paste in the access code from the URL that you got redirected to:");
+	        System.out.print(">>");	        
+			Scanner scanner = new Scanner(System.in);
+			String code = scanner.nextLine();
+			*/
+			//AccessToken token = oneDrive.getAccessToken(code);
+	        //AccessToken token = oneDrive.getAccessTokenfromAuth(new Scope[] { Scope.SKYDRIVE_UPDATE,  Scope.SKYDRIVE });
+	        AccessToken token = oneDrive.getAccessToken_Latest(prop.getProperty("tenant_id"), new Scope[] { Scope.SKYDRIVE_UPDATE,  Scope.SKYDRIVE });
+			System.out.println("UserId: " + token.getUserId());
+			System.out.println("AccessToken: " + token.getAccessToken());
+			
+			System.out.println("==============");
+			System.out.print("READ:: OneDrive Drives");
+			List<Drive> drives = driveService.getDrives_Latest(token.getAccessToken());
+			for (Drive d : drives) {
+				System.out.println(d.toString());
+			}
+
+			System.out.println("==============");
+			System.out.print("READ:: OneDrive Drive Items");
+			List<DriveItem> items = driveService.getRootItems(token.getAccessToken(), drives.get(0).id);
+			for (DriveItem i : items) {
+				System.out.println("ID: " + i.name.toString() + "\n" +
+								"Name: " + i.name.toString() + "\n" + 
+							"DownloadURL: " + i.downloadUrl);
+			}
+
+			//scanner.close();					
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	public String getGitHubVersion() {
+		// TODO Auto-generated method stub
+		
+		String version = "";
+		try {
+		  
+		  String link ="https://raw.githubusercontent.com/asdurgekar/JiraImporterCodeBase/master/version.ini";
+		  		  
+		  String responseString = getGitHubFileContent(link);
+		  version = responseString.replace("Version=","").trim();	
+		  System.out.println(version);
+		  
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return version;
+	
+	}
+	
+
+	public String getGitHubFileContent(String URL) {
+		// TODO Auto-generated method stub
+		
+		String responseString = "";
+		try {
+		  
+
+		  HttpClient client = new DefaultHttpClient();
+		  HttpGet request = new HttpGet(URL);
+		  HttpResponse response = client.execute(request);
+		  responseString = new BasicResponseHandler().handleResponse(response);
+		  
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+	  	return responseString;
+	
 	}
 
 	

@@ -240,7 +240,7 @@ public class CreateTestWithTestSteps {
 	}
 
 	public String createTestCaseinJira(String testSummary, String testDescription,
-			String ApplicationLabel, String sprint, Boolean... getIssueKey) throws IOException {
+			String ApplicationLabel, String sprint, String affectsVersion, String fixVersion, Boolean... getIssueKey) throws IOException {
 		
 		String str_TestCaseReturn = null;
 		Boolean bln_SendIDAndKey = false;
@@ -256,7 +256,7 @@ public class CreateTestWithTestSteps {
 		testDescription = getTextFromHTML(testDescription);
 		testSummary = getTextFromHTML(testSummary);
 
-		StringEntity createTestJSON = createTestCaseEntity(testSummary, testDescription, ApplicationLabel, sprint);
+		StringEntity createTestJSON = createTestCaseEntity(testSummary, testDescription, ApplicationLabel, sprint, affectsVersion, fixVersion);
 		HttpResponse response = executeCreateTestCase(createTestUri, header, createTestJSON);
 		int statusCode = getHTTPResponseCode(response);
 		String testId = null;
@@ -615,8 +615,9 @@ public class CreateTestWithTestSteps {
 		return response;
 	}
 
-	private static StringEntity createTestCaseEntity(String testSummary, String testDescription, String ApplicationLabel, String sprint) {
-		JSONObject createTestObj = createTestCaseJSON(testSummary, testDescription, ApplicationLabel, sprint);
+	private static StringEntity createTestCaseEntity(String testSummary, String testDescription, String ApplicationLabel, String sprint,
+			String affectsVersion, String fixVersion) {
+		JSONObject createTestObj = createTestCaseJSON(testSummary, testDescription, ApplicationLabel, sprint, affectsVersion, fixVersion);
 		StringEntity createTestJSON = null;
 		try {
 			createTestJSON = new StringEntity(createTestObj.toString());
@@ -643,7 +644,7 @@ public class CreateTestWithTestSteps {
 	
 	@SuppressWarnings("null")
 	private static JSONObject createTestCaseJSON(String testSummary, String testDescription,
-			String ApplicationLabel, String sprint) {
+			String ApplicationLabel, String sprint, String affectsVersion, String fixVersion) {
 		JSONObject projectObj = new JSONObject();
 		projectObj.put("id", projectId); // Project ID where the Test to be
 		// Created
@@ -666,10 +667,12 @@ public class CreateTestWithTestSteps {
 		JSONArray LabelsArrayObj = new JSONArray(Arrays.asList(LabelsObj));		
 		
 		//Affects Version
-		
-		
-//		JSONObject VersionObj = new JSONObject();
-//		VersionObj.put("id", affectsVersion);
+//		JSONObject AffVersionObj = new JSONObject();
+//		VersionObj.put("versions", affectsVersion);
+//		
+//		//Fix Version
+//		JSONObject FixVersionObj = new JSONObject();
+//		VersionObj.put("fixVersions", affectsVersion);
 //		
 //		JSONArray VersionArrayObj = new JSONArray(Arrays.asList(VersionObj));
 		
@@ -703,9 +706,23 @@ public class CreateTestWithTestSteps {
 		
 		// fieldsObj.put("assignee", assigneeObj);
 		// fieldsObj.put("reporter", reporterObj);
-
+		
+		JSONObject nameObj = new JSONObject();
+		nameObj.put("name", "OKTA_Cycle4");
+		
+		JSONObject addObj = new JSONObject();
+		addObj.put("add", nameObj);
+		
+		
+		JSONArray fixVersionsArray = new JSONArray();
+		fixVersionsArray.put(addObj);
+		
+		JSONObject updateObj = new JSONObject();
+		updateObj.put("fixVersions", fixVersionsArray);
+		
 		JSONObject createTestObj = new JSONObject();
 		createTestObj.put("fields", fieldsObj);
+		createTestObj.put("update", updateObj);
 		return createTestObj;
 	}
 	

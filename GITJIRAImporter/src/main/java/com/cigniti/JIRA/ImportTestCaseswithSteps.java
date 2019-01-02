@@ -609,6 +609,10 @@ public class ImportTestCaseswithSteps{
 			//Sprint field
 			JiraExcelMap.put("Sprint", "");
 			
+			//Version fields
+			JiraExcelMap.put("Affects Version", "");
+			JiraExcelMap.put("Fix Version", "");
+			
 			JiralistModel = new DefaultListModel();
 			
 			//enable Validate button if no elements exist in list
@@ -1580,7 +1584,7 @@ public class ImportTestCaseswithSteps{
 		String retMessage = "";
 		try {
 			String ApplicationLabel, testSummary, testDescription, testStepDescription, testStepData,
-					testStepExpectedResult, linkIssue, linkType, affectsVersion, sprint, str_TestDetails;
+					testStepExpectedResult, linkIssue, linkType, affectsVersion, fixVersion, sprint, str_TestDetails;
 			String strTestCaseId = "";
 			
 			
@@ -1596,6 +1600,8 @@ public class ImportTestCaseswithSteps{
 			linkIssue = ExcelRowData.get(JiraExcelMap.get("Link Issue"));
 			linkType = ExcelRowData.get(JiraExcelMap.get("Link Type"));
 			sprint = ExcelRowData.get(JiraExcelMap.get("Sprint"));
+			affectsVersion = ExcelRowData.get(JiraExcelMap.get("Affects Version"));
+			fixVersion = ExcelRowData.get(JiraExcelMap.get("Fix Version"));
 			
 			/*
 			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Labels"));
@@ -1629,7 +1635,7 @@ public class ImportTestCaseswithSteps{
 
 				blnStepExecute = true;
 				//receive testid if optional boolean parameter is not passed
-				str_TestDetails = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel, sprint, true);
+				str_TestDetails = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel, sprint, affectsVersion, fixVersion, true);
 				
 				testId = str_TestDetails.split(":")[0];
 				testKey = str_TestDetails.split(":")[1]; 

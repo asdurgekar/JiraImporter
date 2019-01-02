@@ -96,23 +96,32 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		
 		SupportingMethods suppMethods = new SupportingMethods();
 		
-		blnSameVersion = suppMethods.verifyToolVersion();
+		//get the tool version from common drive in Cloud
+		//strCloudVersion = suppMethods.getCommonDriveCloudVersion();
+		
+		//get the tool version from Git Hub
+		strCloudVersion = suppMethods.getGitHubVersion();
+				
+		
+		blnSameVersion = suppMethods.verifyToolVersion(strCloudVersion);
 		if(blnSameVersion)
 		{
 			suppMethods.LaunchTool();
 		}
-		//get the tool version in Cloud
-		strCloudVersion = suppMethods.getCloudVersion();
-		
+		/*
 		//get the Tool's latest version release information
 		strLatestReleaseInfo = suppMethods.getLatestReleaseInfo();
 		strReleaseHistory = suppMethods.getReleaseHistory();
+		*/
+		
+		
+		//get the Tool's latest version release information from Git Hub
+		strLatestReleaseInfo = suppMethods.getGitHubReleaseInfo();
+		strReleaseHistory = suppMethods.getGitHubReleaseHistory();
 		
 		setResizable(false);
 		setTitle("Jira Test Case Importer - " + strCloudVersion + " : New Version available!");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LaunchJiraTestCaseImporter.class.getResource("/images/JiraIcon.png")));
-		
-		
 		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

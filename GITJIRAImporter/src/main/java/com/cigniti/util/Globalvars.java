@@ -45,10 +45,12 @@ public class Globalvars {
 	public static double TotalTestCaseCount = 0;
 	public static int TotalTestCaseUploaded = 0;
 	
-	public static String strCloudLocation = "\\\\racns\\department_3$\\InfTech\\Jira\\JiraTestCaseImporter\\";
+	//public static String strCloudLocation = "\\\\racns\\department_3$\\InfTech\\Jira\\JiraTestCaseImporter\\";
+	public static String strCloudLocation = "https://raw.githubusercontent.com/asdurgekar/JiraImporterCodeBase/master/";	
 	public static String strLocalLocation = System.getenv("APPDATA") + "\\JiraImporter\\";
 	public static String strPreferencesConfigFileName = "Preferences.config";
-	public static String strExeFileName = "JiraTestCaseImporterCore.exe";
+	public static String strOldExeFileName = "JiraTestCaseImporterCore.exe";
+	public static String strExeFileName = "JiraTestCaseImporterCore.jar";
 	public static String strVersionFileName = "version.ini";
 	public static String strLatestReleaseInfoFileName = "ReleaseNotes.html";
 	public static String strReleaseHistoryFileName = "ReleaseHistory.html";

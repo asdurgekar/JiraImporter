@@ -2,17 +2,28 @@ package com.launch;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.SwingWorker;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.cigniti.JIRA.CreateTestWithTestSteps;
 import com.cigniti.JIRA.ImportTestCases;
@@ -30,6 +41,12 @@ public class SupportingMethods{
 		if(file.exists()) 
 		{
 			String command = "cmd /c start " + Globalvars.strLocalExePath;
+			Runtime rt = Runtime.getRuntime();
+			Process pr = rt.exec(command);
+		}
+		else if((new File(Globalvars.strLocalLocation + Globalvars.strOldExeFileName)).exists()) 
+		{
+			String command = "cmd /c start " + Globalvars.strLocalLocation + Globalvars.strOldExeFileName;
 			Runtime rt = Runtime.getRuntime();
 			Process pr = rt.exec(command);
 		}
@@ -70,14 +87,35 @@ public class SupportingMethods{
 					// TODO Auto-generated method stub
 					publish("Start Copying");
 					
-					File destination = new File(Globalvars.strLocalLocation);
-					//copy exe file to local location
-					File source = new File(Globalvars.strCloudExePath);			
-					FileUtils.copyFileToDirectory(source, destination);
-					
-					//copy version file to local location
-					source = new File(Globalvars.strCloudVersionPath);			
-					FileUtils.copyFileToDirectory(source, destination);
+					Boolean bln_downSuccess = true;
+					//Check if source location it is pointing to cloud
+					if(Globalvars.strCloudLocation.contains("https:"))
+					{
+						
+						bln_downSuccess = downloadFileFromCloud(Globalvars.strCloudExePath,Globalvars.strLocalExePath);
+						if(!bln_downSuccess)
+						{
+							throw new Exception("Unable to download from cloud location: '" + Globalvars.strCloudExePath + "'");
+						}
+						bln_downSuccess = downloadFileFromCloud(Globalvars.strCloudVersionPath,Globalvars.strLocalVersionPath);
+						if(!bln_downSuccess)
+						{
+							throw new Exception("Unable to download from cloud location: '" + Globalvars.strCloudVersionPath + "'");
+						}
+					}
+					//otherwise source location pointing to Shared path in network
+					else
+					{
+						File destination = new File(Globalvars.strLocalLocation);
+						//copy exe file to local location
+						File source = new File(Globalvars.strCloudExePath);			
+						FileUtils.copyFileToDirectory(source, destination);
+						
+						//copy version file to local location
+						source = new File(Globalvars.strCloudVersionPath);			
+						FileUtils.copyFileToDirectory(source, destination);
+					}
+					System.out.println("Files copied from cloud successfully");
 					publish("Complete");
 					return null;
 				}
@@ -132,7 +170,36 @@ public class SupportingMethods{
 		
 	}
 
-	public Boolean verifyToolVersion() {
+	protected Boolean downloadFileFromCloud(String str_CloudPath, String str_LocalPath) {
+		
+		try {
+			String link = str_CloudPath;
+			URL url  = new URL(str_CloudPath);
+			HttpURLConnection http = (HttpURLConnection)url.openConnection();
+			Map< String, List< String >> header = http.getHeaderFields();
+			while( isRedirected( header )) {
+				link = header.get( "Location" ).get( 0 );
+				url    = new URL( link );
+				http   = (HttpURLConnection)url.openConnection();
+				header = http.getHeaderFields();
+			}
+			InputStream  input  = http.getInputStream();
+			byte[]       buffer = new byte[4096];
+			int          n      = -1;
+			OutputStream output = new FileOutputStream( new File( str_LocalPath ));
+			while ((n = input.read(buffer)) != -1) {
+				output.write( buffer, 0, n );
+			}
+			output.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 
+		return true;
+	}
+
+	public Boolean verifyToolVersion(String str_CloudVersion) {
 		// TODO Auto-generated method stub
 		
 		try {
@@ -163,28 +230,11 @@ public class SupportingMethods{
 				}
 				String localversion = content.trim().split("=")[1];
 			
-				//Get cloud version of Tool
-				file = new File(Globalvars.strCloudVersionPath);		
-				content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-				if(content==null || !content.trim().contains("="))
+				//Compare with cloud version of Tool
+				//if not the same version return false
+				if(!localversion.trim().equals(str_CloudVersion.trim()))
 				{
-					System.out.println("Version file on cloud is corrupted");
-					System.exit(0);
-				}
-				else if(content.trim().split("=").length <= 1)
-				{
-					System.out.println("Version file on cloud is corrupted");
-					System.exit(0);
-				}
-				else
-				{
-					String cloudversion = content.trim().split("=")[1];
-					
-					//if not the same version return false
-					if(!localversion.trim().equals(cloudversion.trim()))
-					{
-						return false;
-					}
+					return false;
 				}
 				
 			}
@@ -197,7 +247,7 @@ public class SupportingMethods{
 		return true;
 	}
 
-	public String getCloudVersion() {
+	public String getCommonDriveCloudVersion() {
 
 		String cloudversion = null; 
 		try {
@@ -332,6 +382,104 @@ public class SupportingMethods{
 		//If clicked on View Latest Version Info, then switch content and text for Jlabel 
 		
 	}
+	
+	public String getGitHubReleaseInfo() {
+		
+		String releaseinfo = "";
+		try {
+		  
+		  String responseString = getGitHubFileContent(Globalvars.strCloudLocation + Globalvars.strLatestReleaseInfoFileName);
+		  releaseinfo = responseString;	
+		  System.out.println("Latest Version information is retrieved successfully from Cloud");
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return releaseinfo;
+	}
+
+
+	public String getGitHubVersion() {
+		// TODO Auto-generated method stub
+		
+		String version = "";
+		try {
+		  
+		  String responseString = getGitHubFileContent(Globalvars.strCloudVersionPath);
+		  if(responseString==null || !responseString.trim().contains("="))
+			{
+				System.out.println("Version file on cloud is corrupted");
+				System.exit(0);
+			}
+			else if(responseString.trim().split("=").length <= 1)
+			{
+				System.out.println("Version file on cloud is corrupted");
+				System.exit(0);
+			}
+		  version = responseString.trim().split("=")[1];	
+		  System.out.println("Cloud version number is retrieved successfully");
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return version;
+	
+	}
+	
+
+	public String getGitHubFileContent(String URL) {
+		// TODO Auto-generated method stub
+		
+		String responseString = "";
+		try {
+		  
+
+		  HttpClient client = new DefaultHttpClient();
+		  HttpGet request = new HttpGet(URL);
+		  HttpResponse response = client.execute(request);
+		  responseString = new BasicResponseHandler().handleResponse(response);
+		  
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+	  	return responseString;
+	
+	}
+
+	
+	
+	private static boolean isRedirected( Map<String, List<String>> header ) 
+	{
+	      for( String hv : header.get( null )) {
+	         if(   hv.contains( " 301 " )
+	            || hv.contains( " 302 " )) return true;
+	      }
+	      return false;
+	}
+
+	public String getGitHubReleaseHistory() {
+
+		String releaseHistory = "";
+		try {
+		  
+		  String responseString = getGitHubFileContent(Globalvars.strCloudLocation + Globalvars.strReleaseHistoryFileName);
+		  releaseHistory = responseString;	
+		  System.out.println("Release History is retrieved from Cloud successfully");
+		  
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return releaseHistory;
+	}
+
+
 
 	
 

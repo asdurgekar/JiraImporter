@@ -259,6 +259,7 @@ public class ImportTestCaseswithSteps{
 						CreateTestWithTestSteps.validateKeyUri = CreateTestWithTestSteps.API_VALIDKEY.replace("{SERVER}", CreateTestWithTestSteps.zephyrBaseUrl);
 						CreateTestWithTestSteps.getIssueUri = CreateTestWithTestSteps.API_GET_ISSUE.replace("{SERVER}", jiraURL);
 						CreateTestWithTestSteps.issueLinkUri = CreateTestWithTestSteps.API_LINK_ISSUE.replace("{SERVER}", jiraURL);
+						CreateTestWithTestSteps.updateTestUri = CreateTestWithTestSteps.API_UPDATE_TEST.replace("{SERVER}", jiraURL);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -1635,7 +1636,7 @@ public class ImportTestCaseswithSteps{
 
 				blnStepExecute = true;
 				//receive testid if optional boolean parameter is not passed
-				str_TestDetails = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel, sprint, affectsVersion, fixVersion, true);
+				str_TestDetails = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel, sprint, true);
 				
 				testId = str_TestDetails.split(":")[0];
 				testKey = str_TestDetails.split(":")[1]; 

@@ -49,6 +49,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -80,6 +81,7 @@ public class CreateTestWithTestSteps {
 	public static String API_VALIDKEY = "{SERVER}/public/rest/api/1.0/teststep/-1?projectId=";
 	public static String API_GET_ISSUE = "{SERVER}/rest/api/2/issue/";
 	public static String API_LINK_ISSUE = "{SERVER}/rest/api/2/issueLink";
+	public static String API_UPDATE_TEST = "{SERVER}/rest/api/2/issue/bulk";
 	
 	/** Declare JIRA,Zephyr URL,access and secret Keys */
 	// Jira Cloud URL for the instance
@@ -107,6 +109,7 @@ public class CreateTestWithTestSteps {
 	public static String validateKeyUri = "";
 	public static String getIssueUri = "";
 	public static String issueLinkUri = "";
+	public static String updateTestUri = "";
 	
 	static ZFJCloudRestClient client = ZFJCloudRestClient.restBuilder(zephyrBaseUrl, accessKey, secretKey, userName)
 			.build();
@@ -240,7 +243,7 @@ public class CreateTestWithTestSteps {
 	}
 
 	public String createTestCaseinJira(String testSummary, String testDescription,
-			String ApplicationLabel, String sprint, String affectsVersion, String fixVersion, Boolean... getIssueKey) throws IOException {
+			String ApplicationLabel, String sprint, Boolean... getIssueKey) throws IOException {
 		
 		String str_TestCaseReturn = null;
 		Boolean bln_SendIDAndKey = false;
@@ -256,7 +259,7 @@ public class CreateTestWithTestSteps {
 		testDescription = getTextFromHTML(testDescription);
 		testSummary = getTextFromHTML(testSummary);
 
-		StringEntity createTestJSON = createTestCaseEntity(testSummary, testDescription, ApplicationLabel, sprint, affectsVersion, fixVersion);
+		StringEntity createTestJSON = createTestCaseEntity(testSummary, testDescription, ApplicationLabel, sprint);
 		HttpResponse response = executeCreateTestCase(createTestUri, header, createTestJSON);
 		int statusCode = getHTTPResponseCode(response);
 		String testId = null;
@@ -517,7 +520,6 @@ public class CreateTestWithTestSteps {
 	public String linkIssue(String InwardissueId, String issueKey, String relation) throws IOException {
 		
 		
-		System.out.println();
 		StringEntity createTestJSON = createIssueLinkJSON(InwardissueId, issueKey, relation);
 		HttpResponse response = executeCreateTestCase(issueLinkUri, header, createTestJSON);
 		int statusCode = getHTTPResponseCode(response);
@@ -614,10 +616,29 @@ public class CreateTestWithTestSteps {
 		}
 		return response;
 	}
+	
+	@SuppressWarnings({ "resource", "unused" })
+	private static HttpResponse executeUpdateTestCase(final String createTestUri, Header header,
+			StringEntity createTestJSON) {
+		HttpResponse response = null;
+		try {
+			// System.out.println(issueSearchURL);
+			HttpPost updateTestReq = new HttpPost(createTestUri);
+			updateTestReq.addHeader(header);
+			updateTestReq.addHeader("Content-Type", "application/json");
+			updateTestReq.setEntity(createTestJSON);
+			HttpClient restClient = new DefaultHttpClient();
+			response = restClient.execute(updateTestReq);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
 
-	private static StringEntity createTestCaseEntity(String testSummary, String testDescription, String ApplicationLabel, String sprint,
-			String affectsVersion, String fixVersion) {
-		JSONObject createTestObj = createTestCaseJSON(testSummary, testDescription, ApplicationLabel, sprint, affectsVersion, fixVersion);
+	private static StringEntity createTestCaseEntity(String testSummary, String testDescription, String ApplicationLabel, String sprint) {
+		JSONObject createTestObj = createTestCaseJSON(testSummary, testDescription, ApplicationLabel, sprint);
 		StringEntity createTestJSON = null;
 		try {
 			createTestJSON = new StringEntity(createTestObj.toString());
@@ -644,14 +665,14 @@ public class CreateTestWithTestSteps {
 	
 	@SuppressWarnings("null")
 	private static JSONObject createTestCaseJSON(String testSummary, String testDescription,
-			String ApplicationLabel, String sprint, String affectsVersion, String fixVersion) {
+			String ApplicationLabel, String sprint) {
 		JSONObject projectObj = new JSONObject();
 		projectObj.put("id", projectId); // Project ID where the Test to be
 		// Created
 
 		// type
 		JSONObject issueTypeObj = new JSONObject();
-		issueTypeObj.put("id", issueTypeId); // IssueType ID which is Test isse
+		issueTypeObj.put("id", issueTypeId); // IssueType ID which is Test issue
 		
 		//Labels
 		String[] LabelsObj = {ApplicationLabel.trim()};
@@ -707,22 +728,9 @@ public class CreateTestWithTestSteps {
 		// fieldsObj.put("assignee", assigneeObj);
 		// fieldsObj.put("reporter", reporterObj);
 		
-		JSONObject nameObj = new JSONObject();
-		nameObj.put("name", "OKTA_Cycle4");
-		
-		JSONObject addObj = new JSONObject();
-		addObj.put("add", nameObj);
-		
-		
-		JSONArray fixVersionsArray = new JSONArray();
-		fixVersionsArray.put(addObj);
-		
-		JSONObject updateObj = new JSONObject();
-		updateObj.put("fixVersions", fixVersionsArray);
-		
 		JSONObject createTestObj = new JSONObject();
 		createTestObj.put("fields", fieldsObj);
-		createTestObj.put("update", updateObj);
+		
 		return createTestObj;
 	}
 	
@@ -880,6 +888,76 @@ public class CreateTestWithTestSteps {
 			e.printStackTrace();
 		}
 		return ResponseMessage;
+	}
+
+	public String updateAffectsVersion(String testId, String affectsVersion) {
+
+		
+		try {
+			//System.out.println();
+			StringEntity updateTestJSON = updateAffectsVersionJSON(testId, affectsVersion);
+			HttpResponse response = executeUpdateTestCase(updateTestUri, header, updateTestJSON);
+			int statusCode = getHTTPResponseCode(response);
+			HttpEntity entity = response.getEntity();
+			if (statusCode >= 200 && statusCode < 300) {			
+				System.out.println("Affects version is update for the issue " + testId );
+
+			} else {
+				try {
+					String string = null;
+					
+					string = EntityUtils.toString(entity);
+					RespMessage = "Failure~" + string;
+					new JSONObject(string);
+					throw new ClientProtocolException("Unexpected response status: " + statusCode);
+
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return testId;
+	}
+
+	private StringEntity updateAffectsVersionJSON(String testId, String affectsVersion) {
+
+		
+		//update
+		JSONObject nameObj = new JSONObject();
+		nameObj.put("name", affectsVersion);
+		
+		JSONObject addObj = new JSONObject();
+		addObj.put("add", nameObj);
+		
+		
+		JSONArray affVersionsArray = new JSONArray();
+		affVersionsArray.put(addObj);
+		
+		JSONObject updateObj = new JSONObject();
+		updateObj.put("versions", affVersionsArray);
+		
+		
+		JSONObject createupdateObj = new JSONObject();
+		createupdateObj.put("update", updateObj);
+		createupdateObj.put("id", testId);
+		
+		JSONArray issueUpdate = new JSONArray();
+		issueUpdate.put(createupdateObj);
+		
+		JSONObject finalUpdateObj = new JSONObject();
+		finalUpdateObj.put("issueUpdates", issueUpdate);
+		
+		
+		StringEntity updateVersionJSON = null;
+		try {
+			updateVersionJSON = new StringEntity(finalUpdateObj.toString());
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		return updateVersionJSON;
 	}
 
 

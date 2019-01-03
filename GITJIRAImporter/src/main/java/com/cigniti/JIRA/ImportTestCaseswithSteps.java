@@ -1654,14 +1654,39 @@ public class ImportTestCaseswithSteps{
 				
 				if(linkIssue != null && linkType != null)
 				{
-					linkId = createTestWithTestSteps.linkIssue(String.valueOf(testId), linkIssue, linkType);
-					
-					if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+					//if there are multiple stories to link for the test case
+					if(linkIssue.contains(","))
 					{
-						retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
-						return retMessage;
+						String[] arrlinkIssue = linkIssue.split(",");
+						for(String indlinkIssue : arrlinkIssue)
+						{	
+							if(indlinkIssue !=null && !indlinkIssue.trim().isEmpty())
+							{
+								linkId = createTestWithTestSteps.linkIssue(String.valueOf(testId), indlinkIssue.trim(), linkType);
+								
+								if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+								{
+									retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
+									return retMessage;
+								}
+								retMessage+= "This test case is linked to : '" + indlinkIssue.trim() + " successfully '\n";
+							}
+						}
 					}
-					retMessage+= "This test case is linked to : '" + linkIssue + " successfully '\n";
+					else
+					{
+						if(linkIssue !=null && !linkIssue.trim().isEmpty())
+						{
+							linkId = createTestWithTestSteps.linkIssue(String.valueOf(testId), linkIssue.trim(), linkType);
+							
+							if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+							{
+								retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
+								return retMessage;
+							}
+							retMessage+= "This test case is linked to : '" + linkIssue.trim() + " successfully '\n";
+						}
+					}
 				}
 				
 				//Update Test Case Id for the created test case

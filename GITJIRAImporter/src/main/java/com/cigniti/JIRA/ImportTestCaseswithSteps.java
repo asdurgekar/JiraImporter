@@ -610,10 +610,6 @@ public class ImportTestCaseswithSteps{
 			//Sprint field
 			JiraExcelMap.put("Sprint", "");
 			
-			//Version fields
-			JiraExcelMap.put("Affects Version", "");
-			JiraExcelMap.put("Fix Version", "");
-			
 			JiralistModel = new DefaultListModel();
 			
 			//enable Validate button if no elements exist in list

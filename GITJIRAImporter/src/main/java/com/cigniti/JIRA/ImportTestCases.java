@@ -101,7 +101,6 @@ public class ImportTestCases extends JFrame {
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	SupportingMethods suppMethods = new SupportingMethods();
 	private JLabel lblBackgroundSec;
-	private JLabel lblBackgroundMap;
 	private JLabel lblBackgroundConf;
 	private JLabel lblBackgroundRun;
 	private JLabel lblBackgroundLogin;
@@ -507,7 +506,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnAddToMapping();
 			}
 		});
-		btnAdd.setBounds(387, 139, 73, 23);
+		btnAdd.setBounds(387, 172, 73, 23);
 		panelMapping.add(btnAdd);
 		
 		JButton btnRemove = new JButton("<<");
@@ -517,7 +516,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnRemovefromMapping();
 			}
 		});
-		btnRemove.setBounds(387, 174, 74, 23);
+		btnRemove.setBounds(387, 207, 74, 23);
 		panelMapping.add(btnRemove);
 		
 		JButton btnMapCancel = new JButton("Cancel");
@@ -633,7 +632,17 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		
-		lblBackgroundMap = new JLabel("");
+		JButton btnMatch = new JButton("Match");
+		btnMatch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ITCWS.fnMatchandMap();
+			}
+		});
+		btnMatch.setBounds(387, 124, 73, 23);
+		panelMapping.add(btnMatch);
+		
+		JLabel lblBackgroundMap = new JLabel("");
+		lblBackgroundMap.setToolTipText("");
 		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
 		lblBackgroundMap.setBounds(0, 0, 760, 499);
 		panelMapping.add(lblBackgroundMap);

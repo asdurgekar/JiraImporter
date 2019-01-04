@@ -66,7 +66,7 @@ public class ImportTestCaseswithSteps{
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
-	public String versionNumber = "2.33";
+	public String versionNumber = "2.40";
 	public String pageName = "Login";
 	public String TestCaseIdColumn = "TestCaseId";
 	public String strAuthenticationMessage;
@@ -1846,6 +1846,81 @@ public void fnLoadMappingPreferences() {
 		{
 			e.printStackTrace();
 		}
+	}
+
+
+
+	public void fnMatchandMap() {
+	
+		try
+		{
+			List<String> MatchedFields = new ArrayList<String>();
+			Integer jiraFieldCount = ImportTestCases.lstJiraFields.getModel().getSize();
+			Integer excelColCount = ImportTestCases.lstExcelColumns.getModel().getSize();
+			
+			for(int intJFCounter = 0; intJFCounter < jiraFieldCount; intJFCounter++)
+			{
+				System.out.println(ImportTestCases.lstJiraFields.getModel().getElementAt(intJFCounter));
+				for(int intExCounter = 0; intExCounter < excelColCount; intExCounter++)
+				{
+					if(ImportTestCases.lstJiraFields.getModel().getElementAt(intJFCounter).toString().trim()
+							.equals(ImportTestCases.lstExcelColumns.getModel().getElementAt(intExCounter).toString().trim()))
+					{	
+						//add values to mapping
+						DefaultTableModel model = (DefaultTableModel)ImportTestCases.tblMapping.getModel();
+						model.addRow(new Object[]{ImportTestCases.lstJiraFields.getModel().getElementAt(intJFCounter).toString().trim()
+								, ImportTestCases.lstExcelColumns.getModel().getElementAt(intExCounter).toString().trim()});
+						
+						//store matched names
+						MatchedFields.add(ImportTestCases.lstExcelColumns.getModel().getElementAt(intExCounter).toString().trim());
+						
+						//update Global Hashmap
+						JiraExcelMap.put(ImportTestCases.lstJiraFields.getModel().getElementAt(intJFCounter).toString().trim(),
+								ImportTestCases.lstExcelColumns.getModel().getElementAt(intExCounter).toString().trim());
+						
+					}
+					
+					
+				}
+				
+				
+			}
+			//remove items from jira list model
+			for(int intListCounter = JiralistModel.getSize() - 1; intListCounter >= 0; intListCounter--)
+			{
+				if(MatchedFields.contains(JiralistModel.getElementAt(intListCounter).toString()))
+				{
+					JiralistModel.remove(intListCounter);
+				}
+			}
+			
+			
+			//remove items from excel list model
+			for(int intListCounter = ExcellistModel.getSize() - 1; intListCounter >= 0; intListCounter--)
+			{
+				if(MatchedFields.contains(ExcellistModel.getElementAt(intListCounter).toString()))
+				{
+					ExcellistModel.remove(intListCounter);
+				}
+			}
+			
+			
+			//Sort list model
+			JiralistModel = fnSortListModel(JiralistModel);
+			ExcellistModel = fnSortListModel(ExcellistModel);
+			
+			//update values to JLists
+			ImportTestCases.lstJiraFields.setListData(JiralistModel.toArray());
+			ImportTestCases.lstExcelColumns.setListData(ExcellistModel.toArray());				
+			
+				
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }

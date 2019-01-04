@@ -107,6 +107,7 @@ public class ImportTestCases extends JFrame {
 	
 	//local variables
 	private String str_VersionNumber;
+	private JLabel lblBackgroundMap;
 	
 	
 	/**
@@ -632,17 +633,17 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		
-		JButton btnMatch = new JButton("Match");
+		JButton btnMatch = new JButton("Map Fields");
+		btnMatch.setToolTipText("Please map the Jira fields with Excel columns.  You can use Match button to map columns matching by name. ");
 		btnMatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ITCWS.fnMatchandMap();
 			}
 		});
-		btnMatch.setBounds(387, 124, 73, 23);
+		btnMatch.setBounds(375, 112, 97, 33);
 		panelMapping.add(btnMatch);
 		
-		JLabel lblBackgroundMap = new JLabel("");
-		lblBackgroundMap.setToolTipText("");
+		lblBackgroundMap = new JLabel("");
 		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
 		lblBackgroundMap.setBounds(0, 0, 760, 499);
 		panelMapping.add(lblBackgroundMap);

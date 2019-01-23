@@ -35,7 +35,7 @@ public class Globalvars {
 	
 	
 	public static String JIRA_userName = "ranganathdindukurthi@gamestop.com";
-	public static String JIRA_password = "Cigniti@2018";
+	public static String JIRA_password = "Ctl@2019";
 	public static String JIRA_projectId = "14537";
 	public static String JIRA_issueTypeId = "10300";
 	public static String JIRA_bugTypeId = "10004";

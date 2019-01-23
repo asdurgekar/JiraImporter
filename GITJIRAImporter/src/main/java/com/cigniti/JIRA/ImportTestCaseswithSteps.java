@@ -1586,7 +1586,7 @@ public class ImportTestCaseswithSteps{
 		String retMessage = "";
 		try {
 			String ApplicationLabel, testSummary, testDescription, testStepDescription, testStepData,
-					testStepExpectedResult, linkIssue, linkType, affectsVersion, fixVersion, sprint, str_TestDetails;
+					testStepExpectedResult, linkIssue, linkType, sprint, str_TestDetails;
 			String strTestCaseId = "";
 			
 			
@@ -1602,8 +1602,6 @@ public class ImportTestCaseswithSteps{
 			linkIssue = ExcelRowData.get(JiraExcelMap.get("Link Issue"));
 			linkType = ExcelRowData.get(JiraExcelMap.get("Link Type"));
 			sprint = ExcelRowData.get(JiraExcelMap.get("Sprint"));
-			affectsVersion = ExcelRowData.get(JiraExcelMap.get("Affects Version"));
-			fixVersion = ExcelRowData.get(JiraExcelMap.get("Fix Version"));
 			
 			/*
 			ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter, JiraExcelMap.get("Labels"));

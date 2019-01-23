@@ -659,7 +659,7 @@ public class CreateTestWithTestSteps {
 	{
 		Html2Text parser = new Html2Text();
 		almText =parser.getTextFromHTML(almText);
-		//almText = almText.replaceAll("[^\\x00-\\x7f]+", "");
+		almText = almText.replaceAll("[\\xa0]", "");
 		return almText;
 	}
 	

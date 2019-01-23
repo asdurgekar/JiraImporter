@@ -58,7 +58,7 @@ public class ImportTestCases extends JFrame {
 	private JPanel contentPane;
 	public static JTextField txtExcelPath;
 	public static JTable tblMapping;	
-	public static JPasswordField txtJiraURL;
+	public static JTextField txtJiraURL;
 	public static JTextField txtUserName;
 	public static JPasswordField txtPassword;
 	public static JLabel lblAuthmessage;
@@ -103,11 +103,10 @@ public class ImportTestCases extends JFrame {
 	private JLabel lblBackgroundSec;
 	private JLabel lblBackgroundConf;
 	private JLabel lblBackgroundRun;
-	private JLabel lblBackgroundLogin;
 	
 	//local variables
 	private String str_VersionNumber;
-	private JLabel lblBackgroundMap;
+	private JLabel lblBackgroundMap;	
 	
 	
 	/**
@@ -300,14 +299,15 @@ public class ImportTestCases extends JFrame {
 		JLabel lbl_jiraURL = new JLabel("Jira URL");
 		lbl_jiraURL.setForeground(Color.BLACK);
 		lbl_jiraURL.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lbl_jiraURL.setBounds(173, 80, 67, 14);
+		lbl_jiraURL.setBounds(173, 84, 67, 14);
 		panelLogin.add(lbl_jiraURL);
 		
-		txtJiraURL = new JPasswordField();
-		txtJiraURL.setBounds(269, 73, 219, 28);
+		txtJiraURL = new JTextField();
+		txtJiraURL.setColumns(10);
+		txtJiraURL.setBounds(271, 77, 217, 28);
 		panelLogin.add(txtJiraURL);
 		
-		lblBackgroundLogin = new JLabel("");
+		JLabel lblBackgroundLogin = new JLabel("");
 		lblBackgroundLogin.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
 		lblBackgroundLogin.setBounds(0, 0, 760, 499);
 		panelLogin.add(lblBackgroundLogin);

@@ -1454,7 +1454,12 @@ public class ImportTestCaseswithSteps{
 					{
 						blnUpdateTestCaseId = true;
 					}
+					
+					//initialize values before run
 					startCount = false;
+					createTestWithTestSteps.RespMessage = "Success~All Test Cases are imported successfully";
+					ImportTestCases.lblSuccessMessage.setForeground(Color.BLACK);
+					
 					for (int counter = 1; counter <= rowCount; counter++) 
 					{	
 						if(isCancelled())

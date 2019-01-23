@@ -101,13 +101,9 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		
 		//get the tool version from Git Hub
 		strCloudVersion = suppMethods.getGitHubVersion();
+				
 		
-		//if cloud file is corrupted, launch existing version
-		if(strCloudVersion.isEmpty())
-			blnSameVersion = true;
-		//otherwise compare with local version
-		else
-			blnSameVersion = suppMethods.verifyToolVersion(strCloudVersion);
+		blnSameVersion = suppMethods.verifyToolVersion(strCloudVersion);
 		if(blnSameVersion)
 		{
 			suppMethods.LaunchTool();

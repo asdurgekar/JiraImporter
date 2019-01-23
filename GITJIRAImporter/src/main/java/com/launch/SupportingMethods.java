@@ -410,18 +410,15 @@ public class SupportingMethods{
 		  if(responseString==null || !responseString.trim().contains("="))
 			{
 				System.out.println("Version file on cloud is corrupted");
-	//				System.exit(0);
+				System.exit(0);
 			}
 			else if(responseString.trim().split("=").length <= 1)
 			{
 				System.out.println("Version file on cloud is corrupted");
-	//				System.exit(0);
+				System.exit(0);
 			}
-			else
-			{
-			  version = responseString.trim().split("=")[1];	
-			  System.out.println("Cloud version number is retrieved successfully");
-			}
+		  version = responseString.trim().split("=")[1];	
+		  System.out.println("Cloud version number is retrieved successfully");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

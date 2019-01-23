@@ -259,6 +259,7 @@ public class CreateTestWithTestSteps {
 		testDescription = getTextFromHTML(testDescription);
 		testSummary = getTextFromHTML(testSummary);
 
+		
 		StringEntity createTestJSON = createTestCaseEntity(testSummary, testDescription, ApplicationLabel, sprint);
 		HttpResponse response = executeCreateTestCase(createTestUri, header, createTestJSON);
 		int statusCode = getHTTPResponseCode(response);

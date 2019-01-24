@@ -40,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.cigniti.util.Globalvars;
+import com.cigniti.util.TextOutputFile;
 import com.thed.zephyr.cloud.rest.ZFJCloudRestClient;
 
 public class ImportTestCaseswithSteps{
@@ -218,17 +219,17 @@ public class ImportTestCaseswithSteps{
 					}
 					else if(AuthResponse != 200)
 					{
-						System.out.println("JSON Response: " + AuthResponse + "Login Failure");
+						TextOutputFile.writeToLog("JSON Response: " + AuthResponse + "Login Failure");
 						strAuthenticationMessage = "Unable to Login. Please enter valid credentials";				
 					}
 					else if(!KeyResponse.equals("Success"))
 					{
-						System.out.println(KeyResponse);
+						TextOutputFile.writeToLog(KeyResponse);
 						strAuthenticationMessage = KeyResponse;				
 					}
 					else
 					{
-						System.out.println("JSON Response: " + AuthResponse + "Login Success");
+						TextOutputFile.writeToLog("JSON Response: " + AuthResponse + "Login Success");
 						strAuthenticationMessage = "";
 						fnCreateConfigFile();
 						if(ImportTestCases.chckbxRememberMe.isSelected())
@@ -302,17 +303,17 @@ public class ImportTestCaseswithSteps{
 //			}
 //			else if(AuthResponse != 200)
 //			{
-//				System.out.println("JSON Response: " + AuthResponse + "Login Failure");
+//				TextOutputFile.writeToLog("JSON Response: " + AuthResponse + "Login Failure");
 //				strAuthenticationMessage = "Unable to Login. Please enter valid credentials";				
 //			}
 //			else if(!KeyResponse.equals("Success"))
 //			{
-//				System.out.println(KeyResponse);
+//				TextOutputFile.writeToLog(KeyResponse);
 //				strAuthenticationMessage = KeyResponse;				
 //			}
 //			else
 //			{
-//				System.out.println("JSON Response: " + AuthResponse + "Login Success");
+//				TextOutputFile.writeToLog("JSON Response: " + AuthResponse + "Login Success");
 //				strAuthenticationMessage = "";
 //				fnCreateConfigFile();
 //				if(ImportTestCases.chckbxRememberMe.isSelected())
@@ -422,7 +423,7 @@ public class ImportTestCaseswithSteps{
 	            out.flush();
 	            out.close();
 				
-	            System.out.println("Preferences are stored in the system");
+	            TextOutputFile.writeToLog("Preferences are stored in the system");
 			
 			}
 						
@@ -467,7 +468,7 @@ public class ImportTestCaseswithSteps{
 				ImportTestCases.txtExcelPath.setEnabled(false);
 				ImportTestCases.btnBrowse.setEnabled(false);
 				ImportTestCases.lblValidationMessage.setText("");
-				System.out.println("Project values are loaded onto the application");
+				TextOutputFile.writeToLog("Project values are loaded onto the application");
 			}
 			
 		}
@@ -729,7 +730,7 @@ public class ImportTestCaseswithSteps{
 			//ImportTestCases.lstJiraFields.setListData(JiraExcelMap.keySet().toArray());
 			ImportTestCases.lstJiraFields.setListData(JiralistModel.toArray());
 			
-			System.out.println("Jira field values are loaded");
+			TextOutputFile.writeToLog("Jira field values are loaded");
 			
 			
 			
@@ -765,7 +766,7 @@ public class ImportTestCaseswithSteps{
 			ExcellistModel = fnSortListModel(ExcellistModel);
 			
 			ImportTestCases.lstExcelColumns.setListData(ExcellistModel.toArray());
-			System.out.println("Excel Header values are loaded");
+			TextOutputFile.writeToLog("Excel Header values are loaded");
 			
 		}
 		catch(Exception e)
@@ -821,7 +822,7 @@ public class ImportTestCaseswithSteps{
 			ExcellistModel = fnSortListModel(ExcellistModel);
 			
 			ImportTestCases.lstExcelColumns.setListData(ExcellistModel.toArray());
-			System.out.println("Excel Header values are loaded");
+			TextOutputFile.writeToLog("Excel Header values are loaded");
 			
 		}
 		catch(Exception e)
@@ -879,13 +880,13 @@ public class ImportTestCaseswithSteps{
 				}
 				else
 				{
-					System.out.println(JSONProjectList.toString());
+					TextOutputFile.writeToLog(JSONProjectList.toString());
 					returnCode = response.getStatusLine().getStatusCode();
 				}
 			}
 			else if(response.getStatusLine().getStatusCode() == 401)
 			{				
-				System.out.println(response.getStatusLine());
+				TextOutputFile.writeToLog(response.getStatusLine().toString());
 				returnCode = response.getStatusLine().getStatusCode();
 			}
         }
@@ -1114,7 +1115,7 @@ public class ImportTestCaseswithSteps{
 							}
 						}
 						//Console update
-						System.out.println("Validating excel row :" + (intRowCounter + 1));
+						TextOutputFile.writeToLog("Validating excel row :" + (intRowCounter + 1));
 					
 					}
 					
@@ -1568,7 +1569,6 @@ public class ImportTestCaseswithSteps{
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 
-					//System.out.println(evt);
 					switch(evt.getPropertyName())
 					{
 						case "progress":
@@ -1868,7 +1868,6 @@ public void fnLoadMappingPreferences() {
 			
 			for(int intJFCounter = 0; intJFCounter < jiraFieldCount; intJFCounter++)
 			{
-				System.out.println(ImportTestCases.lstJiraFields.getModel().getElementAt(intJFCounter));
 				for(int intExCounter = 0; intExCounter < excelColCount; intExCounter++)
 				{
 					if(ImportTestCases.lstJiraFields.getModel().getElementAt(intJFCounter).toString().trim()
@@ -1942,6 +1941,20 @@ public void fnLoadMappingPreferences() {
 			{
 				ImportTestCases.chckbxRememberMe.setSelected(true);
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+
+
+	public void fnCreateCoreLogFile() {
+
+		try {
+			TextOutputFile.createFile(Globalvars.strCoreLogPath);
+			Globalvars.strLogPath = Globalvars.strCoreLogPath;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,5 +1,8 @@
 package com.cigniti.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 public class Globalvars {
@@ -32,6 +35,8 @@ public class Globalvars {
 	//public static String almPath = "Subject\\Supply Chain Sprints and Stories";
 	public static String almPath = "Subject";//Withdraw Requisition
 	public static String DownloadPath = "C:\\temp\\almDownloads\\attachments.csv";
+	public static DateFormat NowDateform= new SimpleDateFormat("yyyyMMdd_HHmmss");
+	public static DateFormat LogTimeform= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	
 	
 	public static String JIRA_URL = "";
@@ -48,6 +53,9 @@ public class Globalvars {
 	//public static String strCloudLocation = "\\\\racns\\department_3$\\InfTech\\Jira\\JiraTestCaseImporter\\";
 	public static String strCloudLocation = "https://raw.githubusercontent.com/asdurgekar/JiraImporterCodeBase/master/";	
 	public static String strLocalLocation = System.getenv("APPDATA") + "\\JiraImporter\\";
+	public static String strLogLocation = System.getenv("LOCALAPPDATA") + "\\JiraImporter\\Logs\\";
+	public static String strLaunchLogFileName = "JiraImporter_Launch_" + NowDateform.format(new Date()) + ".log";
+	public static String strCoreLogFileName = "JiraImporter_Core_" + NowDateform.format(new Date()) + ".log";
 	public static String strPreferencesConfigFileName = "Preferences.config";
 	public static String strOldExeFileName = "JiraTestCaseImporterCore.exe";
 	public static String strExeFileName = "JiraTestCaseImporterCore.jar";
@@ -59,6 +67,9 @@ public class Globalvars {
 	public static String strCloudExePath = strCloudLocation + strExeFileName;
 	public static String strLocalVersionPath = strLocalLocation + strVersionFileName;
 	public static String strLocalExePath = strLocalLocation + strExeFileName;
+	public static String strLaunchLogPath = strLogLocation + strLaunchLogFileName;
+	public static String strCoreLogPath = strLogLocation + strCoreLogFileName;
+	public static String strLogPath = "";
 	public static String strCertPath = "./resources/certs/cacerts";
 	//System.getProperty("user.dir").replace("\\", "/")+ 
 	

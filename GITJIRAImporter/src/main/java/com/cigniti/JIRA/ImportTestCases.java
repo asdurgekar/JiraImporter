@@ -37,6 +37,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.cigniti.util.TextOutputFile;
 import com.launch.SupportingMethods;
 
 import javax.swing.JCheckBox;
@@ -174,6 +175,7 @@ public class ImportTestCases extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
+				ITCWS.fnCreateCoreLogFile();
 				ITCWS.fnInitialization();
 				ITCWS.fnLoadPreferences();
 				
@@ -372,7 +374,7 @@ public class ImportTestCases extends JFrame {
 				fc.setFileFilter(filter);
 			    int returnVal = fc.showOpenDialog(fc);
 			    if(returnVal == JFileChooser.APPROVE_OPTION) {
-			       System.out.println("You chose to open this file: " +
+			       TextOutputFile.writeToLog("You chose to open this file: " +
 			    		   fc.getSelectedFile().getName());
 			       File selFile = fc.getSelectedFile();
 					txtExcelPath.setText(selFile.getAbsolutePath());

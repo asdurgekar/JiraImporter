@@ -65,6 +65,7 @@ import org.json.JSONObject;
 import com.cigniti.util.Globalvars;
 import com.cigniti.util.Html2Text;
 import com.cigniti.util.ReadAttachmentsMapping;
+import com.cigniti.util.TextOutputFile;
 import com.thed.zephyr.cloud.rest.ZFJCloudRestClient;
 import com.thed.zephyr.cloud.rest.client.JwtGenerator;
 
@@ -169,9 +170,9 @@ public class CreateTestWithTestSteps {
 		testStepData = getTextFromHTML(testStepData);
 		testStepExpectedResult = getTextFromHTML(testStepExpectedResult);
 
-		System.out.println("Test Step Description " + testStepDescription);
-		System.out.println("Test Step Data " + testStepData);
-		System.out.println("Test Step Expected Value" + testStepExpectedResult);
+		TextOutputFile.writeToLog("Test Step Description " + testStepDescription);
+		TextOutputFile.writeToLog("Test Step Data " + testStepData);
+		TextOutputFile.writeToLog("Test Step Expected Value" + testStepExpectedResult);
 		
 		HttpEntity entity = null;
 		/** Create test Steps ***/
@@ -229,16 +230,16 @@ public class CreateTestWithTestSteps {
 
 		} else {
 			try {
-				System.out.println("__________________________________________________________________________________________");
-				System.out.println("Test Step Values : " + testStepDescription + ":" + testStepData +":" + testStepExpectedResult);
-				System.out.println("__________________________________________________________________________________________");
+				TextOutputFile.writeToLog("__________________________________________________________________________________________");
+				TextOutputFile.writeToLog("Test Step Values : " + testStepDescription + ":" + testStepData +":" + testStepExpectedResult);
+				TextOutputFile.writeToLog("__________________________________________________________________________________________");
 				RespMessage = "Failure~" + EntityUtils.toString(responseTestStep.getEntity());
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Created Test Step in JIRA " + testStepDescription );
+		TextOutputFile.writeToLog("Created Test Step in JIRA " + testStepDescription );
 
 	}
 
@@ -281,7 +282,7 @@ public class CreateTestWithTestSteps {
 			}
 			
 			
-			System.out.println("Created Test Case in JIRA " + testDescription );
+			TextOutputFile.writeToLog("Created Test Case in JIRA " + testDescription );
 
 		} else {
 			try {
@@ -317,7 +318,7 @@ public class CreateTestWithTestSteps {
 		}
 		String cycleID = createCycle(createCycleUri, client, accessKey, cycleJSON);
 
-		System.out.println("Created Test Cycle in JIRA " + cycleName );
+		TextOutputFile.writeToLog("Created Test Cycle in JIRA " + cycleName );
 
 		/**
 		 * Add tests to Cycle IssueId's
@@ -344,7 +345,7 @@ public class CreateTestWithTestSteps {
 			e1.printStackTrace();
 		}
 		addTestsToCycle(addTestsUri, client, accessKey, addTestsJSON);
-		System.out.println("Tests added successfully to Test Cycle ");
+		TextOutputFile.writeToLog("Tests added successfully to Test Cycle ");
 	}
 	
 	@SuppressWarnings("resource")
@@ -405,7 +406,7 @@ public class CreateTestWithTestSteps {
 		{
 			String fileName = list.get(index);
 			try {
-				System.out.println(":"+fileName+":");
+				TextOutputFile.writeToLog(":"+fileName+":");
 				if (!"".equals(fileName))
 				{
 					addAttachmentToIssue(jiraTestCaseId, fileName);
@@ -491,13 +492,12 @@ public class CreateTestWithTestSteps {
 			String string = null;
 			try {
 				string = EntityUtils.toString(entity);
-				// System.out.println(string1);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println("Details retrieved for issue " + IssueId );
+			TextOutputFile.writeToLog("Details retrieved for issue " + IssueId );
 
 		} else {
 			try {
@@ -527,7 +527,7 @@ public class CreateTestWithTestSteps {
 		String linkId = null;
 		HttpEntity entity = response.getEntity();
 		if (statusCode >= 200 && statusCode < 300) {			
-			System.out.println("Link is created for the issue " + issueKey );
+			TextOutputFile.writeToLog("Link is created for the issue " + issueKey );
 
 		} else {
 			try {
@@ -562,7 +562,6 @@ public class CreateTestWithTestSteps {
 		String string = null;
 		try {
 			string = EntityUtils.toString(entity);
-			// System.out.println(string1);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -580,7 +579,6 @@ public class CreateTestWithTestSteps {
 		String string = null;
 		try {
 			string = EntityUtils.toString(entity);
-			// System.out.println(string1);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -603,7 +601,6 @@ public class CreateTestWithTestSteps {
 			StringEntity createTestJSON) {
 		HttpResponse response = null;
 		try {
-			// System.out.println(issueSearchURL);
 			HttpPost createTestReq = new HttpPost(createTestUri);
 			createTestReq.addHeader(header);
 			createTestReq.addHeader("Content-Type", "application/json");
@@ -623,7 +620,6 @@ public class CreateTestWithTestSteps {
 			StringEntity createTestJSON) {
 		HttpResponse response = null;
 		try {
-			// System.out.println(issueSearchURL);
 			HttpPost updateTestReq = new HttpPost(createTestUri);
 			updateTestReq.addHeader(header);
 			updateTestReq.addHeader("Content-Type", "application/json");
@@ -775,7 +771,7 @@ public class CreateTestWithTestSteps {
 		File[] fileList = dir.listFiles();
 		String returnFName = "";
 		for (File file : fileList) {
-			System.out.println(file.getName());
+			TextOutputFile.writeToLog(file.getName());
 			if (file.getName().equals(fname))
 			{
 				returnFName= file.getAbsolutePath(); 
@@ -786,9 +782,9 @@ public class CreateTestWithTestSteps {
 	
 	public boolean addAttachmentToIssue(String issueKey, String fullfilename) throws IOException{
 
-		System.out.println("Full File Name :  " + fullfilename);
+		TextOutputFile.writeToLog("Full File Name :  " + fullfilename);
 		fullfilename = getFilePath(fullfilename);
-		System.out.println("Full File Name :  " + fullfilename);
+		TextOutputFile.writeToLog("Full File Name :  " + fullfilename);
 		if ("".equals(fullfilename))
 			return false;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -817,7 +813,7 @@ public class CreateTestWithTestSteps {
 			httpclient.close();
 		}
         
-        System.out.println("Added Attachment to Test Case " + fullfilename);
+        TextOutputFile.writeToLog("Added Attachment to Test Case " + fullfilename);
         
 		if(response.getStatusLine().getStatusCode() == 200)
 			return true;
@@ -874,14 +870,14 @@ public class CreateTestWithTestSteps {
 	
 			} else {
 				try {
-					System.out.println("Failure~" + EntityUtils.toString(responseConfig.getEntity()));
+					TextOutputFile.writeToLog("Failure~" + EntityUtils.toString(responseConfig.getEntity()));
 					ResponseMessage = "Unauthorized API Access Key and Secrect Key";
 					throw new ClientProtocolException("Unexpected response status: " + statusCode);
 				} catch (ClientProtocolException e) {
 					e.printStackTrace();
 				}
 			}
-			System.out.println("API Keys validation complete");
+			TextOutputFile.writeToLog("API Keys validation complete");
 			
 		}
 		catch(Exception e)
@@ -895,13 +891,12 @@ public class CreateTestWithTestSteps {
 
 		
 		try {
-			//System.out.println();
 			StringEntity updateTestJSON = updateAffectsVersionJSON(testId, affectsVersion);
 			HttpResponse response = executeUpdateTestCase(updateTestUri, header, updateTestJSON);
 			int statusCode = getHTTPResponseCode(response);
 			HttpEntity entity = response.getEntity();
 			if (statusCode >= 200 && statusCode < 300) {			
-				System.out.println("Affects version is update for the issue " + testId );
+				TextOutputFile.writeToLog("Affects version is update for the issue " + testId );
 
 			} else {
 				try {

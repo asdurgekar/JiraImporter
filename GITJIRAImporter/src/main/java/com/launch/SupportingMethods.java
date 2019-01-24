@@ -10,14 +10,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.SwingWorker;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -25,9 +22,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.cigniti.JIRA.CreateTestWithTestSteps;
-import com.cigniti.JIRA.ImportTestCases;
 import com.cigniti.util.Globalvars;
+import com.cigniti.util.TextOutputFile;
 
 public class SupportingMethods{
 	
@@ -52,7 +48,7 @@ public class SupportingMethods{
 		}
 		else
 		{
-			System.out.println("Local Core exe file is missing in path : " + Globalvars.strLocalExePath);
+			TextOutputFile.writeToLog("Local Core exe file is missing in path : " + Globalvars.strLocalExePath);
 		}
 		//Exit for Version dialog
 		System.exit(0);
@@ -115,7 +111,7 @@ public class SupportingMethods{
 						source = new File(Globalvars.strCloudVersionPath);			
 						FileUtils.copyFileToDirectory(source, destination);
 					}
-					System.out.println("Files copied from cloud successfully");
+					TextOutputFile.writeToLog("Files copied from cloud successfully");
 					publish("Complete");
 					return null;
 				}
@@ -260,12 +256,12 @@ public class SupportingMethods{
 			content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 			if(content==null || !content.trim().contains("="))
 			{
-				System.out.println("Version file on cloud is corrupted");
+				TextOutputFile.writeToLog("Version file on cloud is corrupted");
 				System.exit(0);
 			}
 			else if(content.trim().split("=").length <= 1)
 			{
-				System.out.println("Version file on cloud is corrupted");
+				TextOutputFile.writeToLog("Version file on cloud is corrupted");
 				System.exit(0);
 			}
 			else
@@ -330,7 +326,7 @@ public class SupportingMethods{
 			content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 			if(content==null || !content.trim().contains("="))
 			{
-				System.out.println("Local Version file on cloud is corrupted");
+				TextOutputFile.writeToLog("Local Version file on cloud is corrupted");
 				try {
 					throw new Exception("Local Version file on cloud is corrupted");
 				} catch (Exception e) {
@@ -340,7 +336,7 @@ public class SupportingMethods{
 			}
 			else if(content.trim().split("=").length <= 1)
 			{
-				System.out.println("Local Version file on cloud is corrupted");
+				TextOutputFile.writeToLog("Local Version file on cloud is corrupted");
 				try {
 					throw new Exception("Local Version file on cloud is corrupted");
 				} catch (Exception e) {
@@ -390,7 +386,7 @@ public class SupportingMethods{
 		  
 		  String responseString = getGitHubFileContent(Globalvars.strCloudLocation + Globalvars.strLatestReleaseInfoFileName);
 		  releaseinfo = responseString;	
-		  System.out.println("Latest Version information is retrieved successfully from Cloud");
+		  TextOutputFile.writeToLog("Latest Version information is retrieved successfully from Cloud");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -409,17 +405,17 @@ public class SupportingMethods{
 		  String responseString = getGitHubFileContent(Globalvars.strCloudVersionPath);
 		  if(responseString==null || !responseString.trim().contains("="))
 			{
-				System.out.println("Version file on cloud is corrupted");
+			  	TextOutputFile.writeToLog("Version file on cloud is corrupted");
 				System.exit(0);
 			}
 			else if(responseString.trim().split("=").length <= 1)
 			{
-				System.out.println("Version file on cloud is corrupted");
+				TextOutputFile.writeToLog("Version file on cloud is corrupted");
 				System.exit(0);
 			}
-		  version = responseString.trim().split("=")[1];	
-		  System.out.println("Cloud version number is retrieved successfully");
-
+		  version = responseString.trim().split("=")[1];
+		  TextOutputFile.writeToLog("Cloud version number is retrieved successfully");
+		  
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -469,7 +465,7 @@ public class SupportingMethods{
 		  
 		  String responseString = getGitHubFileContent(Globalvars.strCloudLocation + Globalvars.strReleaseHistoryFileName);
 		  releaseHistory = responseString;	
-		  System.out.println("Release History is retrieved from Cloud successfully");
+		  TextOutputFile.writeToLog("Release History is retrieved from Cloud successfully");
 		  
 
 		} catch (Exception e) {
@@ -477,6 +473,18 @@ public class SupportingMethods{
 			e.printStackTrace();
 		}
 		return releaseHistory;
+	}
+
+	public void createLaunchLogFile() {
+
+		try {
+			TextOutputFile.createFile(Globalvars.strLaunchLogPath);
+			Globalvars.strLogPath = Globalvars.strLaunchLogPath;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 

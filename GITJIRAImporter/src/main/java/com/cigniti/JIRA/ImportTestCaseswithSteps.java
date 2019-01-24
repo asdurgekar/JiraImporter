@@ -1926,4 +1926,22 @@ public void fnLoadMappingPreferences() {
 		
 	}
 
+	public void fnToggleRememberCheckbox() {
+		// TODO Auto-generated method stub
+		try {
+			if(ImportTestCases.chckbxRememberMe.isSelected())
+			{
+				ImportTestCases.chckbxRememberMe.setSelected(false);
+			}
+			else
+			{
+				ImportTestCases.chckbxRememberMe.setSelected(true);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
 }

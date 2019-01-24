@@ -52,6 +52,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ImportTestCases extends JFrame {
 
@@ -286,6 +288,12 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(lblSecretKey);
 		
 		JLabel lblRememberMe = new JLabel("Remember Me");
+		lblRememberMe.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				ITCWS.fnToggleRememberCheckbox();
+			}
+		});
 		lblRememberMe.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblRememberMe.setBounds(343, 319, 109, 14);
 		panelLogin.add(lblRememberMe);

@@ -1233,6 +1233,11 @@ public class ImportTestCaseswithSteps{
 		{
 			List<String> workSheets = ExcelFunctions.fnGetSheets(Globalvars.ExcelSheetPath);
 			ImportTestCases.lstWorkSheets.setListData(workSheets.toArray());
+			// if only 1 sheet is present in the excel, then select the sheet by default
+			if(workSheets.size() == 1)
+			{
+				ImportTestCases.lstWorkSheets.setSelectedIndex(0);
+			}
 		}
 		catch(Exception e)
 		{

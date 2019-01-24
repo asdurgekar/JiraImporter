@@ -458,6 +458,8 @@ public class ImportTestCases extends JFrame {
 		panelSecond.add(scrollPane_1);
 		
 		lstWorkSheets = new JList();
+		lstWorkSheets.setSelectedIndex(0);
+		lstWorkSheets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lstWorkSheets.setBackground(new Color(245, 245, 245));
 		lstWorkSheets.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {

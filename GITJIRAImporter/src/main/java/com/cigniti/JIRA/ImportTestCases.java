@@ -622,7 +622,7 @@ public class ImportTestCases extends JFrame {
 			new Object[][] {
 			},
 			new String[] {
-				"Jira Field", "Excel Column"
+				"Jira Fields", "Excel Column"
 			}
 		) {
 			Class[] columnTypes = new Class[] {

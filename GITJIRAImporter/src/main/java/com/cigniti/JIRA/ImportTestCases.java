@@ -215,7 +215,7 @@ public class ImportTestCases extends JFrame {
 		contentPane.add(panelLogin, "name_1090758453858820");
 		
 		btnLogin = new JButton("Login");
-		btnLogin.setBounds(289, 347, 157, 23);
+		btnLogin.setBounds(289, 347, 157, 37);
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -256,7 +256,7 @@ public class ImportTestCases extends JFrame {
 		txtUserName.setColumns(10);
 		
 		lblAuthmessage = new JLabel("");
-		lblAuthmessage.setBounds(189, 384, 380, 14);
+		lblAuthmessage.setBounds(189, 395, 380, 14);
 		lblAuthmessage.setForeground(Color.RED);
 		lblAuthmessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAuthmessage.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -292,7 +292,7 @@ public class ImportTestCases extends JFrame {
 		
 		lblLoginloading = new JLabel("");
 		lblLoginloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px.gif")));
-		lblLoginloading.setBounds(327, 376, 78, 61);
+		lblLoginloading.setBounds(327, 389, 78, 61);
 		lblLoginloading.setVisible(false);
 		panelLogin.add(lblLoginloading);
 		

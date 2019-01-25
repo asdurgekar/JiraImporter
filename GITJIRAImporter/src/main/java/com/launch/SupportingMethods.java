@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.swing.SwingWorker;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -54,7 +55,7 @@ public class SupportingMethods{
 		System.exit(0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 	
@@ -65,7 +66,7 @@ public class SupportingMethods{
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 	}
@@ -150,7 +151,7 @@ public class SupportingMethods{
 						
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 					}
 					
 				}
@@ -161,7 +162,7 @@ public class SupportingMethods{
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 	}
@@ -189,7 +190,7 @@ public class SupportingMethods{
 			output.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			return false;
 		} 
 		return true;
@@ -238,7 +239,7 @@ public class SupportingMethods{
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		return true;
 	}
@@ -273,7 +274,7 @@ public class SupportingMethods{
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			return cloudversion;
 		}
 		return cloudversion;
@@ -290,7 +291,7 @@ public class SupportingMethods{
 		    }
 		    in.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		String content = contentBuilder.toString();
 		return content;
@@ -307,7 +308,7 @@ public class SupportingMethods{
 		    }
 		    in.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		String content = contentBuilder.toString();
 		return content;
@@ -331,7 +332,7 @@ public class SupportingMethods{
 					throw new Exception("Local Version file on cloud is corrupted");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			else if(content.trim().split("=").length <= 1)
@@ -341,7 +342,7 @@ public class SupportingMethods{
 					throw new Exception("Local Version file on cloud is corrupted");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			else
@@ -353,7 +354,7 @@ public class SupportingMethods{
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			return localversion;
 		}
 		return localversion;
@@ -390,7 +391,7 @@ public class SupportingMethods{
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		return releaseinfo;
 	}
@@ -418,7 +419,7 @@ public class SupportingMethods{
 		  
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		return version;
 	
@@ -440,7 +441,7 @@ public class SupportingMethods{
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			
 		}
 	  	return responseString;
@@ -470,7 +471,7 @@ public class SupportingMethods{
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		return releaseHistory;
 	}
@@ -482,7 +483,7 @@ public class SupportingMethods{
 			Globalvars.strLogPath = Globalvars.strLaunchLogPath;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 	}

@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -29,6 +31,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -261,9 +264,10 @@ public class ImportTestCaseswithSteps{
 						CreateTestWithTestSteps.getIssueUri = CreateTestWithTestSteps.API_GET_ISSUE.replace("{SERVER}", jiraURL);
 						CreateTestWithTestSteps.issueLinkUri = CreateTestWithTestSteps.API_LINK_ISSUE.replace("{SERVER}", jiraURL);
 						CreateTestWithTestSteps.updateTestUri = CreateTestWithTestSteps.API_UPDATE_TEST.replace("{SERVER}", jiraURL);
+						String test = jiraURL.split("--")[1];
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 					}
 					
 				}
@@ -274,7 +278,7 @@ public class ImportTestCaseswithSteps{
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 		return blnLoginSuccess;
@@ -357,7 +361,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -372,7 +376,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -430,7 +434,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 	}
@@ -474,7 +478,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 			
@@ -496,7 +500,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 			
@@ -565,7 +569,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 			
@@ -587,7 +591,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -623,7 +627,7 @@ public class ImportTestCaseswithSteps{
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 
 		
@@ -708,7 +712,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 		return blnPrefMapLoad;
@@ -740,7 +744,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 	
@@ -771,7 +775,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 	
@@ -827,7 +831,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -892,7 +896,7 @@ public class ImportTestCaseswithSteps{
         }
         catch(Exception e)
         {
-        	e.printStackTrace();        	
+        	TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));      	
 		} finally {
 			httpclient.close();
 		} 
@@ -946,7 +950,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -1185,7 +1189,7 @@ public class ImportTestCaseswithSteps{
 			bgWorker.execute();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 		return returnMessage;
@@ -1221,7 +1225,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			return false;
 		}
 	}
@@ -1242,7 +1246,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -1281,7 +1285,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -1313,7 +1317,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -1342,7 +1346,7 @@ public class ImportTestCaseswithSteps{
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			return blnExcelOpen;
 		}
 		
@@ -1390,7 +1394,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	
 	}
@@ -1430,7 +1434,7 @@ public class ImportTestCaseswithSteps{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 	}
@@ -1580,7 +1584,7 @@ public class ImportTestCaseswithSteps{
 			bgWorker.execute();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 	}
@@ -1730,7 +1734,7 @@ public class ImportTestCaseswithSteps{
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		return retMessage;
 		
@@ -1744,7 +1748,7 @@ public class ImportTestCaseswithSteps{
 			bgWorker.cancel(true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -1783,7 +1787,7 @@ public class ImportTestCaseswithSteps{
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 	}
@@ -1809,7 +1813,7 @@ public class ImportTestCaseswithSteps{
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 		
@@ -1852,7 +1856,7 @@ public void fnLoadMappingPreferences() {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -1924,7 +1928,7 @@ public void fnLoadMappingPreferences() {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 		
@@ -1943,7 +1947,7 @@ public void fnLoadMappingPreferences() {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 	}
@@ -1957,7 +1961,7 @@ public void fnLoadMappingPreferences() {
 			Globalvars.strLogPath = Globalvars.strCoreLogPath;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		
 	}

@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -209,9 +210,9 @@ public class CreateTestWithTestSteps {
 			HttpClient restClient = new DefaultHttpClient();
 			responseTestStep = restClient.execute(addTestStepReq);
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		int statusCode = getHTTPResponseCode(responseTestStep);
 
@@ -223,9 +224,9 @@ public class CreateTestWithTestSteps {
 				JSONObject testStepObj = new JSONObject(string);
 				testStepObj.getString("id");
 			} catch (ParseException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			} catch (IOException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 
 		} else {
@@ -236,7 +237,7 @@ public class CreateTestWithTestSteps {
 				RespMessage = "Failure~" + EntityUtils.toString(responseTestStep.getEntity());
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		TextOutputFile.writeToLog("Created Test Step in JIRA " + testStepDescription );
@@ -294,7 +295,7 @@ public class CreateTestWithTestSteps {
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return str_TestCaseReturn;
@@ -369,9 +370,9 @@ public class CreateTestWithTestSteps {
 		try {
 			response = restClient.execute(addTestsReq);
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 
 		int statusCode = response.getStatusLine().getStatusCode();
@@ -382,16 +383,16 @@ public class CreateTestWithTestSteps {
 				string = EntityUtils.toString(entity);
 				new JSONObject(entity);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			} catch (IOException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 
 		} else {
 			try {
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return string;
@@ -413,7 +414,7 @@ public class CreateTestWithTestSteps {
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 		}
 	}
@@ -439,9 +440,9 @@ public class CreateTestWithTestSteps {
 		try {
 			response = restClient.execute(createCycleReq);
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 
 		int statusCode = response.getStatusLine().getStatusCode();
@@ -454,16 +455,16 @@ public class CreateTestWithTestSteps {
 				JSONObject cycleObj = new JSONObject(string);
 				cycleId = cycleObj.getString("id");
 			} catch (ParseException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			} catch (IOException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 
 		} else {
 			try {
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return cycleId;
@@ -481,9 +482,9 @@ public class CreateTestWithTestSteps {
 			HttpClient restClient = new DefaultHttpClient();
 			response = restClient.execute(getIssueReq);
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		int statusCode = getHTTPResponseCode(response);
 		String testId = null;
@@ -493,9 +494,9 @@ public class CreateTestWithTestSteps {
 			try {
 				string = EntityUtils.toString(entity);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			} catch (IOException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 			TextOutputFile.writeToLog("Details retrieved for issue " + IssueId );
 
@@ -509,7 +510,7 @@ public class CreateTestWithTestSteps {
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		
@@ -539,7 +540,7 @@ public class CreateTestWithTestSteps {
 				throw new ClientProtocolException("Unexpected response status: " + statusCode);
 
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return linkId;
@@ -563,9 +564,9 @@ public class CreateTestWithTestSteps {
 		try {
 			string = EntityUtils.toString(entity);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 
 		JSONObject createTestResp = new JSONObject(string);
@@ -580,9 +581,9 @@ public class CreateTestWithTestSteps {
 		try {
 			string = EntityUtils.toString(entity);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 
 		JSONObject createTestResp = new JSONObject(string);
@@ -608,9 +609,9 @@ public class CreateTestWithTestSteps {
 			HttpClient restClient = new DefaultHttpClient();
 			response = restClient.execute(createTestReq);
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		return response;
 	}
@@ -627,9 +628,9 @@ public class CreateTestWithTestSteps {
 			HttpClient restClient = new DefaultHttpClient();
 			response = restClient.execute(updateTestReq);
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		return response;
 	}
@@ -808,7 +809,7 @@ public class CreateTestWithTestSteps {
 			response = httpclient.execute(httppost);
         }catch(Exception e)
         {
-        	e.printStackTrace();
+        	TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		} finally {
 			httpclient.close();
 		}
@@ -846,9 +847,9 @@ public class CreateTestWithTestSteps {
 				HttpClient restClient = new DefaultHttpClient();
 				responseConfig = restClient.execute(ConfigReq);
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			} catch (IOException e) {
-				e.printStackTrace();
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 			int statusCode = getHTTPResponseCode(responseConfig);
 	
@@ -863,9 +864,9 @@ public class CreateTestWithTestSteps {
 						ResponseMessage = "Unauthorized API Access Key and Secrect Key";
 					}
 				} catch (ParseException e) {
-					e.printStackTrace();
+					TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 				} catch (IOException e) {
-					e.printStackTrace();
+					TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 				}
 	
 			} else {
@@ -874,7 +875,7 @@ public class CreateTestWithTestSteps {
 					ResponseMessage = "Unauthorized API Access Key and Secrect Key";
 					throw new ClientProtocolException("Unexpected response status: " + statusCode);
 				} catch (ClientProtocolException e) {
-					e.printStackTrace();
+					TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			TextOutputFile.writeToLog("API Keys validation complete");
@@ -882,7 +883,7 @@ public class CreateTestWithTestSteps {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		return ResponseMessage;
 	}
@@ -908,12 +909,12 @@ public class CreateTestWithTestSteps {
 					throw new ClientProtocolException("Unexpected response status: " + statusCode);
 
 				} catch (ClientProtocolException e) {
-					e.printStackTrace();
+					TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
 		return testId;
 	}

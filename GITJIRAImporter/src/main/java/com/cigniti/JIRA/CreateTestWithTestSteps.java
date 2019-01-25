@@ -171,9 +171,9 @@ public class CreateTestWithTestSteps {
 		testStepData = getTextFromHTML(testStepData);
 		testStepExpectedResult = getTextFromHTML(testStepExpectedResult);
 
-		TextOutputFile.writeToLog("Test Step Description " + testStepDescription);
-		TextOutputFile.writeToLog("Test Step Data " + testStepData);
-		TextOutputFile.writeToLog("Test Step Expected Value" + testStepExpectedResult);
+		TextOutputFile.writeToLog("Test Step Description : " + testStepDescription);
+		TextOutputFile.writeToLog("Test Step Data : " + testStepData);
+		TextOutputFile.writeToLog("Test Step Expected Value : " + testStepExpectedResult);
 		
 		HttpEntity entity = null;
 		/** Create test Steps ***/
@@ -283,7 +283,7 @@ public class CreateTestWithTestSteps {
 			}
 			
 			
-			TextOutputFile.writeToLog("Created Test Case in JIRA " + testDescription );
+			TextOutputFile.writeToLog("Created Test Case in JIRA : " + str_TestCaseReturn + " : " + testSummary );
 
 		} else {
 			try {
@@ -528,7 +528,7 @@ public class CreateTestWithTestSteps {
 		String linkId = null;
 		HttpEntity entity = response.getEntity();
 		if (statusCode >= 200 && statusCode < 300) {			
-			TextOutputFile.writeToLog("Link is created for the issue " + issueKey );
+			TextOutputFile.writeToLog("Issue Id " + InwardissueId + " is linked to issue key " + issueKey );
 
 		} else {
 			try {

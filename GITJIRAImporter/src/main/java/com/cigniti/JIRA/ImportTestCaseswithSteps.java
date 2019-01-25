@@ -10,8 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -67,6 +65,7 @@ public class ImportTestCaseswithSteps{
 	public static String linkId;
 	public static Boolean blnStepExecute = false;
 	public static Boolean blnUpdateTestCaseId = false;
+	public static Integer intTestStepCounter = 0;
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
 	public String appName = "Jira Test Case Importer";
@@ -264,7 +263,6 @@ public class ImportTestCaseswithSteps{
 						CreateTestWithTestSteps.getIssueUri = CreateTestWithTestSteps.API_GET_ISSUE.replace("{SERVER}", jiraURL);
 						CreateTestWithTestSteps.issueLinkUri = CreateTestWithTestSteps.API_LINK_ISSUE.replace("{SERVER}", jiraURL);
 						CreateTestWithTestSteps.updateTestUri = CreateTestWithTestSteps.API_UPDATE_TEST.replace("{SERVER}", jiraURL);
-						String test = jiraURL.split("--")[1];
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
@@ -1702,11 +1700,15 @@ public class ImportTestCaseswithSteps{
 				{
 					ExcelFunctions.fn_SetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn, counter, testKey);
 				}
+				//Set test case step counter to 0
+				intTestStepCounter = 0;
 			}
 
 			
 			if(blnStepExecute)
 			{
+				//increment test case step counter of display
+				intTestStepCounter++;
 				//Create test step
 				createTestWithTestSteps.createTestStepinJira(testStepDescription, testStepData, testStepExpectedResult, testId);
 				//check if there is failure
@@ -1715,7 +1717,7 @@ public class ImportTestCaseswithSteps{
 					retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
 					return retMessage;
 				}
-				retMessage += "Adding Steps for the test case";
+				retMessage += "Adding Step " + intTestStepCounter + " for the test case";
 			
 				//get test case completion count
 				if(counter.equals(TotalRowCount))

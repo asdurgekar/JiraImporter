@@ -49,6 +49,7 @@ public class Globalvars {
 	public static String ExcelWorkSheetName = "";
 	public static double TotalTestCaseCount = 0;
 	public static int TotalTestCaseUploaded = 0;
+	public static int TotalTestCaseFailed = 0;
 	
 	//public static String strCloudLocation = "\\\\racns\\department_3$\\InfTech\\Jira\\JiraTestCaseImporter\\";
 	public static String strCloudLocation = "https://raw.githubusercontent.com/asdurgekar/JiraImporterCodeBase/master/";	

@@ -117,7 +117,8 @@ public class CreateTestWithTestSteps {
 			.build();
 	static Header header = createAuthorizationHeader();
 	// JwtGenerator jwtGenerator = client.getJwtGenerator();
-	public static String RespMessage = "Success~All Test Cases are imported successfully";
+	public static String RespMessage = "";
+	public static String SuccessMessage = "Success~All Test Cases are imported successfully";
 	
 
 	public static void main(String[] args) throws JSONException, URISyntaxException, ParseException, IOException {
@@ -223,6 +224,7 @@ public class CreateTestWithTestSteps {
 				string = EntityUtils.toString(entity);
 				JSONObject testStepObj = new JSONObject(string);
 				testStepObj.getString("id");
+				RespMessage = SuccessMessage;
 			} catch (ParseException e) {
 				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			} catch (IOException e) {
@@ -282,7 +284,7 @@ public class CreateTestWithTestSteps {
 				str_TestCaseReturn = getTestCaseIDKey(entity);
 			}
 			
-			
+			RespMessage = SuccessMessage;
 			TextOutputFile.writeToLog("Created Test Case in JIRA : " + str_TestCaseReturn + " : " + testSummary );
 
 		} else {
@@ -529,7 +531,7 @@ public class CreateTestWithTestSteps {
 		HttpEntity entity = response.getEntity();
 		if (statusCode >= 200 && statusCode < 300) {			
 			TextOutputFile.writeToLog("Issue Id " + InwardissueId + " is linked to issue key " + issueKey );
-
+			RespMessage = SuccessMessage;
 		} else {
 			try {
 				String string = null;

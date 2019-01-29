@@ -66,8 +66,11 @@ public class ImportTestCaseswithSteps{
 	public static Boolean blnStepExecute = false;
 	public static Boolean blnUpdateTestCaseId = false;
 	public static Integer intTestStepCounter = 0;
+	public static String strCreatedTestCases;
+	public static Boolean blnSuccessFlag;
+	public static List<String> strFailedTestCases = new ArrayList<String>();
 	private SwingWorker<Void, String> bgWorker;
-	public static String DisplayMessage = "Success:All test cases are uploaded successfully";
+	public static String DisplayMessage = "Success~All Test Cases are imported successfully";
 	public String appName = "Jira Test Case Importer";
 	public String versionNumber = "2.41";
 	public String pageName = "Login";
@@ -1418,6 +1421,8 @@ public class ImportTestCaseswithSteps{
 			//Load values
 			ImportTestCases.lblTotaltestcasesvalue.setText(String.valueOf((int)Globalvars.TotalTestCaseCount));
 			ImportTestCases.lblTotaltestcasesuploadedvalue.setText(String.valueOf(Globalvars.TotalTestCaseUploaded));
+			ImportTestCases.lblTotalTestCaseFailureValue.setText(String.valueOf(Globalvars.TotalTestCaseFailed));
+			
 			ImportTestCases.prgbarImport.setValue(0);
 			
 			ImportTestCases.btnCancelImport.setEnabled(true);
@@ -1465,7 +1470,9 @@ public class ImportTestCaseswithSteps{
 					
 					//initialize values before run
 					startCount = false;
-					createTestWithTestSteps.RespMessage = "Success~All Test Cases are imported successfully";
+					strCreatedTestCases = "";
+					strFailedTestCases.clear();
+					createTestWithTestSteps.RespMessage = createTestWithTestSteps.SuccessMessage;
 					ImportTestCases.lblSuccessMessage.setForeground(Color.BLACK);
 					
 					for (int counter = 1; counter <= rowCount; counter++) 
@@ -1491,23 +1498,23 @@ public class ImportTestCaseswithSteps{
 						
 						publish(Message);
 						//exit for if failure
-						if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
-						{
-							break;
-						}
-						if(Globalvars.TotalTestCaseUploaded == Globalvars.TotalTestCaseCount)
+//						if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+//						{
+//							break;
+//						}
+						if((Globalvars.TotalTestCaseUploaded + Globalvars.TotalTestCaseFailed) == Globalvars.TotalTestCaseCount)
 						{
 							setProgress(100);						
 						}
 						else
 						{
-							setProgress((int)(Globalvars.TotalTestCaseUploaded * (100/Globalvars.TotalTestCaseCount)));							
+							setProgress((int)((Globalvars.TotalTestCaseUploaded + Globalvars.TotalTestCaseFailed) * (100/Globalvars.TotalTestCaseCount)));							
 						}
 						
 					}
 					//cancel on failure
-					if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
-						bgWorker.cancel(true);
+//					if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
+//						bgWorker.cancel(true);
 					
 					
 					return null;
@@ -1523,16 +1530,18 @@ public class ImportTestCaseswithSteps{
 						if(ConsoleText.isEmpty())
 						{
 							if(line != null && !line.isEmpty())
-							ImportTestCases.txtAreaConsole.setText(line);
+							ImportTestCases.txtAreaConsole.setText(line + "\n");
 						}
 						else
 						{
 							if(line != null && !line.isEmpty())
-								ImportTestCases.txtAreaConsole.setText(ConsoleText + "\n" + line);
+								ImportTestCases.txtAreaConsole.setText(ConsoleText + line + "\n");
 						}
 						
 					}
 					ImportTestCases.lblTotaltestcasesuploadedvalue.setText(String.valueOf(Globalvars.TotalTestCaseUploaded));
+					ImportTestCases.lblTotalTestCaseFailureValue.setText(String.valueOf(Globalvars.TotalTestCaseFailed));
+					
 					ImportTestCases.txtAreaConsole.setCaretPosition(ImportTestCases.txtAreaConsole.getDocument().getLength());
 					
 						
@@ -1641,24 +1650,33 @@ public class ImportTestCaseswithSteps{
 			{
 
 				blnStepExecute = true;
+				blnSuccessFlag = true;
 				//receive testid if optional boolean parameter is not passed
 				str_TestDetails = createTestWithTestSteps.createTestCaseinJira(testSummary, testDescription, ApplicationLabel, sprint, true);
 				
-				testId = str_TestDetails.split(":")[0];
-				testKey = str_TestDetails.split(":")[1]; 
-				
+				if(str_TestDetails != null && str_TestDetails.contains(":"))
+				{
+					testId = str_TestDetails.split(":")[0];
+					testKey = str_TestDetails.split(":")[1]; 
+				}
 				//Jira API to get details about an issue. To be used for debugging
 				//testId = createTestWithTestSteps.getIssueDetails("CAPPS-10986");
 				
 				//check if there is failure
 				if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 				{
-					retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
-					return retMessage;
+					String currRetMessage = "Error uploading Test Case with Summary : " + testSummary + "\nRow Number : " + counter + 
+							"\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1];
+					retMessage+= currRetMessage;
+					blnSuccessFlag = false;
+					strFailedTestCases.add(currRetMessage);					
 				}
-				retMessage = "Created Test Case '" + testKey + "': '" + testSummary + "'\n";
+				else
+				{
+					retMessage = "Created Test Case '" + testKey + "': '" + testSummary + "'\n";
+				}
 				
-				if(linkIssue != null && linkType != null)
+				if(linkIssue != null && linkType != null && blnSuccessFlag)
 				{
 					//if there are multiple stories to link for the test case
 					if(linkIssue.contains(","))
@@ -1673,9 +1691,14 @@ public class ImportTestCaseswithSteps{
 								if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 								{
 									retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
-									return retMessage;
+									blnSuccessFlag = false;
+									strFailedTestCases.add("Error while linking Test Case : " + testKey + "\nRow Number : " + counter + 
+											"\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
 								}
-								retMessage+= "This test case is linked to : '" + indlinkIssue.trim() + " successfully '\n";
+								else
+								{
+									retMessage+= "This test case is linked to : '" + indlinkIssue.trim() + " successfully '\n";
+								}
 							}
 						}
 					}
@@ -1688,15 +1711,20 @@ public class ImportTestCaseswithSteps{
 							if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 							{
 								retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
-								return retMessage;
+								blnSuccessFlag = false;
+								strFailedTestCases.add("Error while linking Test Case : " + testKey + "\nRow Number : " + counter +  
+										"\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
 							}
-							retMessage+= "This test case is linked to : '" + linkIssue.trim() + " successfully '\n";
+							else
+							{
+								retMessage+= "This test case is linked to : '" + linkIssue.trim() + " successfully '\n";
+							}
 						}
 					}
 				}
 				
 				//Update Test Case Id for the created test case
-				if(blnUpdateTestCaseId)
+				if(blnUpdateTestCaseId && blnSuccessFlag)
 				{
 					ExcelFunctions.fn_SetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, TestCaseIdColumn, counter, testKey);
 				}
@@ -1705,7 +1733,7 @@ public class ImportTestCaseswithSteps{
 			}
 
 			
-			if(blnStepExecute)
+			if(blnStepExecute && blnSuccessFlag)
 			{
 				//increment test case step counter of display
 				intTestStepCounter++;
@@ -1715,22 +1743,50 @@ public class ImportTestCaseswithSteps{
 				if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 				{
 					retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
-					return retMessage;
+					blnSuccessFlag = false;
+					strFailedTestCases.add("Error while adding Step " + intTestStepCounter + " for Test Case : " + testKey + "\nRow Number : " + counter +  
+							"\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
 				}
-				retMessage += "Adding Step " + intTestStepCounter + " for the test case";
+				else
+				{
+					retMessage += "Adding Step " + intTestStepCounter + " for the test case";
+				}
 			
 				//get test case completion count
 				if(counter.equals(TotalRowCount))
 				{
 					Globalvars.TotalTestCaseUploaded++;
+					strCreatedTestCases = strCreatedTestCases + "," + testKey;
 				}
 				else
 				{
 					ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, JiraExcelMap.get("Labels"));
 					if(ApplicationLabel != null)
+					{
 						Globalvars.TotalTestCaseUploaded++;
+						strCreatedTestCases = strCreatedTestCases + "," + testKey;
+					}
 				}
 			}
+			//capture import failed test cases
+			else if(blnStepExecute && !blnSuccessFlag)
+			{
+				//get test case completion count
+				if(counter.equals(TotalRowCount))
+				{
+					Globalvars.TotalTestCaseFailed++;
+				}
+				else
+				{
+					ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, JiraExcelMap.get("Labels"));
+					if(ApplicationLabel != null)
+					{
+						Globalvars.TotalTestCaseFailed++;
+					}
+				}
+			}
+			
+			
 			
 			testSummary = testDescription = testStepDescription = testStepData = testStepExpectedResult = null;
 			

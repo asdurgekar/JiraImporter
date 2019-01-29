@@ -87,6 +87,8 @@ public class ImportTestCases extends JFrame {
 	public static JLabel lblTestCasesCount;
 	public static JLabel lblTotaltestcasesvalue;
 	public static JLabel lblTotaltestcasesuploadedvalue;
+	public static JLabel lblTotalTestCaseFailure;
+	public static JLabel lblTotalTestCaseFailureValue;
 	public static JProgressBar prgbarImport;
 	public static JButton btnCancelImport;
 	public static JButton btnRunBack;
@@ -105,11 +107,12 @@ public class ImportTestCases extends JFrame {
 	SupportingMethods suppMethods = new SupportingMethods();
 	private JLabel lblBackgroundSec;
 	private JLabel lblBackgroundConf;
-	private JLabel lblBackgroundRun;
 	
 	//local variables
 	private String str_VersionNumber;
 	private JLabel lblBackgroundMap;	
+	private JScrollPane scrollPane_5;
+	
 	
 	
 	/**
@@ -804,22 +807,22 @@ public class ImportTestCases extends JFrame {
 		
 		JLabel lblTotalNumberOf = new JLabel("Total Number of Test Cases to be Uploaded");
 		lblTotalNumberOf.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotalNumberOf.setBounds(148, 65, 295, 14);
+		lblTotalNumberOf.setBounds(126, 26, 295, 14);
 		panelFinal.add(lblTotalNumberOf);
 		
 		JLabel lblTotalNumberOf_1 = new JLabel("Number of Test Cases Uploaded");
 		lblTotalNumberOf_1.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotalNumberOf_1.setBounds(148, 95, 253, 14);
+		lblTotalNumberOf_1.setBounds(126, 51, 253, 14);
 		panelFinal.add(lblTotalNumberOf_1);
 		
 		lblTotaltestcasesvalue = new JLabel("0");
 		lblTotaltestcasesvalue.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotaltestcasesvalue.setBounds(514, 65, 61, 14);
+		lblTotaltestcasesvalue.setBounds(494, 26, 61, 14);
 		panelFinal.add(lblTotaltestcasesvalue);
 		
 		lblTotaltestcasesuploadedvalue = new JLabel("0");
 		lblTotaltestcasesuploadedvalue.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotaltestcasesuploadedvalue.setBounds(514, 95, 97, 14);
+		lblTotaltestcasesuploadedvalue.setBounds(494, 51, 97, 14);
 		panelFinal.add(lblTotaltestcasesuploadedvalue);
 		
 		lblSuccessMessage = new JLabel("");
@@ -834,7 +837,7 @@ public class ImportTestCases extends JFrame {
 		prgbarImport = new JProgressBar();
 		prgbarImport.setStringPainted(true);
 		prgbarImport.setForeground(new Color(0, 0, 0));
-		prgbarImport.setBounds(148, 329, 405, 31);
+		prgbarImport.setBounds(126, 329, 449, 31);
 		panelFinal.add(prgbarImport);
 		
 		btnCancelImport = new JButton("Cancel Import");
@@ -863,7 +866,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnLaunchConfirmationPanel();
 			}
 		});
-		btnRunBack.setBounds(137, 394, 97, 25);
+		btnRunBack.setBounds(126, 394, 97, 25);
 		panelFinal.add(btnRunBack);
 		
 		btnClose = new JButton("Close");
@@ -873,22 +876,27 @@ public class ImportTestCases extends JFrame {
 				dispose();
 			}
 		});
-		btnClose.setBounds(471, 394, 97, 25);
+		btnClose.setBounds(478, 394, 97, 25);
 		panelFinal.add(btnClose);
 		
-		JScrollPane scrollPane_5 = new JScrollPane();
-		scrollPane_5.setBounds(148, 139, 407, 173);
+		lblTotalTestCaseFailure = new JLabel("Number of Test Cases with Import Failure");
+		lblTotalTestCaseFailure.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblTotalTestCaseFailure.setBounds(126, 77, 295, 14);
+		panelFinal.add(lblTotalTestCaseFailure);
+		
+		lblTotalTestCaseFailureValue = new JLabel("0");
+		lblTotalTestCaseFailureValue.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblTotalTestCaseFailureValue.setBounds(494, 77, 97, 14);
+		panelFinal.add(lblTotalTestCaseFailureValue);
+		
+		scrollPane_5 = new JScrollPane();
+		scrollPane_5.setBounds(126, 115, 449, 203);
 		panelFinal.add(scrollPane_5);
 		
 		txtAreaConsole = new JTextArea();
 		scrollPane_5.setViewportView(txtAreaConsole);
 		txtAreaConsole.setEditable(false);
 		txtAreaConsole.setBackground(SystemColor.control);
-		
-		lblBackgroundRun = new JLabel("");
-		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
-		lblBackgroundRun.setBounds(0, 0, 760, 499);
-		panelFinal.add(lblBackgroundRun);
 		
 		
 	}

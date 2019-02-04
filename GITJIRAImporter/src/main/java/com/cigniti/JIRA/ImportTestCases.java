@@ -145,10 +145,10 @@ public class ImportTestCases extends JFrame {
 				//Nimbus;System;Metal;Motif
 		        if ("Nimbus".equals(info.getName())) {
 		            UIManager.setLookAndFeel(info.getClassName());	
-		            
+		               
 		            UIDefaults defaults = UIManager.getLookAndFeelDefaults();
 		            NimbusLookAndFeel localNimbusLookAndFeel = (NimbusLookAndFeel)UIManager.getLookAndFeel();
-		            Color derivedColor = localNimbusLookAndFeel.getDerivedColor("nimbusGreen", 0, 0.8835404F, 0, 0, true);		            
+		            Color derivedColor = localNimbusLookAndFeel.getDerivedColor("nimbusSelection", 0,0,0,0, true);		            
 		            defaults.put("nimbusOrange",derivedColor);
 		            
 		            break;
@@ -902,6 +902,11 @@ public class ImportTestCases extends JFrame {
 		scrollPane_5.setViewportView(txtAreaConsole);
 		txtAreaConsole.setEditable(false);
 		txtAreaConsole.setBackground(SystemColor.control);
+		
+		JLabel lblBackgroundRun = new JLabel("");
+		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackgroundRun.setBounds(0, 0, 760, 499);
+		panelFinal.add(lblBackgroundRun);
 		
 		
 	}

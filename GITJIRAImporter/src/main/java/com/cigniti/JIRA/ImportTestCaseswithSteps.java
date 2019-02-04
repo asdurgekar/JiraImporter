@@ -42,6 +42,7 @@ import org.json.JSONObject;
 
 import com.cigniti.util.Globalvars;
 import com.cigniti.util.TextOutputFile;
+import com.cigniti.util.FileOperations;
 import com.thed.zephyr.cloud.rest.ZFJCloudRestClient;
 
 public class ImportTestCaseswithSteps{
@@ -1420,6 +1421,7 @@ public class ImportTestCaseswithSteps{
 			startCount = false;
 			ImportTestCases.txtAreaConsole.setText("");
 			ImportTestCases.lblSuccessMessage.setText("");
+			ImportTestCases.lblDetLog.setVisible(false);
 			blnValidationCompleteFlag = false;
 			strCreatedTestCases = "";
 			strFailedTestCases.clear();
@@ -1581,22 +1583,25 @@ public class ImportTestCaseswithSteps{
 					ImportTestCases.btnRunBack.setEnabled(true);
 					ImportTestCases.btnClose.setEnabled(true);
 					
+					
 					if(isCancelled())
 					{
 						ImportTestCases.lblSuccessMessage.setText("Test Case import has been interuppted");
 						ImportTestCases.lblSuccessMessage.setForeground(Color.RED);
+						ImportTestCases.lblDetLog.setVisible(true);
 					}
 					else if(Globalvars.TotalTestCaseFailed > 0)
 					{
 						ImportTestCases.lblSuccessMessage.setForeground(Color.RED);
 						ImportTestCases.lblSuccessMessage.setText("All the Test Cases are not imported sucessfully");
+						ImportTestCases.lblDetLog.setVisible(true);
 					}
 					else if(Globalvars.TotalTestCaseFailed == 0)
 					{
 						//ImportTestCases.lblSuccessMessage.setForeground(new Color(0, 128, 0));
 						ImportTestCases.lblSuccessMessage.setText(createTestWithTestSteps.SuccessMessage.split("~")[1]);
 					}
-					fnUpdateImportSummary();
+					fnUpdateImportSummary();					
 					
 				}
 				
@@ -2047,6 +2052,14 @@ public void fnLoadMappingPreferences() {
 			// TODO Auto-generated catch block
 			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 		}
+		
+	}
+
+
+
+	public void launchCurrentLog() {
+		
+		FileOperations.openFileinNotepad(Globalvars.strCoreLogPath);
 		
 	}
 

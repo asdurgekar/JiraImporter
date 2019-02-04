@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.UIDefaults;
@@ -102,6 +103,7 @@ public class ImportTestCases extends JFrame {
 	public static JLabel lblValidateloading;
 	public static JButton btnMapNext;
 	public static JButton btnBrowse;
+	public static JLabel lblDetLog;
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	SupportingMethods suppMethods = new SupportingMethods();
@@ -112,6 +114,7 @@ public class ImportTestCases extends JFrame {
 	private String str_VersionNumber;
 	private JLabel lblBackgroundMap;	
 	private JScrollPane scrollPane_5;
+	
 	
 	
 	
@@ -835,14 +838,14 @@ public class ImportTestCases extends JFrame {
 		lblSuccessMessage.setVerticalAlignment(SwingConstants.TOP);
 		lblSuccessMessage.setForeground(Color.BLACK);
 		lblSuccessMessage.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblSuccessMessage.setBounds(158, 367, 389, 16);
+		lblSuccessMessage.setBounds(158, 381, 389, 16);
 		panelFinal.add(lblSuccessMessage);
 		
 
 		prgbarImport = new JProgressBar();
 		prgbarImport.setStringPainted(true);
 		prgbarImport.setForeground(new Color(0, 0, 0));
-		prgbarImport.setBounds(126, 329, 449, 31);
+		prgbarImport.setBounds(126, 343, 449, 31);
 		panelFinal.add(prgbarImport);
 		
 		btnCancelImport = new JButton("Cancel Import");
@@ -861,7 +864,7 @@ public class ImportTestCases extends JFrame {
 		        	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			}
 		});
-		btnCancelImport.setBounds(281, 394, 145, 25);
+		btnCancelImport.setBounds(281, 408, 145, 25);
 		panelFinal.add(btnCancelImport);
 		
 		btnRunBack = new JButton("Back");
@@ -871,7 +874,7 @@ public class ImportTestCases extends JFrame {
 				ITCWS.fnLaunchConfirmationPanel();
 			}
 		});
-		btnRunBack.setBounds(126, 394, 97, 25);
+		btnRunBack.setBounds(126, 408, 97, 25);
 		panelFinal.add(btnRunBack);
 		
 		btnClose = new JButton("Close");
@@ -881,7 +884,7 @@ public class ImportTestCases extends JFrame {
 				dispose();
 			}
 		});
-		btnClose.setBounds(478, 394, 97, 25);
+		btnClose.setBounds(478, 408, 97, 25);
 		panelFinal.add(btnClose);
 		
 		lblTotalTestCaseFailure = new JLabel("Number of Test Cases with Import Failure");
@@ -903,10 +906,17 @@ public class ImportTestCases extends JFrame {
 		txtAreaConsole.setEditable(false);
 		txtAreaConsole.setBackground(SystemColor.control);
 		
-		JLabel lblBackgroundRun = new JLabel("");
-		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
-		lblBackgroundRun.setBounds(0, 0, 760, 499);
-		panelFinal.add(lblBackgroundRun);
+		lblDetLog = new JLabel("<html><a href=''>View Detailed Log</a></html>");
+		lblDetLog.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				ITCWS.launchCurrentLog();
+			}
+		});
+		lblDetLog.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblDetLog.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblDetLog.setBounds(475, 317, 100, 14);
+		panelFinal.add(lblDetLog);
 		
 		
 	}

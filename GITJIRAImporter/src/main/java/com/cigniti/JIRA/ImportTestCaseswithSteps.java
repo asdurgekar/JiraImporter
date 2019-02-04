@@ -67,6 +67,7 @@ public class ImportTestCaseswithSteps{
 	public static Boolean blnUpdateTestCaseId = false;
 	public static Integer intTestStepCounter = 0;
 	public static String strCreatedTestCases;
+	public static Boolean blnValidationCompleteFlag;
 	public static Boolean blnSuccessFlag;
 	public static List<String> strFailedTestCases = new ArrayList<String>();
 	private SwingWorker<Void, String> bgWorker;
@@ -1138,6 +1139,8 @@ public class ImportTestCaseswithSteps{
 						{
 							Globalvars.TotalTestCaseCount = TotalTestCaseCount;
 							returnMessage = "Success";
+							//updated validation complete check flag for execution
+							blnValidationCompleteFlag = blnValidationFlag;
 						}
 						
 					}
@@ -1414,9 +1417,16 @@ public class ImportTestCaseswithSteps{
 			ImportTestCases.panelFinal.setVisible(true);
 			
 			//reset values
-			Globalvars.TotalTestCaseUploaded = 0;
+			startCount = false;
 			ImportTestCases.txtAreaConsole.setText("");
 			ImportTestCases.lblSuccessMessage.setText("");
+			blnValidationCompleteFlag = false;
+			strCreatedTestCases = "";
+			strFailedTestCases.clear();
+			createTestWithTestSteps.RespMessage = createTestWithTestSteps.SuccessMessage;
+			Globalvars.TotalTestCaseUploaded = 0;
+			Globalvars.TotalTestCaseFailed = 0;
+			
 			
 			//Load values
 			ImportTestCases.lblTotaltestcasesvalue.setText(String.valueOf((int)Globalvars.TotalTestCaseCount));
@@ -1424,7 +1434,7 @@ public class ImportTestCaseswithSteps{
 			ImportTestCases.lblTotalTestCaseFailureValue.setText(String.valueOf(Globalvars.TotalTestCaseFailed));
 			
 			ImportTestCases.prgbarImport.setValue(0);
-			
+			ImportTestCases.lblSuccessMessage.setForeground(Color.BLACK);
 			ImportTestCases.btnCancelImport.setEnabled(true);
 			ImportTestCases.btnRunBack.setEnabled(false);
 			ImportTestCases.btnClose.setEnabled(false);
@@ -1432,6 +1442,7 @@ public class ImportTestCaseswithSteps{
 			
 			//Start run operation
 			fnPerformImportOperation();
+			
 			
 
 		}
@@ -1441,6 +1452,27 @@ public class ImportTestCaseswithSteps{
 		}
 		
 	}
+
+
+	private void fnUpdateImportSummary() {
+		
+		TextOutputFile.writeToLog("Import Summary");
+		TextOutputFile.writeToLog("--------------");
+		TextOutputFile.writeToLog("Test Cases which were imported successfully");
+		TextOutputFile.writeToLog("-------------------------------------------");
+		if(!strCreatedTestCases.isEmpty())
+		{
+			TextOutputFile.writeToLog(strCreatedTestCases.substring(1, strCreatedTestCases.length()));
+		}
+		TextOutputFile.writeToLog("Test Cases which failed during import");
+		TextOutputFile.writeToLog("-------------------------------------");
+		for(String failedTestDetail : strFailedTestCases)
+		{
+			TextOutputFile.writeToLog(failedTestDetail);
+		}
+		
+	}
+
 
 
 	private void fnPerformImportOperation() {
@@ -1467,13 +1499,6 @@ public class ImportTestCaseswithSteps{
 					{
 						blnUpdateTestCaseId = true;
 					}
-					
-					//initialize values before run
-					startCount = false;
-					strCreatedTestCases = "";
-					strFailedTestCases.clear();
-					createTestWithTestSteps.RespMessage = createTestWithTestSteps.SuccessMessage;
-					ImportTestCases.lblSuccessMessage.setForeground(Color.BLACK);
 					
 					for (int counter = 1; counter <= rowCount; counter++) 
 					{	
@@ -1540,9 +1565,9 @@ public class ImportTestCaseswithSteps{
 						
 					}
 					ImportTestCases.lblTotaltestcasesuploadedvalue.setText(String.valueOf(Globalvars.TotalTestCaseUploaded));
-					ImportTestCases.lblTotalTestCaseFailureValue.setText(String.valueOf(Globalvars.TotalTestCaseFailed));
-					
+					ImportTestCases.lblTotalTestCaseFailureValue.setText(String.valueOf(Globalvars.TotalTestCaseFailed));					
 					ImportTestCases.txtAreaConsole.setCaretPosition(ImportTestCases.txtAreaConsole.getDocument().getLength());
+					
 					
 						
 				}
@@ -1556,21 +1581,22 @@ public class ImportTestCaseswithSteps{
 					ImportTestCases.btnRunBack.setEnabled(true);
 					ImportTestCases.btnClose.setEnabled(true);
 					
-					if(isCancelled() && createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
-					{
-						ImportTestCases.lblSuccessMessage.setText("Failed to import all the test cases");
-						ImportTestCases.lblSuccessMessage.setForeground(Color.RED);
-					}
-					else if(isCancelled())
+					if(isCancelled())
 					{
 						ImportTestCases.lblSuccessMessage.setText("Test Case import has been interuppted");
 						ImportTestCases.lblSuccessMessage.setForeground(Color.RED);
 					}
-					else
+					else if(Globalvars.TotalTestCaseFailed > 0)
+					{
+						ImportTestCases.lblSuccessMessage.setForeground(Color.RED);
+						ImportTestCases.lblSuccessMessage.setText("All the Test Cases are not imported sucessfully");
+					}
+					else if(Globalvars.TotalTestCaseFailed == 0)
 					{
 						//ImportTestCases.lblSuccessMessage.setForeground(new Color(0, 128, 0));
-						ImportTestCases.lblSuccessMessage.setText(createTestWithTestSteps.RespMessage.split("~")[1]);
+						ImportTestCases.lblSuccessMessage.setText(createTestWithTestSteps.SuccessMessage.split("~")[1]);
 					}
+					fnUpdateImportSummary();
 					
 				}
 				
@@ -1665,8 +1691,8 @@ public class ImportTestCaseswithSteps{
 				//check if there is failure
 				if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 				{
-					String currRetMessage = "Error uploading Test Case with Summary : " + testSummary + "\nRow Number : " + counter + 
-							"\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1];
+					String currRetMessage = "Error uploading Test Case with Summary : " + testSummary + "----\nRow Number : " + counter + 
+							"----\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1];
 					retMessage+= currRetMessage;
 					blnSuccessFlag = false;
 					strFailedTestCases.add(currRetMessage);					
@@ -1692,8 +1718,8 @@ public class ImportTestCaseswithSteps{
 								{
 									retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
 									blnSuccessFlag = false;
-									strFailedTestCases.add("Error while linking Test Case : " + testKey + "\nRow Number : " + counter + 
-											"\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
+									strFailedTestCases.add("Error while linking Test Case : " + testKey + " to Issue " + indlinkIssue.trim() + "----\nRow Number : " + counter + 
+											"----\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
 								}
 								else
 								{
@@ -1712,8 +1738,8 @@ public class ImportTestCaseswithSteps{
 							{
 								retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
 								blnSuccessFlag = false;
-								strFailedTestCases.add("Error while linking Test Case : " + testKey + "\nRow Number : " + counter +  
-										"\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
+								strFailedTestCases.add("Error while linking Test Case : " + testKey + " to Issue " + linkIssue.trim() + "----\nRow Number : " + counter +  
+										"----\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
 							}
 							else
 							{
@@ -1744,8 +1770,8 @@ public class ImportTestCaseswithSteps{
 				{
 					retMessage+= createTestWithTestSteps.RespMessage.split("~")[1];
 					blnSuccessFlag = false;
-					strFailedTestCases.add("Error while adding Step " + intTestStepCounter + " for Test Case : " + testKey + "\nRow Number : " + counter +  
-							"\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
+					strFailedTestCases.add("Error while adding Step " + intTestStepCounter + " for Test Case : " + testKey + "----\nRow Number : " + counter +  
+							"----\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
 				}
 				else
 				{

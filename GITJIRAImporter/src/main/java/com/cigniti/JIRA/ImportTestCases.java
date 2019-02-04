@@ -681,8 +681,13 @@ public class ImportTestCases extends JFrame {
 				if(!ITCWS.fn_VerifyFileClosed())
 				{
 					JFrame frame = new JFrame("...");
-			        JOptionPane.showMessageDialog(frame, "Please close the test case excel file before running the import process","Excel is Open",JOptionPane.WARNING_MESSAGE);
+			        JOptionPane.showMessageDialog(frame, "Please close the test case excel file before running \n the import process","Excel is Open",JOptionPane.WARNING_MESSAGE);
 			    }
+				else if(!ITCWS.blnValidationCompleteFlag)
+				{
+					JFrame frame = new JFrame("...");
+			        JOptionPane.showMessageDialog(frame, "Please perform excel validation on the previous screen\n in order to run the import process again.","Perform Excel Validation",JOptionPane.WARNING_MESSAGE);
+				}
 				else
 				{
 					ITCWS.fnLaunchRunPanel();

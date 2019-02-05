@@ -1778,27 +1778,29 @@ public class ImportTestCaseswithSteps{
 					blnSuccessFlag = false;
 					strFailedTestCases.add("Error while adding Step " + intTestStepCounter + " for Test Case : " + testKey + "----\nRow Number : " + counter +  
 							"----\nError Description : " + createTestWithTestSteps.RespMessage.split("~")[1]);
+					Globalvars.TotalTestCaseFailed++;
 				}
 				else
 				{
 					retMessage += "Adding Step " + intTestStepCounter + " for the test case";
-				}
-			
-				//get test case completion count
-				if(counter.equals(TotalRowCount))
-				{
-					Globalvars.TotalTestCaseUploaded++;
-					strCreatedTestCases = strCreatedTestCases + "," + testKey;
-				}
-				else
-				{
-					ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, JiraExcelMap.get("Labels"));
-					if(ApplicationLabel != null)
+					//get test case completion count
+					if(counter.equals(TotalRowCount))
 					{
 						Globalvars.TotalTestCaseUploaded++;
 						strCreatedTestCases = strCreatedTestCases + "," + testKey;
 					}
+					else
+					{
+						ApplicationLabel = ExcelFunctions.fn_GetCellData(Globalvars.ExcelSheetPath, Globalvars.ExcelWorkSheetName, counter + 1, JiraExcelMap.get("Labels"));
+						if(ApplicationLabel != null)
+						{
+							Globalvars.TotalTestCaseUploaded++;
+							strCreatedTestCases = strCreatedTestCases + "," + testKey;
+						}
+					}
 				}
+			
+				
 			}
 			//capture import failed test cases
 			else if(blnStepExecute && !blnSuccessFlag)

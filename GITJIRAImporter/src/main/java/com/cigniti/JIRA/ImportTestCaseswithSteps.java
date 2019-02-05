@@ -42,6 +42,7 @@ import org.json.JSONObject;
 
 import com.cigniti.util.Globalvars;
 import com.cigniti.util.TextOutputFile;
+import com.cigniti.util.EmailOperations;
 import com.cigniti.util.FileOperations;
 import com.thed.zephyr.cloud.rest.ZFJCloudRestClient;
 

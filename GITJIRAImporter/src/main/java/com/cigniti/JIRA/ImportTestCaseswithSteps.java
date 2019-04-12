@@ -75,7 +75,7 @@ public class ImportTestCaseswithSteps{
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success~All Test Cases are imported successfully";
 	public String appName = "Jira Test Case Importer";
-	public String versionNumber = "2.50";
+	public String versionNumber = "2.51";
 	public String pageName = "Login";
 	public String TestCaseIdColumn = "TestCaseId";
 	public String strAuthenticationMessage;
@@ -246,6 +246,7 @@ public class ImportTestCaseswithSteps{
 							fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
 							fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
 						fnUpdateClientToken();
+						fnUpdateOrgFields();
 						
 						fnLaunchLoadSecondPanel();
 						blnLoginSuccess = true;
@@ -347,6 +348,28 @@ public class ImportTestCaseswithSteps{
 
 
 	
+
+	private void fnUpdateOrgFields() {
+		
+		//Update issue type & sprint field id for the organization
+		if(CreateTestWithTestSteps.jiraURL.contains("rentacenter"))
+		{
+			CreateTestWithTestSteps.issueTypeId = Globalvars.JIRA_RC_issueTypeId;
+			CreateTestWithTestSteps.sprintCustFieldId = Globalvars.JIRA_RC_SprintCustomField;
+			
+		}
+		else if(CreateTestWithTestSteps.jiraURL.contains("gamestop"))
+		{
+			CreateTestWithTestSteps.issueTypeId = Globalvars.JIRA_GS_issueTypeId;
+			CreateTestWithTestSteps.sprintCustFieldId = Globalvars.JIRA_GS_SprintCustomField;
+		}
+		
+		//Update Sprint custom field for the organization
+		
+		
+	}
+
+
 
 	private void fnCreateConfigFile() {
 

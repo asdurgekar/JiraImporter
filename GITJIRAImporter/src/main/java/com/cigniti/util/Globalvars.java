@@ -43,7 +43,11 @@ public class Globalvars {
 	public static String JIRA_userName = "";
 	public static String JIRA_password = "";
 	public static String JIRA_projectId = "";
-	public static String JIRA_issueTypeId = "10300";
+	public static String JIRA_issueTypeId = "";
+	public static String JIRA_RC_issueTypeId = "10300";
+	public static String JIRA_GS_issueTypeId = "11518";
+	public static String JIRA_RC_SprintCustomField = "customfield_10103";
+	public static String JIRA_GS_SprintCustomField = "customfield_10004";
 	
 	public static String ExcelSheetPath = "";
 	public static String ExcelWorkSheetName = "";

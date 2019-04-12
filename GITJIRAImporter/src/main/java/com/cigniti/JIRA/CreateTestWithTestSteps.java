@@ -104,7 +104,8 @@ public class CreateTestWithTestSteps {
 	public static String userName = Globalvars.JIRA_userName;
 	public static String password = Globalvars.JIRA_password;
 	public static String projectId = Globalvars.JIRA_projectId;
-	public static String issueTypeId = Globalvars.JIRA_issueTypeId;
+	public static String issueTypeId = "";
+	public static String sprintCustFieldId = "";
 	
 	public static String createTestUri = "";
 	public static String createTestStepUri = "";
@@ -722,7 +723,7 @@ public class CreateTestWithTestSteps {
 		//fieldsObj.put("versions", VersionArrayObj);
 		//Optional field with condition
 		if(sprint != null)
-			fieldsObj.put("customfield_10103", Integer.valueOf(sprint));
+			fieldsObj.put(sprintCustFieldId, Integer.valueOf(sprint));
 	
 		
 		// fieldsObj.put("assignee", assigneeObj);

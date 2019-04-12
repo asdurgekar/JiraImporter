@@ -325,7 +325,7 @@ public class ImportTestCases extends JFrame {
 		panelLogin.add(txtJiraURL);
 		
 		JLabel lblBackgroundLogin = new JLabel("");
-		lblBackgroundLogin.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackgroundLogin.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_WithCignitiLogo.png")));
 		lblBackgroundLogin.setBounds(0, 0, 760, 499);
 		panelLogin.add(lblBackgroundLogin);
 		
@@ -488,7 +488,7 @@ public class ImportTestCases extends JFrame {
 		panelSecond.add(lblWorksheets);
 		
 		lblBackgroundSec = new JLabel("");
-		lblBackgroundSec.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackgroundSec.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_WithCignitiLogo.png")));
 		lblBackgroundSec.setBounds(0, 0, 760, 499);
 		panelSecond.add(lblBackgroundSec);
 		
@@ -663,7 +663,7 @@ public class ImportTestCases extends JFrame {
 		panelMapping.add(btnMatch);
 		
 		lblBackgroundMap = new JLabel("");
-		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackgroundMap.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_WithCignitiLogo.png")));
 		lblBackgroundMap.setBounds(0, 0, 760, 499);
 		panelMapping.add(lblBackgroundMap);
 		
@@ -799,7 +799,7 @@ public class ImportTestCases extends JFrame {
 		panelConfirm.add(lblTestCasesCount);
 		
 		lblBackgroundConf = new JLabel("");
-		lblBackgroundConf.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackgroundConf.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_WithCignitiLogo.png")));
 		lblBackgroundConf.setBounds(0, 0, 760, 499);
 		panelConfirm.add(lblBackgroundConf);
 		
@@ -920,7 +920,7 @@ public class ImportTestCases extends JFrame {
 		txtAreaConsole.setBackground(SystemColor.control);
 		
 		lblBackgroundRun = new JLabel("");
-		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackgroundRun.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_WithCignitiLogo.png")));
 		lblBackgroundRun.setBounds(0, 0, 760, 499);
 		panelFinal.add(lblBackgroundRun);
 		

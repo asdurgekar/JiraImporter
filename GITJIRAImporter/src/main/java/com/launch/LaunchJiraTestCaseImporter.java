@@ -197,7 +197,7 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 		contentPane.add(lblToggleReleaseInfo);
 		
 		JLabel lblBackground = new JLabel("");
-		lblBackground.setIcon(new ImageIcon(LaunchJiraTestCaseImporter.class.getResource("/images/FileTransfer_Resized1.png")));
+		lblBackground.setIcon(new ImageIcon(LaunchJiraTestCaseImporter.class.getResource("/images/FileTransfer_WithCignitiLogo.png")));
 		lblBackground.setBounds(0, 0, 520, 368);
 		contentPane.add(lblBackground);
 		lblCopyLoading.setVisible(false);

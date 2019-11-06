@@ -740,6 +740,8 @@ public class CreateTestWithTestSteps {
 
 		//JSON object for relationship type of link
 		JSONObject type = new JSONObject();
+		//Put appropriate casing
+		relation = relation.substring(0,1).toUpperCase() + relation.substring(1).toLowerCase();
 		type.put("name", relation);
 		
 		//JSON object for Issue Key to be linked

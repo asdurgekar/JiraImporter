@@ -76,6 +76,7 @@ public class Globalvars {
 	public static String strCoreLogPath = strLogLocation + strCoreLogFileName;
 	public static String strLogPath = "";
 	public static String strCertPath = "./resources/certs/cacerts";
+	public static String strAESSecretKey = "JiraPassw0rdKey";
 	//System.getProperty("user.dir").replace("\\", "/")+ 
 	
 		

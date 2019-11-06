@@ -45,6 +45,7 @@ import com.cigniti.util.TextOutputFile;
 import com.cigniti.util.EmailOperations;
 import com.cigniti.util.FileOperations;
 import com.thed.zephyr.cloud.rest.ZFJCloudRestClient;
+import com.cigniti.util.AESEncryption;
 
 public class ImportTestCaseswithSteps{
 	
@@ -243,6 +244,9 @@ public class ImportTestCaseswithSteps{
 						if(ImportTestCases.chckbxRememberMe.isSelected())
 							fnStorePreferences("JiraURL",ImportTestCases.txtJiraURL.getText());
 							fnStorePreferences("UserName",ImportTestCases.txtUserName.getText());
+							//Encrypt Password before storing
+							String strEncryptedPassword = AESEncryption.encrypt(new String(ImportTestCases.txtPassword.getPassword()),Globalvars.strAESSecretKey);
+							fnStorePreferences("Password",strEncryptedPassword);
 							fnStorePreferences("AccessKey",new String(ImportTestCases.txtAccessKey.getPassword()));
 							fnStorePreferences("SecretKey",new String(ImportTestCases.txtSecretKey.getPassword()));
 						fnUpdateClientToken();
@@ -956,6 +960,10 @@ public class ImportTestCaseswithSteps{
 							break;
 						case "UserName":
 							ImportTestCases.txtUserName.setText(strLine.split("::")[1]);
+							break;
+						case "Password":
+							//Decrypt password before displaying on UI							
+							ImportTestCases.txtPassword.setText(AESEncryption.decrypt(strLine.split("::")[1],Globalvars.strAESSecretKey));
 							break;
 						case "AccessKey":
 							ImportTestCases.txtAccessKey.setText(strLine.split("::")[1]);

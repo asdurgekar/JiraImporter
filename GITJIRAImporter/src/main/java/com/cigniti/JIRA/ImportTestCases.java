@@ -115,6 +115,7 @@ public class ImportTestCases extends JFrame {
 	private JLabel lblBackgroundMap;	
 	private JScrollPane scrollPane_5;
 	private JLabel lblBackgroundRun;
+	private JLabel lblSavesPassword;
 	
 	
 	
@@ -275,7 +276,7 @@ public class ImportTestCases extends JFrame {
 		
 		chckbxRememberMe = new JCheckBox("");
 		chckbxRememberMe.setBackground(Color.WHITE);
-		chckbxRememberMe.setBounds(310, 319, 21, 14);
+		chckbxRememberMe.setBounds(269, 319, 21, 14);
 		panelLogin.add(chckbxRememberMe);
 		
 		txtAccessKey = new JPasswordField();
@@ -296,7 +297,7 @@ public class ImportTestCases extends JFrame {
 		lblSecretKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblSecretKey);
 		
-		JLabel lblRememberMe = new JLabel("Remember Me");
+		JLabel lblRememberMe = new JLabel("Remember Me \r");
 		lblRememberMe.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -304,13 +305,18 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		lblRememberMe.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblRememberMe.setBounds(343, 319, 109, 14);
+		lblRememberMe.setBounds(296, 319, 96, 17);
 		panelLogin.add(lblRememberMe);
 		
 		lblLoginloading = new JLabel("");
 		lblLoginloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px.gif")));
 		lblLoginloading.setBounds(327, 389, 78, 61);
 		lblLoginloading.setVisible(false);
+		
+		lblSavesPassword = new JLabel(" (Saves Password also)");
+		lblSavesPassword.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblSavesPassword.setBounds(389, 319, 141, 17);
+		panelLogin.add(lblSavesPassword);
 		panelLogin.add(lblLoginloading);
 		
 		JLabel lbl_jiraURL = new JLabel("Jira URL");

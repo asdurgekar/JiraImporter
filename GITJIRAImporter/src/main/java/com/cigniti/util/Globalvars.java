@@ -59,8 +59,8 @@ public class Globalvars {
 	public static String strCloudLocation = "https://raw.githubusercontent.com/asdurgekar/JiraImporterCodeBase/master/";	
 	public static String strLocalLocation = System.getenv("APPDATA") + "\\JiraImporter\\";
 	public static String strLogLocation = System.getenv("LOCALAPPDATA") + "\\JiraImporter\\Logs\\";
-	public static String strMacLocalLocation = "~/Library/Application Support/JiraImporter/SystemConfig/";
-	public static String strMacLogLocation = "~/Library/Application Support/JiraImporter/UserData/Logs/";
+	public static String strMacLocalLocation = System.getProperty("user.home") + "/Library/Application Support/JiraImporter/SystemConfig/";
+	public static String strMacLogLocation = System.getProperty("user.home") + "/Library/Application Support/JiraImporter/UserData/Logs/";
 	
 	public static String strLaunchLogFileName = "JiraImporter_Launch_" + NowDateform.format(new Date()) + ".log";
 	public static String strCoreLogFileName = "JiraImporter_Core_" + NowDateform.format(new Date()) + ".log";

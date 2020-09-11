@@ -2230,6 +2230,27 @@ public void fnLoadMappingPreferences() {
 		
 	}
 
+	public void fnSetPathVariables() {
+		// TODO Auto-generated method stub
+		String strLocalLocation = "";
+		String strLogLocation = "";
+		if(System.getProperty("os.name").contains("Windows"))
+		{
+			strLocalLocation = Globalvars.strLocalLocation;
+			strLogLocation = Globalvars.strLogLocation;
+		}
+		else if(System.getProperty("os.name").contains("Mac"))
+		{
+			strLocalLocation = Globalvars.strMacLocalLocation;
+			strLogLocation = Globalvars.strMacLogLocation;
+		}
+		Globalvars.strLaunchLogPath = strLogLocation + Globalvars.strLaunchLogFileName;
+		Globalvars.strLocalVersionPath = strLocalLocation + Globalvars.strVersionFileName;
+		Globalvars.strLocalExePath = strLocalLocation + Globalvars.strExeFileName;
+		Globalvars.strCoreLogPath = strLogLocation + Globalvars.strCoreLogFileName;
+		
+		
+	}
 
 
 }

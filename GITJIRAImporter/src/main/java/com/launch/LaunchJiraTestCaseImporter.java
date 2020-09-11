@@ -94,8 +94,12 @@ public class LaunchJiraTestCaseImporter extends JFrame {
 			e1.printStackTrace();
 		}
 		
+		
+		
 		SupportingMethods suppMethods = new SupportingMethods();
 		
+		//set path variables
+		suppMethods.fnSetPathVariables();
 		//create the log file for this component
 		suppMethods.createLaunchLogFile();
 		//get the tool version from common drive in Cloud

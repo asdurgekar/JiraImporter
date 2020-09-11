@@ -56,6 +56,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class ImportTestCases extends JFrame {
 
@@ -73,12 +75,17 @@ public class ImportTestCases extends JFrame {
 	public static JPanel panelFinal;
 	public static JComboBox comBoxProjName;
 	public static JCheckBox chckbxRememberMe;
-	public static JLabel lblValidationMessage;
+	public static JCheckBox chckbxCloud;
+	
 	public static JButton btnNext;
 	public static JList lstJiraFields;
-	public static JList lstWorkSheets;
 	public static JList lstExcelColumns;
+	public static JList lstWorkSheets;
 	public static JButton btnValidate;
+	
+	public static JLabel lblAccessKey;
+	public static JLabel lblSecretKey;
+	public static JLabel lblValidationMessage;
 	public static JLabel lblValidationmessage;
 	public static JLabel lblCheckmark;
 	public static JLabel lblProjectNameValue;
@@ -107,7 +114,6 @@ public class ImportTestCases extends JFrame {
 	
 	ImportTestCaseswithSteps ITCWS =	new ImportTestCaseswithSteps();
 	SupportingMethods suppMethods = new SupportingMethods();
-	private JLabel lblBackgroundSec;
 	private JLabel lblBackgroundConf;
 	
 	//local variables
@@ -115,7 +121,11 @@ public class ImportTestCases extends JFrame {
 	private JLabel lblBackgroundMap;	
 	private JScrollPane scrollPane_5;
 	private JLabel lblBackgroundRun;
-	private JLabel lblSavesPassword;
+	private JLabel lblBackgroundLogin;
+	
+	private JScrollPane scrollPane_1;
+	private JLabel lblBackgroundProject;
+	
 	
 	
 	
@@ -287,17 +297,17 @@ public class ImportTestCases extends JFrame {
 		txtSecretKey.setBounds(269, 278, 219, 28);
 		panelLogin.add(txtSecretKey);
 		
-		JLabel lblAccessKey = new JLabel("Access Key");
+		lblAccessKey = new JLabel("Access Key");
 		lblAccessKey.setBounds(173, 229, 67, 14);
 		lblAccessKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblAccessKey);
 		
-		JLabel lblSecretKey = new JLabel("Secret Key");
+		lblSecretKey = new JLabel("Secret Key");
 		lblSecretKey.setBounds(173, 282, 67, 14);
 		lblSecretKey.setFont(new Font("Tahoma", Font.BOLD, 11));
 		panelLogin.add(lblSecretKey);
 		
-		JLabel lblRememberMe = new JLabel("Remember Me \r");
+		JLabel lblRememberMe = new JLabel("Remember Credentials");
 		lblRememberMe.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -305,18 +315,13 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		lblRememberMe.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblRememberMe.setBounds(296, 319, 96, 17);
+		lblRememberMe.setBounds(296, 319, 150, 17);
 		panelLogin.add(lblRememberMe);
 		
 		lblLoginloading = new JLabel("");
 		lblLoginloading.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/Spinner-1s-78px.gif")));
 		lblLoginloading.setBounds(327, 389, 78, 61);
 		lblLoginloading.setVisible(false);
-		
-		lblSavesPassword = new JLabel(" (Saves Password also)");
-		lblSavesPassword.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblSavesPassword.setBounds(389, 319, 141, 17);
-		panelLogin.add(lblSavesPassword);
 		panelLogin.add(lblLoginloading);
 		
 		JLabel lbl_jiraURL = new JLabel("Jira URL");
@@ -330,9 +335,26 @@ public class ImportTestCases extends JFrame {
 		txtJiraURL.setBounds(271, 77, 217, 28);
 		panelLogin.add(txtJiraURL);
 		
-		JLabel lblBackgroundLogin = new JLabel("");
+		chckbxCloud = new JCheckBox("");
+		chckbxCloud.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				ITCWS.fnToggleCloudCheckbox();
+			}
+		});
+		chckbxCloud.setSelected(true);
+		chckbxCloud.setBackground(Color.WHITE);
+		chckbxCloud.setBounds(514, 84, 21, 14);
+		panelLogin.add(chckbxCloud);
+		
+		JLabel lblCloud = new JLabel("Jira Cloud");
+		lblCloud.setForeground(Color.BLACK);
+		lblCloud.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblCloud.setBounds(536, 84, 67, 14);
+		panelLogin.add(lblCloud);
+		
+		lblBackgroundLogin = new JLabel("");
 		lblBackgroundLogin.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_WithCignitiLogo.png")));
-		lblBackgroundLogin.setBounds(0, 0, 760, 499);
+		lblBackgroundLogin.setBounds(0, 0, 762, 499);
 		panelLogin.add(lblBackgroundLogin);
 		
 		
@@ -427,11 +449,11 @@ public class ImportTestCases extends JFrame {
 		btnNext.setEnabled(false);
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(ITCWS.fnValidateFileFormat())
+				if(ITCWS.fnValidateFileFormat() && ITCWS.fnValidateTestIssueType())
 					ITCWS.fnLaunchMappingPanel();
 			}
 		});
-		btnNext.setBounds(428, 334, 89, 23);
+		btnNext.setBounds(432, 359, 89, 23);
 		panelSecond.add(btnNext);
 		
 		JButton btnBack = new JButton("Back");
@@ -443,7 +465,7 @@ public class ImportTestCases extends JFrame {
 				
 			}
 		});
-		btnBack.setBounds(329, 334, 89, 23);
+		btnBack.setBounds(333, 359, 89, 23);
 		panelSecond.add(btnBack);
 		
 		JButton btnCancel = new JButton("Cancel");		
@@ -460,21 +482,23 @@ public class ImportTestCases extends JFrame {
 					
 				}
 		});
-		btnCancel.setBounds(230, 334, 89, 23);
+		btnCancel.setBounds(234, 359, 89, 23);
 		panelSecond.add(btnCancel);
 		
 		lblValidationMessage = new JLabel("");
 		lblValidationMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		lblValidationMessage.setBounds(175, 305, 415, 16);
+		lblValidationMessage.setBounds(179, 330, 415, 16);
 		panelSecond.add(lblValidationMessage);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(245, 241, 160, 51);
+		scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(245, 243, 158, 77);
 		panelSecond.add(scrollPane_1);
 		
 		lstWorkSheets = new JList();
-		lstWorkSheets.setSelectedIndex(0);
+		
 		lstWorkSheets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		lstWorkSheets.setSelectedIndex(0);
+		lstWorkSheets.setBorder(UIManager.getBorder("Button.border"));
 		lstWorkSheets.setBackground(new Color(245, 245, 245));
 		lstWorkSheets.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
@@ -485,18 +509,16 @@ public class ImportTestCases extends JFrame {
 			}
 		});
 		scrollPane_1.setViewportView(lstWorkSheets);
-		lstWorkSheets.setBorder(UIManager.getBorder("Button.border"));
-		
 		
 		JLabel lblWorksheets = new JLabel("Worksheets");
 		lblWorksheets.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblWorksheets.setBounds(151, 243, 82, 16);
 		panelSecond.add(lblWorksheets);
 		
-		lblBackgroundSec = new JLabel("");
-		lblBackgroundSec.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_WithCignitiLogo.png")));
-		lblBackgroundSec.setBounds(0, 0, 760, 499);
-		panelSecond.add(lblBackgroundSec);
+		lblBackgroundProject = new JLabel("");
+		lblBackgroundProject.setIcon(new ImageIcon(ImportTestCases.class.getResource("/images/FileTransfer_WithCignitiLogo.png")));
+		lblBackgroundProject.setBounds(0, 0, 762, 499);
+		panelSecond.add(lblBackgroundProject);
 		
 		
 		panelMapping = new JPanel();

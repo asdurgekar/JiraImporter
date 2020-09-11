@@ -79,11 +79,13 @@ public class CreateTestWithTestSteps {
 
 	public static String API_CREATE_TEST = "{SERVER}/rest/api/2/issue";
 	public static String API_CREATE_TEST_STEP = "{SERVER}/public/rest/api/1.0/teststep/";
+	public static String API_CREATE_TEST_STEP_JIRASERVER = "{SERVER}/rest/zapi/latest/teststep/";
 	public static Long versionId = -1l;
 	public static String API_VALIDKEY = "{SERVER}/public/rest/api/1.0/teststep/-1?projectId=";
 	public static String API_GET_ISSUE = "{SERVER}/rest/api/2/issue/";
 	public static String API_LINK_ISSUE = "{SERVER}/rest/api/2/issueLink";
 	public static String API_UPDATE_TEST = "{SERVER}/rest/api/2/issue/bulk";
+	public static String API_CREATE_META = "{SERVER}/rest/api/2/issue/createmeta?projectIds=";
 	
 	/** Declare JIRA,Zephyr URL,access and secret Keys */
 	// Jira Cloud URL for the instance
@@ -225,6 +227,83 @@ public class CreateTestWithTestSteps {
 				string = EntityUtils.toString(entity);
 				JSONObject testStepObj = new JSONObject(string);
 				testStepObj.getString("id");
+				RespMessage = SuccessMessage;
+			} catch (ParseException e) {
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
+			} catch (IOException e) {
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
+			}
+
+		} else {
+			try {
+				TextOutputFile.writeToLog("__________________________________________________________________________________________");
+				TextOutputFile.writeToLog("Test Step Values : " + testStepDescription + ":" + testStepData +":" + testStepExpectedResult);
+				TextOutputFile.writeToLog("__________________________________________________________________________________________");
+				RespMessage = "Failure~" + EntityUtils.toString(responseTestStep.getEntity());
+				throw new ClientProtocolException("Unexpected response status: " + statusCode);
+			} catch (ClientProtocolException e) {
+				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
+			}
+		}
+		TextOutputFile.writeToLog("Created Test Step in JIRA " + testStepDescription );
+
+	}
+	
+	@SuppressWarnings("resource")
+	public void createTestStepinJiraServer(String testStepDescription,
+			String testStepData, String testStepExpectedResult, String testId) throws URISyntaxException, ParseException, IOException {
+		
+		testStepDescription = getTextFromHTML(testStepDescription);
+		testStepData = getTextFromHTML(testStepData);
+		testStepExpectedResult = getTextFromHTML(testStepExpectedResult);
+
+		TextOutputFile.writeToLog("Test Step Description : " + testStepDescription);
+		TextOutputFile.writeToLog("Test Step Data : " + testStepData);
+		TextOutputFile.writeToLog("Test Step Expected Value : " + testStepExpectedResult);
+		
+		HttpEntity entity = null;
+		/** Create test Steps ***/
+
+		/**
+		 * Create Steps Replace the step,data,result values as required
+		 */
+
+		JSONObject testStepJsonObj = createTestStepJSON(testStepDescription, testStepData, testStepExpectedResult);
+
+		/** DONOT EDIT FROM HERE ***/
+
+		StringEntity createTestStepJSON = null;
+		try {
+			createTestStepJSON = new StringEntity(testStepJsonObj.toString());
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		String finalURL = createTestStepUri + testId;
+		URI uri = new URI(finalURL);
+		int expirationInSec = 360;
+		
+		HttpResponse responseTestStep = null;
+		HttpPost addTestStepReq = new HttpPost(uri);
+		addTestStepReq.addHeader("Content-Type", "application/json");
+		addTestStepReq.addHeader(header);
+		addTestStepReq.setEntity(createTestStepJSON);
+
+		try {
+			HttpClient restClient = new DefaultHttpClient();
+			responseTestStep = restClient.execute(addTestStepReq);
+		} catch (ClientProtocolException e) {
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
+		} catch (IOException e) {
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
+		}
+		int statusCode = getHTTPResponseCode(responseTestStep);
+
+		if (statusCode >= 200 && statusCode < 300) {
+			entity = responseTestStep.getEntity();
+			String string = null;
+			try {
+				string = EntityUtils.toString(entity);
+				TextOutputFile.writeToLog(string);								
 				RespMessage = SuccessMessage;
 			} catch (ParseException e) {
 				TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));

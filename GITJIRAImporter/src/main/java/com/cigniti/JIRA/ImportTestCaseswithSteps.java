@@ -26,6 +26,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FilenameUtils;
@@ -76,7 +78,7 @@ public class ImportTestCaseswithSteps{
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success~All Test Cases are imported successfully";
 	public String appName = "Jira Test Case Importer";
-	public String versionNumber = "2.60";
+	public String versionNumber = "3.0";
 	public String pageName = "Login";
 	public String TestCaseIdColumn = "TestCaseId";
 	public String strAuthenticationMessage;
@@ -199,7 +201,15 @@ public class ImportTestCaseswithSteps{
 					CreateTestWithTestSteps.secretKey = new String(ImportTestCases.txtSecretKey.getPassword());
 					
 					AuthResponse = fn_PerformAuthentication();
-					KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);					
+					
+					if(ImportTestCases.chckbxCloud.isSelected())
+					{
+						KeyResponse = CreateTestWithTestSteps.fn_ValidateKeys(JSONProjectList);
+					}
+					else
+					{
+						KeyResponse = "Success";
+					}
 					
 					return null;
 				}
@@ -243,6 +253,7 @@ public class ImportTestCaseswithSteps{
 						fnCreateConfigFile();
 						if(ImportTestCases.chckbxRememberMe.isSelected())
 							fnStorePreferences("JiraURL",ImportTestCases.txtJiraURL.getText());
+							fnStorePreferences("Cloud",String.valueOf(ImportTestCases.chckbxCloud.isSelected()));
 							fnStorePreferences("UserName",ImportTestCases.txtUserName.getText());
 							//Encrypt Password before storing
 							String strEncryptedPassword = AESEncryption.encrypt(new String(ImportTestCases.txtPassword.getPassword()),Globalvars.strAESSecretKey);
@@ -269,7 +280,15 @@ public class ImportTestCaseswithSteps{
 					try {
 						CreateTestWithTestSteps.jiraBaseURL = jiraURL;
 						CreateTestWithTestSteps.createTestUri = CreateTestWithTestSteps.API_CREATE_TEST.replace("{SERVER}", jiraURL);
-						CreateTestWithTestSteps.createTestStepUri = CreateTestWithTestSteps.API_CREATE_TEST_STEP.replace("{SERVER}", CreateTestWithTestSteps.zephyrBaseUrl);
+						if(ImportTestCases.chckbxCloud.isSelected())
+						{
+							CreateTestWithTestSteps.createTestStepUri = CreateTestWithTestSteps.API_CREATE_TEST_STEP.replace("{SERVER}", CreateTestWithTestSteps.zephyrBaseUrl);							
+						}
+						else
+						{
+							CreateTestWithTestSteps.createTestStepUri = CreateTestWithTestSteps.API_CREATE_TEST_STEP_JIRASERVER.replace("{SERVER}", jiraURL);
+							
+						}
 						CreateTestWithTestSteps.validateKeyUri = CreateTestWithTestSteps.API_VALIDKEY.replace("{SERVER}", CreateTestWithTestSteps.zephyrBaseUrl);
 						CreateTestWithTestSteps.getIssueUri = CreateTestWithTestSteps.API_GET_ISSUE.replace("{SERVER}", jiraURL);
 						CreateTestWithTestSteps.issueLinkUri = CreateTestWithTestSteps.API_LINK_ISSUE.replace("{SERVER}", jiraURL);
@@ -358,13 +377,13 @@ public class ImportTestCaseswithSteps{
 		//Update issue type & sprint field id for the organization
 		if(CreateTestWithTestSteps.jiraURL.contains("rentacenter"))
 		{
-			CreateTestWithTestSteps.issueTypeId = Globalvars.JIRA_RC_issueTypeId;
+			//CreateTestWithTestSteps.issueTypeId = Globalvars.JIRA_RC_issueTypeId;
 			CreateTestWithTestSteps.sprintCustFieldId = Globalvars.JIRA_RC_SprintCustomField;
 			
 		}
 		else if(CreateTestWithTestSteps.jiraURL.contains("gamestop"))
 		{
-			CreateTestWithTestSteps.issueTypeId = Globalvars.JIRA_GS_issueTypeId;
+			//CreateTestWithTestSteps.issueTypeId = Globalvars.JIRA_GS_issueTypeId;
 			CreateTestWithTestSteps.sprintCustFieldId = Globalvars.JIRA_GS_SprintCustomField;
 		}
 		
@@ -526,6 +545,9 @@ public class ImportTestCaseswithSteps{
 			ImportTestCases.panelMapping.setVisible(false);
 			ImportTestCases.panelConfirm.setVisible(false);
 			ImportTestCases.panelFinal.setVisible(false);
+			
+			//Validation messages are cleared from Project screen
+			ImportTestCases.lblValidationMessage.setText("");
 			
 			
 		}
@@ -958,6 +980,9 @@ public class ImportTestCaseswithSteps{
 						case "JiraURL":
 							ImportTestCases.txtJiraURL.setText(strLine.split("::")[1]);
 							break;
+						case "Cloud":
+							ImportTestCases.chckbxCloud.setSelected(Boolean.valueOf(strLine.split("::")[1]));
+							break;
 						case "UserName":
 							ImportTestCases.txtUserName.setText(strLine.split("::")[1]);
 							break;
@@ -1265,6 +1290,83 @@ public class ImportTestCaseswithSteps{
 			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
 			return false;
 		}
+	}
+	
+	public boolean fnValidateTestIssueType() {
+
+		Boolean blnTestIssueTypeFound = false;
+		CloseableHttpClient httpclient = null;
+		try
+		{
+			
+			//get the project id for selected Project name
+			String strProjectId = ProjectMap.get(ImportTestCases.comBoxProjName.getSelectedItem().toString());
+			//retrieve issue meta information
+			httpclient = HttpClients.createDefault();
+			HttpGet httpget = new HttpGet(CreateTestWithTestSteps.API_CREATE_META.replace("{SERVER}", CreateTestWithTestSteps.jiraBaseURL) + strProjectId);
+			httpget.setHeader("Content-Type", "application/json");
+			httpget.setHeader(CreateTestWithTestSteps.header);
+			
+	        CloseableHttpResponse response = null;
+
+			response = httpclient.execute(httpget);
+			String result = "";
+			if(response.getStatusLine().getStatusCode() == 200)
+			{
+				result = EntityUtils.toString(response.getEntity());
+				JSONObject issuesListObject = new JSONObject(result);
+				JSONArray issuesListArray = issuesListObject.getJSONArray("projects").getJSONObject(0).getJSONArray("issuetypes");
+				
+				for(int intIssueCounter = 0;intIssueCounter < issuesListArray.length();intIssueCounter++)
+				{
+					if(issuesListArray.getJSONObject(intIssueCounter).get("name").toString().equals("Test"))
+					{
+						CreateTestWithTestSteps.issueTypeId = issuesListArray.getJSONObject(intIssueCounter).get("id").toString();
+						blnTestIssueTypeFound = true;
+						ImportTestCases.lblValidationMessage.setText("");
+						break;
+					}
+				}
+				if(blnTestIssueTypeFound)
+				{
+					TextOutputFile.writeToLog(result);
+				}
+				else 
+				{
+					ImportTestCases.lblValidationMessage.setForeground(Color.RED);
+					ImportTestCases.lblValidationMessage.setText("Project '" + ImportTestCases.comBoxProjName.getSelectedItem().toString() + 
+							"' does not contain Test as one of the Issue Type");
+					TextOutputFile.writeToLog(result);
+					
+				}
+			}
+			else
+			{				
+				TextOutputFile.writeToLog(response.getStatusLine().toString());
+				TextOutputFile.writeToLog(result);	
+				ImportTestCases.lblValidationMessage.setForeground(Color.RED);
+				ImportTestCases.lblValidationMessage.setText("Unable to retrieve the test issue type id for the project '"
+						+ ImportTestCases.comBoxProjName.getSelectedItem().toString() + "'");
+			}
+			httpclient.close();
+			return blnTestIssueTypeFound;
+		}
+	        
+        catch(Exception e)
+        {
+        	TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
+        	ImportTestCases.lblValidationMessage.setForeground(Color.RED);
+        	ImportTestCases.lblValidationMessage.setText("Unable to retrieve the test issue type id for the project '"
+					+ ImportTestCases.comBoxProjName.getSelectedItem().toString() + "'");
+        	try {
+				httpclient.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	return blnTestIssueTypeFound;
+		} 		
+		
 	}
 
 
@@ -1800,8 +1902,15 @@ public class ImportTestCaseswithSteps{
 			{
 				//increment test case step counter of display
 				intTestStepCounter++;
-				//Create test step
-				createTestWithTestSteps.createTestStepinJira(testStepDescription, testStepData, testStepExpectedResult, testId);
+				//Create test step accordingly depending on Cloud or Jira Server
+				if(ImportTestCases.chckbxCloud.isSelected())
+				{
+					createTestWithTestSteps.createTestStepinJira(testStepDescription, testStepData, testStepExpectedResult, testId);
+				}
+				else
+				{
+					createTestWithTestSteps.createTestStepinJiraServer(testStepDescription, testStepData, testStepExpectedResult, testId);
+				}
 				//check if there is failure
 				if(createTestWithTestSteps.RespMessage.split("~")[0].toLowerCase().contains("failure"))
 				{
@@ -2096,5 +2205,31 @@ public void fnLoadMappingPreferences() {
 		FileOperations.openFileinNotepad(Globalvars.strCoreLogPath);
 		
 	}
+
+	public void fnToggleCloudCheckbox() {
+		// TODO Auto-generated method stub
+		try {
+			if(ImportTestCases.chckbxCloud.isSelected())
+			{				
+				ImportTestCases.txtAccessKey.setVisible(true);
+				ImportTestCases.txtSecretKey.setVisible(true);
+				ImportTestCases.lblAccessKey.setVisible(true);
+				ImportTestCases.lblSecretKey.setVisible(true);
+			}
+			else
+			{				
+				ImportTestCases.txtAccessKey.setVisible(false);
+				ImportTestCases.txtSecretKey.setVisible(false);
+				ImportTestCases.lblAccessKey.setVisible(false);
+				ImportTestCases.lblSecretKey.setVisible(false);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			TextOutputFile.writeToLog(ExceptionUtils.getStackTrace(e));
+		}
+		
+	}
+
+
 
 }

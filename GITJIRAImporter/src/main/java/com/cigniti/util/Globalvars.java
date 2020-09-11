@@ -59,6 +59,9 @@ public class Globalvars {
 	public static String strCloudLocation = "https://raw.githubusercontent.com/asdurgekar/JiraImporterCodeBase/master/";	
 	public static String strLocalLocation = System.getenv("APPDATA") + "\\JiraImporter\\";
 	public static String strLogLocation = System.getenv("LOCALAPPDATA") + "\\JiraImporter\\Logs\\";
+	public static String strMacLocalLocation = "~/Library/Application Support/JiraImporter/SystemConfig/";
+	public static String strMacLogLocation = "~/Library/Application Support/JiraImporter/UserData/Logs/";
+	
 	public static String strLaunchLogFileName = "JiraImporter_Launch_" + NowDateform.format(new Date()) + ".log";
 	public static String strCoreLogFileName = "JiraImporter_Core_" + NowDateform.format(new Date()) + ".log";
 	public static String strPreferencesConfigFileName = "Preferences.config";
@@ -67,13 +70,14 @@ public class Globalvars {
 	public static String strVersionFileName = "version.ini";
 	public static String strLatestReleaseInfoFileName = "ReleaseNotes.html";
 	public static String strReleaseHistoryFileName = "ReleaseHistory.html";
-	public static String strPreferencesPath = strLocalLocation + strPreferencesConfigFileName;
+	public static String strPreferencesPath = "";
 	public static String strCloudVersionPath = strCloudLocation + strVersionFileName;
 	public static String strCloudExePath = strCloudLocation + strExeFileName;
-	public static String strLocalVersionPath = strLocalLocation + strVersionFileName;
-	public static String strLocalExePath = strLocalLocation + strExeFileName;
-	public static String strLaunchLogPath = strLogLocation + strLaunchLogFileName;
-	public static String strCoreLogPath = strLogLocation + strCoreLogFileName;
+	
+	public static String strLocalVersionPath = "";
+	public static String strLocalExePath = "";
+	public static String strLaunchLogPath = "";
+	public static String strCoreLogPath = "";
 	public static String strLogPath = "";
 	public static String strCertPath = "./resources/certs/cacerts";
 	public static String strAESSecretKey = "JiraPassw0rdKey";

@@ -35,22 +35,47 @@ public class SupportingMethods{
 		try {
 		@SuppressWarnings("unused")
 		File file = new File(Globalvars.strLocalExePath);
-		if(file.exists()) 
+		
+		String strStartCommand = "";
+		if(System.getProperty("os.name").contains("Windows"))
 		{
-			String command = "cmd /c start " + Globalvars.strLocalExePath;
-			Runtime rt = Runtime.getRuntime();
-			Process pr = rt.exec(command);
+			strStartCommand = "cmd /c start ";
+			if(file.exists()) 
+			{
+				String command = strStartCommand + Globalvars.strLocalExePath;
+				Runtime rt = Runtime.getRuntime();
+				Process pr = rt.exec(command);
+			}
+			else if((new File(Globalvars.strLocalLocation + Globalvars.strOldExeFileName)).exists()) 
+			{
+				String command = strStartCommand + Globalvars.strLocalLocation + Globalvars.strOldExeFileName;
+				Runtime rt = Runtime.getRuntime();
+				Process pr = rt.exec(command);
+			}
+			else
+			{
+				TextOutputFile.writeToLog("Local Core exe file is missing in path : " + Globalvars.strLocalExePath);
+			}
 		}
-		else if((new File(Globalvars.strLocalLocation + Globalvars.strOldExeFileName)).exists()) 
+		else if(System.getProperty("os.name").contains("Mac"))
 		{
-			String command = "cmd /c start " + Globalvars.strLocalLocation + Globalvars.strOldExeFileName;
-			Runtime rt = Runtime.getRuntime();
-			Process pr = rt.exec(command);
+			strStartCommand = "/usr/bin/open";
+			if(file.exists()) 
+			{
+				Runtime.getRuntime().exec(new String[]{strStartCommand,Globalvars.strLocalExePath});
+			}
+			else if((new File(Globalvars.strLocalLocation + Globalvars.strOldExeFileName)).exists()) 
+			{
+				Runtime.getRuntime().exec(new String[]{strStartCommand,
+						Globalvars.strLocalLocation + Globalvars.strOldExeFileName});
+			}
+			else
+			{
+				TextOutputFile.writeToLog("Local Core exe file is missing in path : " + Globalvars.strLocalExePath);
+			}
 		}
-		else
-		{
-			TextOutputFile.writeToLog("Local Core exe file is missing in path : " + Globalvars.strLocalExePath);
-		}
+		
+		
 		//Exit for Version dialog
 		System.exit(0);
 		} catch (IOException e) {
@@ -487,6 +512,29 @@ public class SupportingMethods{
 		}
 		
 	}
+
+	public void fnSetPathVariables() {
+		// TODO Auto-generated method stub
+		String strLocalLocation = "";
+		String strLogLocation = "";
+		if(System.getProperty("os.name").contains("Windows"))
+		{
+			strLocalLocation = Globalvars.strLocalLocation;
+			strLogLocation = Globalvars.strLogLocation;
+		}
+		else if(System.getProperty("os.name").contains("Mac"))
+		{
+			strLocalLocation = Globalvars.strMacLocalLocation;
+			strLogLocation = Globalvars.strMacLogLocation;
+		}
+		Globalvars.strLaunchLogPath = strLogLocation + Globalvars.strLaunchLogFileName;
+		Globalvars.strLocalVersionPath = strLocalLocation + Globalvars.strVersionFileName;
+		Globalvars.strLocalExePath = strLocalLocation + Globalvars.strExeFileName;
+		
+		
+	}
+	
+	
 
 
 

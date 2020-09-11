@@ -1880,6 +1880,7 @@ public class ImportTestCaseswithSteps{
 
 		
 		try {
+			
 			//set Cert path
 			//System.setProperty("javax.net.ssl.trustStore", Globalvars.strCertPath);
 			
@@ -2094,6 +2095,37 @@ public void fnLoadMappingPreferences() {
 	public void launchCurrentLog() {
 		
 		FileOperations.openFileinNotepad(Globalvars.strCoreLogPath);
+		
+	}
+
+
+
+	public void fnSetPathVariables() {
+		// TODO Auto-generated method stub
+		//Set path variables for Windows and MacOS
+		try {
+			String strLocalLocation = "";
+			String strLogLocation = "";
+			
+			if(System.getProperty("os.name").contains("Windows"))
+			{
+				strLocalLocation = Globalvars.strLocalLocation;
+				strLogLocation = Globalvars.strLogLocation;
+			}
+			else if(System.getProperty("os.name").contains("Mac"))
+			{
+				strLocalLocation = Globalvars.strMacLocalLocation;
+				strLogLocation = Globalvars.strMacLogLocation;
+			}
+			Globalvars.strPreferencesPath = strLocalLocation + Globalvars.strPreferencesConfigFileName;
+			Globalvars.strLocalVersionPath = strLocalLocation + Globalvars.strVersionFileName;
+			Globalvars.strLocalExePath = strLocalLocation + Globalvars.strExeFileName;
+			Globalvars.strLaunchLogPath = strLogLocation + Globalvars.strLaunchLogFileName;
+			Globalvars.strCoreLogPath = strLogLocation + Globalvars.strCoreLogFileName;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

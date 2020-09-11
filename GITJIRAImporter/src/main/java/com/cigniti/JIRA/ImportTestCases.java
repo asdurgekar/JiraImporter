@@ -173,6 +173,7 @@ public class ImportTestCases extends JFrame {
 			e1.printStackTrace();
 		}
 		
+		ITCWS.fnSetPathVariables();
 		str_VersionNumber = suppMethods.fnGetLocalVersion();
 		if(str_VersionNumber != null)
 		{
@@ -183,8 +184,8 @@ public class ImportTestCases extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
-				ITCWS.fnCreateCoreLogFile();
 				ITCWS.fnInitialization();
+				ITCWS.fnCreateCoreLogFile();				
 				ITCWS.fnLoadPreferences();
 				
 			}

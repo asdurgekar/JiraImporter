@@ -12,10 +12,8 @@ public class FileOperations {
 			String strStartCommand = "";
     		if(System.getProperty("os.name").contains("Windows"))
     		{
-    			strStartCommand = "cmd /c start /max notepad";
-    			String command = strStartCommand + strFileName;
-    			Runtime rt = Runtime.getRuntime();
-    			Process pr = rt.exec(command);
+    			String cmds[] = new String[] { "cmd", "/c ","start","/max", "notepad", strFileName};
+                Runtime.getRuntime().exec(cmds);
     			
     		}
     		else if(System.getProperty("os.name").contains("Mac"))

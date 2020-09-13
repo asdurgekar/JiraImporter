@@ -78,7 +78,7 @@ public class ImportTestCaseswithSteps{
 	private SwingWorker<Void, String> bgWorker;
 	public static String DisplayMessage = "Success~All Test Cases are imported successfully";
 	public String appName = "Jira Test Case Importer";
-	public String versionNumber = "3.0";
+	public String versionNumber = "3.10";
 	public String pageName = "Login";
 	public String TestCaseIdColumn = "TestCaseId";
 	public String strAuthenticationMessage;
@@ -2248,6 +2248,7 @@ public void fnLoadMappingPreferences() {
 		Globalvars.strLocalVersionPath = strLocalLocation + Globalvars.strVersionFileName;
 		Globalvars.strLocalExePath = strLocalLocation + Globalvars.strExeFileName;
 		Globalvars.strCoreLogPath = strLogLocation + Globalvars.strCoreLogFileName;
+		Globalvars.strPreferencesPath = strLocalLocation + Globalvars.strPreferencesConfigFileName;
 		
 		
 	}

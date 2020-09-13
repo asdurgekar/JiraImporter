@@ -936,7 +936,7 @@ public class ImportTestCases extends JFrame {
 		});
 		lblDetLog.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblDetLog.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblDetLog.setBounds(502, 317, 100, 14);
+		lblDetLog.setBounds(490, 317, 112, 14);
 		panelFinal.add(lblDetLog);
 		
 		scrollPane_5 = new JScrollPane();

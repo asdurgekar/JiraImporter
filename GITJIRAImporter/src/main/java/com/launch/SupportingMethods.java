@@ -230,6 +230,7 @@ public class SupportingMethods{
 			// and
 			//if folder is present and file is not present, return false
 			File file = new File(Globalvars.strLocalVersionPath);
+			System.out.println(file.getAbsolutePath());
 			if(!file.exists()) 
 			{ 
 				//If not, create the folder and file
